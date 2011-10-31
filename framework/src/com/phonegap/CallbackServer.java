@@ -103,10 +103,6 @@ public class CallbackServer implements Runnable {
 	 */
 	public void init(String url) {
 		//System.out.println("CallbackServer.start("+url+")");
-		this.active = false;
-		this.empty = true;
-		this.port = 0;
-		this.javascript = new LinkedList<String>();		
 
 		// Determine if XHR or polling is to be used
 		if ((url != null) && !url.startsWith("file://")) {
@@ -121,16 +117,6 @@ public class CallbackServer implements Runnable {
 			this.usePolling = false;
 			this.startServer();
 		}
-	}
-	
-    /**
-     * Re-init when loading a new HTML page into webview.
-     * 
-     * @param url           The URL of the PhoneGap app being loaded
-     */
-	public void reinit(String url) {
-	    this.stopServer();
-	    this.init(url);
 	}
 	
 	/**
@@ -188,6 +174,7 @@ public class CallbackServer implements Runnable {
 	 * Start running the server.  
 	 * This is called automatically when the server thread is started.
 	 */
+	@Override
 	public void run() {
 		
 		// Start server

@@ -21,8 +21,8 @@ import android.os.Bundle;
  */
 public class GpsListener implements LocationListener {
 	
-	private PhonegapActivity mCtx;				// PhonegapActivity object
-	
+	private Context mContext;
+
 	private LocationManager mLocMan;			// Location manager object
 	private GeoListener owner;					// Geolistener object (parent)
 	private boolean hasData = false;			// Flag indicates if location data is available in cLoc
@@ -37,10 +37,10 @@ public class GpsListener implements LocationListener {
 	 * @param interval
 	 * @param m
 	 */
-	public GpsListener(PhonegapActivity ctx, int interval, GeoListener m) {
+	public GpsListener(Context context, int interval, GeoListener m) {
 		this.owner = m;
-		this.mCtx = ctx;
-		this.mLocMan = (LocationManager) this.mCtx.getSystemService(Context.LOCATION_SERVICE);
+		this.mContext = context;
+		this.mLocMan = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.running = false;
 		this.start(interval);
 	}
@@ -63,6 +63,7 @@ public class GpsListener implements LocationListener {
 	 * 
 	 * @param provider
 	 */
+	@Override
 	public void onProviderDisabled(String provider) {
 		this.owner.fail(GeoListener.POSITION_UNAVAILABLE, "GPS provider disabled.");
 	}
@@ -72,6 +73,7 @@ public class GpsListener implements LocationListener {
 	 * 
 	 * @param provider
 	 */
+	@Override
 	public void onProviderEnabled(String provider) {
 		System.out.println("GpsListener: The provider "+ provider + " is enabled");
 	}
@@ -85,6 +87,7 @@ public class GpsListener implements LocationListener {
 	 * @param status
 	 * @param extras
 	 */
+	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		System.out.println("GpsListener: The status of the provider " + provider + " has changed");
 		if (status == 0) {
@@ -104,6 +107,7 @@ public class GpsListener implements LocationListener {
 	 * 
 	 * @param location
 	 */
+	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("GpsListener: The location has been updated!");
 		this.hasData = true;

@@ -12,7 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
+import java.util.Vector;
 
+import android.content.Context;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +80,7 @@ public class FileUtils extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		
@@ -227,7 +230,7 @@ public class FileUtils extends Plugin {
 	 * @param filePath the path to check
 	 */
 	private void notifyDelete(String filePath) {
-        int result = this.ctx.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, 
+        int result = this.context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 MediaStore.Images.Media.DATA + " = ?", 
                 new String[] {filePath});
 	}
@@ -245,21 +248,27 @@ public class FileUtils extends Plugin {
 	private JSONObject resolveLocalFileSystemURI(String url) throws IOException, JSONException {
         String decoded = URLDecoder.decode(url, "UTF-8");
         
-        File fp = null;
-        
+        File fp;
+
         // Handle the special case where you get an Android content:// uri.
         if (decoded.startsWith("content:")) {
-            Cursor cursor = this.ctx.managedQuery(Uri.parse(decoded), new String[] { MediaStore.Images.Media.DATA }, null, null, null);
+            Cursor cursor = context.getContentResolver().query(
+					Uri.parse(decoded),
+					new String[]{MediaStore.Images.Media.DATA},
+					null, null, null);
             // Note: MediaStore.Images/Audio/Video.Media.DATA is always "_data"
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
-            fp = new File(cursor.getString(column_index));
+			String resolvedURI = cursor.getString(column_index);
+			cursor.close();
+
+			fp = new File(resolvedURI);
         } else {
     		// Test to see if this is a valid URL first
-            @SuppressWarnings("unused") 
     		URL testUrl = new URL(decoded);
-    
-    		if (decoded.startsWith("file://")) {
+			new Vector<URL>().add(testUrl);
+
+			if (decoded.startsWith("file://")) {
     			fp = new File(decoded.substring(7, decoded.length()));
     		} else {
     			fp = new File(decoded);
@@ -720,7 +729,7 @@ public class FileUtils extends Plugin {
 	 * @return true if we are at the root, false otherwise.
 	 */
 	private boolean atRootDirectory(String filePath) {
-		if (filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + ctx.getPackageName() + "/cache") ||
+		if (filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + this.context.getPackageName() + "/cache") ||
 				filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
 			return true;
 		}
@@ -786,12 +795,12 @@ public class FileUtils extends Plugin {
 		if (type == TEMPORARY) {
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				fs.put("name", "temporary");
-				fs.put("root", getEntry(Environment.getExternalStorageDirectory().getAbsolutePath() + 
-						"/Android/data/" + ctx.getPackageName() + "/cache/"));
+				fs.put("root", getEntry(Environment.getExternalStorageDirectory().getAbsolutePath() +
+						"/Android/data/" + this.context.getPackageName() + "/cache/"));
 				
 				// Create the cache dir if it doesn't exist.
-				File fp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + 
-					"/Android/data/" + ctx.getPackageName() + "/cache/");
+				File fp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
+						"/Android/data/" + this.context.getPackageName() + "/cache/");
 				fp.mkdirs();
 			} else {
 				throw new IOException("SD Card not mounted");
@@ -857,7 +866,8 @@ public class FileUtils extends Plugin {
 	 * @param action	The action to execute
 	 * @return			T=returns value
 	 */
-	public boolean isSynch(String action) {		
+	@Override
+	public boolean isSynch(String action) {
 		if (action.equals("testSaveLocationExists")) {
 			return true;
 	    }  
@@ -917,7 +927,7 @@ public class FileUtils extends Plugin {
     	String contentType = null;
     	if (filename.startsWith("content:")) {
     		Uri fileUri = Uri.parse(filename);
-    		contentType = this.ctx.getContentResolver().getType(fileUri);
+    		contentType = this.context.getContentResolver().getType(fileUri);
     	}
     	else {
         	contentType = getMimeType(filename);  		    		
@@ -936,7 +946,7 @@ public class FileUtils extends Plugin {
      */
 	public static String getMimeType(String filename) {
 		MimeTypeMap map = MimeTypeMap.getSingleton();
-		return map.getMimeTypeFromExtension(map.getFileExtensionFromUrl(filename));
+		return map.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(filename));
 	}
     
     /**
@@ -996,7 +1006,7 @@ public class FileUtils extends Plugin {
     private InputStream getPathFromUri(String path) throws FileNotFoundException {  	  
     	if (path.startsWith("content")) {
     		Uri uri = Uri.parse(path);
-    		return ctx.getContentResolver().openInputStream(uri);
+    		return this.context.getContentResolver().openInputStream(uri);
     	}
     	else {
     		return new FileInputStream(path);
@@ -1007,14 +1017,18 @@ public class FileUtils extends Plugin {
      * Queries the media store to find out what the file path is for the Uri we supply
      * 
      * @param contentUri the Uri of the audio/image/video
-     * @param ctx the current applicaiton context
+     * @param ctx the current application context
      * @return the full path to the file
      */
-    protected static String getRealPathFromURI(Uri contentUri, PhonegapActivity ctx) {
-        String[] proj = { _DATA };
-        Cursor cursor = ctx.managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(_DATA);
+    protected static String getRealPathFromURI(Context context, Uri contentUri) {
+		Cursor cursor = context.getContentResolver().query(
+				contentUri,
+				new String[]{_DATA},
+				null, null, null);
+        int columnIndex = cursor.getColumnIndexOrThrow(_DATA);
         cursor.moveToFirst();
-        return cursor.getString(column_index);
+		String result = cursor.getString(columnIndex);
+		cursor.close();
+		return result;
     }
 }

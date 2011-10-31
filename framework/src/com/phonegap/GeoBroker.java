@@ -43,6 +43,7 @@ public class GeoBroker extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		
@@ -70,6 +71,7 @@ public class GeoBroker extends Plugin {
 	 * @param action	The action to execute
 	 * @return			T=returns value
 	 */
+	@Override
 	public boolean isSynch(String action) {
 		// Starting listeners is easier to run on main thread, so don't run async.
 		return true;
@@ -79,7 +81,8 @@ public class GeoBroker extends Plugin {
      * Called when the activity is to be shut down.
      * Stop listener.
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
 		java.util.Set<Entry<String,GeoListener>> s = this.geoListeners.entrySet();
         java.util.Iterator<Entry<String,GeoListener>> it = s.iterator();
         while (it.hasNext()) {

@@ -42,16 +42,16 @@ public class GeoListener {
 		this.broker = broker;
 		this.mGps = null;
 		this.mNetwork = null;
-		this.mLocMan = (LocationManager) broker.ctx.getSystemService(Context.LOCATION_SERVICE);
+		this.mLocMan = (LocationManager) broker.context.getSystemService(Context.LOCATION_SERVICE);
 
 		// If GPS provider, then create and start GPS listener
 		if (this.mLocMan.getProvider(LocationManager.GPS_PROVIDER) != null) {
-			this.mGps = new GpsListener(broker.ctx, time, this);
+			this.mGps = new GpsListener(broker.context, time, this);
 		}
 		
 		// If network provider, then create and start network listener
 		if (this.mLocMan.getProvider(LocationManager.NETWORK_PROVIDER) != null) {
-			this.mNetwork = new NetworkListener(broker.ctx, time, this);
+			this.mNetwork = new NetworkListener(broker.context, time, this);
 		}
 	}
 	

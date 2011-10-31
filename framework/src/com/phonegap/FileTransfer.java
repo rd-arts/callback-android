@@ -115,6 +115,7 @@ public class FileTransfer extends Plugin {
 
 	// always verify the host - don't check for certificate
 	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+		@Override
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
         }
@@ -131,15 +132,18 @@ public class FileTransfer extends Plugin {
 	private void trustAllHosts() {
         // Create a trust manager that does not validate certificate chains
         TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            @Override
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
             	return new java.security.cert.X509Certificate[] {};
             }
 
-            public void checkClientTrusted(X509Certificate[] chain,
+            @Override
+			public void checkClientTrusted(X509Certificate[] chain,
                             String authType) throws CertificateException {
             }
 
-            public void checkServerTrusted(X509Certificate[] chain,
+            @Override
+			public void checkServerTrusted(X509Certificate[] chain,
                             String authType) throws CertificateException {
             }
         } };
@@ -361,7 +365,7 @@ public class FileTransfer extends Plugin {
     private InputStream getPathFromUri(String path) throws FileNotFoundException {  	  
     	if (path.startsWith("content:")) {
     		Uri uri = Uri.parse(path);
-    		return ctx.getContentResolver().openInputStream(uri);
+    		return this.context.getContentResolver().openInputStream(uri);
     	}
     	else if (path.startsWith("file://")) {
     	    return new FileInputStream(path.substring(7)); 

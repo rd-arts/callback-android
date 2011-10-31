@@ -43,7 +43,8 @@ public class BatteryListener extends Plugin {
      * @param callbackId    The callback id used when calling back into JavaScript.
      * @return              A PluginResult object with a status and message.
      */
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
+    @Override
+	public PluginResult execute(String action, JSONArray args, String callbackId) {
         PluginResult.Status status = PluginResult.Status.INVALID_ACTION;
         String result = "Unsupported Operation: " + action; 
                 
@@ -63,7 +64,7 @@ public class BatteryListener extends Plugin {
                         updateBatteryInfo(intent);              
                     }
                 };
-                ctx.registerReceiver(this.receiver, intentFilter);
+                context.registerReceiver(this.receiver, intentFilter);
             }
 
             // Don't return any result now, since status results will be sent when events come in from broadcast receiver 
@@ -85,7 +86,8 @@ public class BatteryListener extends Plugin {
     /**
      * Stop battery receiver.
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
         removeBatteryListener();
     }
 
@@ -95,7 +97,7 @@ public class BatteryListener extends Plugin {
     private void removeBatteryListener() {
         if (this.receiver != null) {
             try {
-                this.ctx.unregisterReceiver(this.receiver);
+                this.context.unregisterReceiver(this.receiver);
                 this.receiver = null;
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error unregistering battery receiver: " + e.getMessage(), e);

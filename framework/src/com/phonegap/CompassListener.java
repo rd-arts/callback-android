@@ -58,9 +58,10 @@ public class CompassListener extends Plugin implements SensorEventListener {
      * 
      * @param ctx The context of the main Activity.
      */
-    public void setContext(PhonegapActivity ctx) {
-        super.setContext(ctx);
-        this.sensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
+	@Override
+	public void setContext(Context context) {
+        super.setContext(context);
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
 
     /**
@@ -71,7 +72,8 @@ public class CompassListener extends Plugin implements SensorEventListener {
      * @param callbackId    The callback id used when calling back into JavaScript.
      * @return              A PluginResult object with a status and message.
      */
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
+    @Override
+	public PluginResult execute(String action, JSONArray args, String callbackId) {
         PluginResult.Status status = PluginResult.Status.OK;
         String result = "";     
         
@@ -130,7 +132,8 @@ public class CompassListener extends Plugin implements SensorEventListener {
      * @param action    The action to execute
      * @return          T=returns value
      */
-    public boolean isSynch(String action) {
+    @Override
+	public boolean isSynch(String action) {
         if (action.equals("getStatus")) {
             return true;
         }
@@ -149,7 +152,8 @@ public class CompassListener extends Plugin implements SensorEventListener {
     /**
      * Called when listener is to be shut down and object is being destroyed.
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
         this.stop();
     }
 
@@ -199,7 +203,8 @@ public class CompassListener extends Plugin implements SensorEventListener {
     }
     
     
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    @Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // TODO Auto-generated method stub  
     }
 
@@ -208,7 +213,8 @@ public class CompassListener extends Plugin implements SensorEventListener {
      * 
      * @param SensorEvent event
      */
-    public void onSensorChanged(SensorEvent event) {
+    @Override
+	public void onSensorChanged(SensorEvent event) {
 
         // We only care about the orientation as far as it refers to Magnetic North
         float heading = event.values[0];

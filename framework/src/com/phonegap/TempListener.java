@@ -38,9 +38,10 @@ public class TempListener extends Plugin implements SensorEventListener {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
-		super.setContext(ctx);
-        this.sensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
+	@Override
+	public void setContext(Context context) {
+		super.setContext(context);
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 	}
 
 	/**
@@ -51,6 +52,7 @@ public class TempListener extends Plugin implements SensorEventListener {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		
@@ -68,7 +70,8 @@ public class TempListener extends Plugin implements SensorEventListener {
      * Called by AccelBroker when listener is to be shut down.
      * Stop listener.
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
     	this.stop();    	
     }
 
@@ -88,10 +91,12 @@ public class TempListener extends Plugin implements SensorEventListener {
 		this.sensorManager.unregisterListener(this);
 	}
 	
+	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// We want to know what temp this is.
 		float temp = event.values[0];

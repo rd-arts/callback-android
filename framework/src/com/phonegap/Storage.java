@@ -48,6 +48,7 @@ public class Storage extends Plugin {
 	 *            The callback id used when calling back into JavaScript.
 	 * @return A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";
@@ -88,6 +89,7 @@ public class Storage extends Plugin {
 	 *            The action to execute
 	 * @return T=returns value
 	 */
+	@Override
 	public boolean isSynch(String action) {
 		return true;
 	}

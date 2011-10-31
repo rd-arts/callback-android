@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import android.content.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +46,6 @@ import org.json.JSONObject;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
@@ -127,8 +123,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
     /**
      * Create an contact accessor.
      */
-    public ContactAccessorSdk5(WebView view, Activity app) {
-		mApp = app;
+    public ContactAccessorSdk5(WebView view, Context context) {
+		mApp = context;
 		mView = view;
 	}
 	
@@ -213,7 +209,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 	 * @return     a JSONObject representing the contact
 	 * @throws JSONException 
 	 */
-	public JSONObject getContactById(String id) throws JSONException {     
+	@Override
+	public JSONObject getContactById(String id) throws JSONException {
         // Do the id query
         Cursor c = mApp.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 null,

@@ -58,6 +58,7 @@ public class ExifHelper {
      * Reads all the EXIF data from the input file.
      */
     public void readExifData() {
+/*
         this.aperature = inFile.getAttribute(ExifInterface.TAG_APERTURE);
         this.datetime = inFile.getAttribute(ExifInterface.TAG_DATETIME);
         this.exposureTime = inFile.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
@@ -76,7 +77,8 @@ public class ExifHelper {
         this.make = inFile.getAttribute(ExifInterface.TAG_MAKE);
         this.model = inFile.getAttribute(ExifInterface.TAG_MODEL);
         this.orientation = inFile.getAttribute(ExifInterface.TAG_ORIENTATION);
-        this.whiteBalance = inFile.getAttribute(ExifInterface.TAG_WHITE_BALANCE);        
+        this.whiteBalance = inFile.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
+*/
     }
     
     /**
@@ -90,7 +92,7 @@ public class ExifHelper {
             return;
         }
         
-        if (this.aperature != null) {
+/*        if (this.aperature != null) {
             this.outFile.setAttribute(ExifInterface.TAG_APERTURE, this.aperature);
         }
         if (this.datetime != null) {
@@ -147,7 +149,7 @@ public class ExifHelper {
         if (this.whiteBalance != null) {
             this.outFile.setAttribute(ExifInterface.TAG_WHITE_BALANCE, this.whiteBalance);
         }
-        
+ */
         this.outFile.saveAttributes();
     }
 }

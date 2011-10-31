@@ -201,7 +201,9 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
 				else {
 					if (file.startsWith("/android_asset/")) {
 						String f = file.substring(15);
-						android.content.res.AssetFileDescriptor fd = this.handler.ctx.getBaseContext().getAssets().openFd(f);
+						//TODO TEST IT!
+						//was	android.content.res.AssetFileDescriptor fd = this.handler.ctx.getBaseContext().getAssets().openFd(f);
+						android.content.res.AssetFileDescriptor fd = this.handler.context.getAssets().openFd(f);
 						this.mPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
 					}
 					else {
@@ -282,6 +284,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
 	 * 
 	 * @param mPlayer			The MediaPlayer that reached the end of the file 
 	 */
+	@Override
 	public void onCompletion(MediaPlayer mPlayer) {
 		this.setState(MEDIA_STOPPED);
     } 
@@ -354,6 +357,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
 	 * 
 	 * @param mPlayer			The MediaPlayer that is ready for playback 
 	 */
+	@Override
 	public void onPrepared(MediaPlayer mPlayer) {
 		// Listen for playback completion
 		this.mPlayer.setOnCompletionListener(this);
@@ -394,6 +398,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
 	 * @param arg1				the type of error that has occurred: (MEDIA_ERROR_UNKNOWN, MEDIA_ERROR_SERVER_DIED)
 	 * @param arg2				an extra code, specific to the error.
 	 */
+	@Override
 	public boolean onError(MediaPlayer mPlayer, int arg1, int arg2) {
 	    Log.d(LOG_TAG, "AudioPlayer.onError(" + arg1 + ", " + arg2+")");
 

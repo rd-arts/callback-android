@@ -26,7 +26,7 @@ package com.phonegap;
 
 import java.util.HashMap;
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 
@@ -44,7 +44,7 @@ import org.json.JSONObject;
 public abstract class ContactAccessor {
 	
     protected final String LOG_TAG = "ContactsAccessor";
-    protected Activity mApp;
+    protected Context mApp;
     protected WebView mView;
 	
     /**

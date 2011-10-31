@@ -76,9 +76,10 @@ public class NetworkManager extends Plugin {
      * 
      * @param ctx The context of the main Activity.
      */
-    public void setContext(PhonegapActivity ctx) {
-        super.setContext(ctx);
-        this.sockMan = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);        
+	@Override
+	public void setContext(Context context) {
+        super.setContext(context);
+        this.sockMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.connectionCallbackId = null;
         
         // We need to listen to connectivity events to update navigator.connection
@@ -91,7 +92,7 @@ public class NetworkManager extends Plugin {
                     updateConnectionInfo((NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO));                
                 }
             };
-            ctx.registerReceiver(this.receiver, intentFilter);
+            context.registerReceiver(this.receiver, intentFilter);
         }
 
     }
@@ -104,7 +105,8 @@ public class NetworkManager extends Plugin {
      * @param callbackId    The callback id used when calling back into JavaScript.
      * @return                 A PluginResult object with a status and message.
      */
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
+    @Override
+	public PluginResult execute(String action, JSONArray args, String callbackId) {
         PluginResult.Status status = PluginResult.Status.INVALID_ACTION;
         String result = "Unsupported Operation: " + action;    
         
@@ -125,7 +127,8 @@ public class NetworkManager extends Plugin {
      * @param action    The action to execute
      * @return            T=returns value
      */
-    public boolean isSynch(String action) {
+    @Override
+	public boolean isSynch(String action) {
         // All methods take a while, so always use async
         return false;
     }
@@ -133,10 +136,11 @@ public class NetworkManager extends Plugin {
     /**
      * Stop network receiver.
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
         if (this.receiver != null) {
             try {
-                this.ctx.unregisterReceiver(this.receiver);
+                this.context.unregisterReceiver(this.receiver);
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error unregistering network receiver: " + e.getMessage(), e);
             }

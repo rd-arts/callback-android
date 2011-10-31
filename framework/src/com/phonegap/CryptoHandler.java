@@ -29,6 +29,7 @@ public class CryptoHandler extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		

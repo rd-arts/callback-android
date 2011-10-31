@@ -8,6 +8,8 @@
 package com.phonegap;
 
 import java.util.TimeZone;
+
+import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,8 +36,10 @@ public class Device extends Plugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
-		super.setContext(ctx);
+	@Override
+	public void setContext(Context context) {
+		super.setContext(context);
+		// TODO wtf here?
         Device.uuid = getUuid();
 	}
 
@@ -47,6 +51,7 @@ public class Device extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		
@@ -76,6 +81,7 @@ public class Device extends Plugin {
 	 * @param action	The action to execute
 	 * @return			T=returns value
 	 */
+	@Override
 	public boolean isSynch(String action) {
 		if (action.equals("getDeviceInfo")) {
 			return true;
@@ -102,7 +108,7 @@ public class Device extends Plugin {
 	 * @return
 	 */
 	public String getUuid()	{		
-		String uuid = Settings.Secure.getString(this.ctx.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+		String uuid = Settings.Secure.getString(this.context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 		return uuid;
 	}
 

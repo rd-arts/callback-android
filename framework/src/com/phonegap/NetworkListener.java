@@ -17,7 +17,7 @@ import android.os.Bundle;
 
 public class NetworkListener implements LocationListener {
 	
-	private PhonegapActivity mCtx;				// PhonegapActivity object
+	private Context mContext;
 	
 	private LocationManager mLocMan;			// Location manager object
 	private GeoListener owner;					// Geolistener object (parent)
@@ -33,10 +33,10 @@ public class NetworkListener implements LocationListener {
 	 * @param interval
 	 * @param m
 	 */
-	public NetworkListener(PhonegapActivity ctx, int interval, GeoListener m) {
+	public NetworkListener(Context context, int interval, GeoListener m) {
 		this.owner = m;
-		this.mCtx = ctx;
-		this.mLocMan = (LocationManager) this.mCtx.getSystemService(Context.LOCATION_SERVICE);
+		this.mContext = context;
+		this.mLocMan = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.running = false;
 		this.start(interval);
 	}
@@ -59,6 +59,7 @@ public class NetworkListener implements LocationListener {
 	 * 
 	 * @param provider
 	 */
+	@Override
 	public void onProviderDisabled(String provider) {
 		System.out.println("NetworkListener: The provider " + provider + " is disabled");
 	}
@@ -68,6 +69,7 @@ public class NetworkListener implements LocationListener {
 	 * 
 	 * @param provider
 	 */
+	@Override
 	public void onProviderEnabled(String provider) {
 		System.out.println("NetworkListener: The provider "+ provider + " is enabled");
 	}
@@ -81,6 +83,7 @@ public class NetworkListener implements LocationListener {
 	 * @param status
 	 * @param extras
 	 */
+	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		System.out.println("NetworkListener: The status of the provider " + provider + " has changed");
 		if (status == 0) {
@@ -99,6 +102,7 @@ public class NetworkListener implements LocationListener {
 	 * 
 	 * @param location
 	 */
+	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("NetworkListener: The location has been updated!");
 		this.hasData = true;

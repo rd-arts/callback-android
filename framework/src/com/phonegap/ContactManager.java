@@ -7,6 +7,7 @@
  */
 package com.phonegap;
 
+import com.phonegap.api.PhonegapActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ public class ContactManager extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
         PluginResult.Status status = PluginResult.Status.OK;
         String result = "";     
@@ -68,7 +70,7 @@ public class ContactManager extends Plugin {
          * older phones.
          */
         if (this.contactAccessor == null) {
-            this.contactAccessor = new ContactAccessorSdk5(this.webView, this.ctx);
+            this.contactAccessor = new ContactAccessorSdk5(this.webView, this.context);
         }
         
 		try {

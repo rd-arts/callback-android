@@ -7,6 +7,8 @@
  */
 package com.phonegap.api;
 
+import android.content.Context;
+import com.phonegap.GapView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,9 +22,12 @@ import android.webkit.WebView;
  */
 public abstract class Plugin implements IPlugin {
 
+	//TODO omg public fields
+
 	public String id;
     public WebView webView;					// WebView object
-    public PhonegapActivity ctx;			// PhonegapActivity object
+    public GapView ctx;			// PhonegapActivity object
+	public Context context;
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -32,6 +37,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public abstract PluginResult execute(String action, JSONArray args, String callbackId);
 
 	/**
@@ -40,6 +46,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param action	The action to execute
 	 * @return			T=returns value
 	 */
+	@Override
 	public boolean isSynch(String action) {
 		return false;
 	}
@@ -50,7 +57,19 @@ public abstract class Plugin implements IPlugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	/**
+	 * Sets the context of the Plugin. This can then be used to do things like
+	 * get file paths associated with the Activity.
+	 *
+	 * @param ctx The context of the main Activity.
+	 */
+	@Override
+	public void setController(GapView ctx) {
 		this.ctx = ctx;
 	}
 
@@ -60,6 +79,7 @@ public abstract class Plugin implements IPlugin {
 	 * 
 	 * @param webView The PhoneGap WebView
 	 */
+	@Override
 	public void setView(WebView webView) {
 		this.webView = webView;
 	}
@@ -69,6 +89,7 @@ public abstract class Plugin implements IPlugin {
      * 
      * @param multitasking		Flag indicating if multitasking is turned on for app
      */
+    @Override
     public void onPause(boolean multitasking) {
     }
 
@@ -77,19 +98,22 @@ public abstract class Plugin implements IPlugin {
      * 
      * @param multitasking		Flag indicating if multitasking is turned on for app
      */
-    public void onResume(boolean multitasking) {
+    @Override
+	public void onResume(boolean multitasking) {
     }
     
     /**
      * Called when the activity receives a new intent. 
      */
-    public void onNewIntent(Intent intent) {
+    @Override
+	public void onNewIntent(Intent intent) {
     }
     
     /**
      * The final call you receive before your activity is destroyed. 
      */
-    public void onDestroy() {
+    @Override
+	public void onDestroy() {
     }
 	
     /**
@@ -101,7 +125,8 @@ public abstract class Plugin implements IPlugin {
      * @param resultCode		The integer result code returned by the child activity through its setResult().
      * @param data				An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    @Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
     }
 
     /**
@@ -110,7 +135,8 @@ public abstract class Plugin implements IPlugin {
      * @param url				The URL that is trying to be loaded in the PhoneGap webview.
      * @return					Return true to prevent the URL from loading. Default is false.
      */
-    public boolean onOverrideUrlLoading(String url) {
+    @Override
+	public boolean onOverrideUrlLoading(String url) {
     	return false;
     }
 

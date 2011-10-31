@@ -47,6 +47,7 @@ public class AudioHandler extends Plugin {
 	 * @param callbackId	The callback id used when calling back into JavaScript.
 	 * @return 				A PluginResult object with a status and message.
 	 */
+	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";		
@@ -100,6 +101,7 @@ public class AudioHandler extends Plugin {
 	 * @param action	The action to execute
 	 * @return			T=returns value
 	 */
+	@Override
 	public boolean isSynch(String action) {
 		if (action.equals("getCurrentPositionAudio")) {
 			return true;
@@ -113,6 +115,7 @@ public class AudioHandler extends Plugin {
 	/**
 	 * Stop all audio players and recorders.
 	 */
+	@Override
 	public void onDestroy() {
 		java.util.Set<Entry<String,AudioPlayer>> s = this.players.entrySet();
         java.util.Iterator<Entry<String,AudioPlayer>> it = s.iterator();
@@ -270,7 +273,7 @@ public class AudioHandler extends Plugin {
      * @param output			1=earpiece, 2=speaker
      */
     public void setAudioOutputDevice(int output) {
-		AudioManager audiMgr = (AudioManager) this.ctx.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager audiMgr = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
 		if (output == 2) {
 			audiMgr.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_SPEAKER, AudioManager.ROUTE_ALL);
 		}
@@ -288,7 +291,7 @@ public class AudioHandler extends Plugin {
      * @return					1=earpiece, 2=speaker
      */
     public int getAudioOutputDevice() {
-		AudioManager audiMgr = (AudioManager) this.ctx.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager audiMgr = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
 		if (audiMgr.getRouting(AudioManager.MODE_NORMAL) == AudioManager.ROUTE_EARPIECE) {
 			return 1;
 		}

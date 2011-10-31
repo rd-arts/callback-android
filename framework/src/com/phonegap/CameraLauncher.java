@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import android.content.ContentResolver;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +22,6 @@ import org.json.JSONObject;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-import com.phonegap.api.LOG;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -31,6 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 /**
  * This class launches the camera view, allows the user to take a picture, closes the camera view,
@@ -82,7 +83,8 @@ public class CameraLauncher extends Plugin {
      * @param callbackId    The callback id used when calling back into JavaScript.
      * @return              A PluginResult object with a status and message.
      */
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
+    @Override
+	public PluginResult execute(String action, JSONArray args, String callbackId) {
         PluginResult.Status status = PluginResult.Status.OK;
         String result = "";     
         this.callbackId = callbackId;
@@ -168,9 +170,9 @@ public class CameraLauncher extends Plugin {
     private File createCaptureFile(int encodingType) {
         File photo = null;
         if (encodingType == JPEG) {
-            photo = new File(DirectoryManager.getTempDirectoryPath(ctx),  "Pic.jpg");
+            photo = new File(DirectoryManager.getTempDirectoryPath(this.context),  "Pic.jpg");
         } else {
-            photo = new File(DirectoryManager.getTempDirectoryPath(ctx),  "Pic.png");            
+            photo = new File(DirectoryManager.getTempDirectoryPath(this.context), "Pic.png");
         }
         return photo;
     }
@@ -258,7 +260,8 @@ public class CameraLauncher extends Plugin {
      * @param resultCode        The integer result code returned by the child activity through its setResult().
      * @param intent            An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    @Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         
         // Get src and dest types from request code
         int srcType = (requestCode/16) - 1;
@@ -272,17 +275,17 @@ public class CameraLauncher extends Plugin {
                     // Create an ExifHelper to save the exif data that is lost during compression
                     ExifHelper exif = new ExifHelper();
                     if (this.encodingType == JPEG) {
-                        exif.createInFile(DirectoryManager.getTempDirectoryPath(ctx) + "/Pic.jpg");
+                        exif.createInFile(DirectoryManager.getTempDirectoryPath(this.context) + "/Pic.jpg");
                         exif.readExifData();
                     }
 
                     // Read in bitmap of captured image
                     Bitmap bitmap;
                     try {
-                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(this.ctx.getContentResolver(), imageUri);
+                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(this.context.getContentResolver(), imageUri);
                     } catch (FileNotFoundException e) {
                         Uri uri = intent.getData();
-                        android.content.ContentResolver resolver = this.ctx.getContentResolver();
+						ContentResolver resolver = this.context.getContentResolver();
                         bitmap = android.graphics.BitmapFactory.decodeStream(resolver.openInputStream(uri));
                     }
 
@@ -302,26 +305,26 @@ public class CameraLauncher extends Plugin {
                         values.put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
                         Uri uri = null;
                         try {
-                            uri = this.ctx.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                            uri = this.context.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                         } catch (UnsupportedOperationException e) {
-                            LOG.d(LOG_TAG, "Can't write to external media storage.");
+                            System.out.println("Can't write to external media storage.");
                             try {
-                                uri = this.ctx.getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
+                                uri = this.context.getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
                             } catch (UnsupportedOperationException ex) {
-                                LOG.d(LOG_TAG, "Can't write to internal media storage.");                           
+                                System.out.println("Can't write to internal media storage.");                           
                                 this.failPicture("Error capturing image - no media storage found.");
                                 return;
                             }
                         }
 
                         // Add compressed version of captured image to returned media store Uri
-                        OutputStream os = this.ctx.getContentResolver().openOutputStream(uri);
+                        OutputStream os = this.context.getContentResolver().openOutputStream(uri);
                         bitmap.compress(Bitmap.CompressFormat.JPEG, this.mQuality, os);
                         os.close();
                         
                         // Restore exif data to file
                         if (this.encodingType == JPEG) {
-                            exif.createOutFile(FileUtils.getRealPathFromURI(uri, this.ctx));
+                            exif.createOutFile(FileUtils.getRealPathFromURI(context, uri));
                             exif.writeExifData();
                         }
 
@@ -354,7 +357,7 @@ public class CameraLauncher extends Plugin {
         else if ((srcType == PHOTOLIBRARY) || (srcType == SAVEDPHOTOALBUM)) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri uri = intent.getData();
-                android.content.ContentResolver resolver = this.ctx.getContentResolver();
+				ContentResolver resolver = this.context.getContentResolver();
                 
                 // If you ask for video or all media type you will automatically get back a file URI 
                 // and there will be no attempt to resize any returned data
@@ -385,7 +388,7 @@ public class CameraLauncher extends Plugin {
                                 Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(resolver.openInputStream(uri));
                                 bitmap = scaleBitmap(bitmap);
     
-                                String fileName = DirectoryManager.getTempDirectoryPath(ctx) + "/resize.jpg";
+                                String fileName = DirectoryManager.getTempDirectoryPath(this.context) + "/resize.jpg";
                                 OutputStream os = new FileOutputStream(fileName);                         
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, this.mQuality, os);
                                 os.close();
@@ -421,12 +424,12 @@ public class CameraLauncher extends Plugin {
      * @return a cursor
      */
     private Cursor queryImgDB() {
-        return this.ctx.getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID },
-                null,
-                null,
-                null);
+        return this.context.getContentResolver().query(
+				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+				new String[]{MediaStore.Images.Media._ID},
+				null,
+				null,
+				null);
     }
     
     /**
@@ -450,7 +453,7 @@ public class CameraLauncher extends Plugin {
             cursor.moveToLast();
             int id = Integer.valueOf(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media._ID))) - 1;                    
             Uri uri = Uri.parse(MediaStore.Images.Media.EXTERNAL_CONTENT_URI + "/" + id);
-            this.ctx.getContentResolver().delete(uri, null, null);
+			this.context.getContentResolver().delete(uri, null, null);
         }
     }
 

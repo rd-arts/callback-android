@@ -12,13 +12,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import android.content.Context;
+import android.util.Log;
+import com.phonegap.GapView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
-import android.util.Log;
 import android.webkit.WebView;
 
 /**
@@ -28,38 +30,27 @@ import android.webkit.WebView;
  * from JavaScript.
  */
 public final class PluginManager {
+    private static final String TAG = PluginManager.class.getSimpleName();
 
 	private HashMap<String, IPlugin> plugins = new HashMap<String,IPlugin>();
 	private HashMap<String, String> services = new HashMap<String,String>();
 	
-	private final PhonegapActivity ctx;
-	private final WebView app;
-	
-    // Map URL schemes like foo: to plugins that want to handle those schemes
+	private Context ctx;
+	private final WebView webView;
+	/**
+	 * ex. ctx
+	 */
+	private final GapView gapController;
+
+	// Map URL schemes like foo: to plugins that want to handle those schemes
     // This would allow how all URLs are handled to be offloaded to a plugin
     protected HashMap<String, String> urlMap = new HashMap<String,String>();
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param app
-	 * @param ctx
-	 */
-	public PluginManager(WebView app, PhonegapActivity ctx) {
+
+    public PluginManager(Context ctx, WebView webView, GapView gapController) {
 		this.ctx = ctx;
-		this.app = app;
+		this.webView = webView;
+		this.gapController = gapController;
 		this.loadPlugins();
-	}
-	
-	/**
-	 * Re-init when loading a new HTML page into webview.
-	 */
-	public void reinit() {
-	    
-	    // Stop plugins on current HTML page and discard
-	    this.onPause(false);
-	    this.onDestroy();
-	    this.plugins = new HashMap<String, IPlugin>();
 	}
 	
 	/**
@@ -122,12 +113,12 @@ public final class PluginManager {
 		try {
 			final JSONArray args = new JSONArray(jsonArgs);
 			final IPlugin plugin = this.getPlugin(service); 
-			final PhonegapActivity ctx = this.ctx;
 			if (plugin != null) {
 				runAsync = async && !plugin.isSynch(action);
 				if (runAsync) {
 					// Run this on a different thread so that this one can return back to JS
 					Thread thread = new Thread(new Runnable() {
+						@Override
 						public void run() {
 							try {
 								// Call execute on the plugin so that it can do it's thing
@@ -140,16 +131,17 @@ public final class PluginManager {
 
 								// Check the success (OK, NO_RESULT & !KEEP_CALLBACK)
 								else if ((status == PluginResult.Status.OK.ordinal()) || (status == PluginResult.Status.NO_RESULT.ordinal())) {
-									ctx.sendJavascript(cr.toSuccessCallbackString(callbackId));
+									gapController.sendJavascript(cr.toSuccessCallbackString(callbackId));
 								} 
 								
 								// If error
 								else {
-									ctx.sendJavascript(cr.toErrorCallbackString(callbackId));
+									gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 								}
 							} catch (Exception e) {
+                                Log.e(TAG, "exec", e);
 								PluginResult cr = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
-								ctx.sendJavascript(cr.toErrorCallbackString(callbackId));
+                                gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 							}
 						}
 					});
@@ -174,7 +166,7 @@ public final class PluginManager {
 			if (cr == null) {
 				cr = new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION);				
 			}
-			ctx.sendJavascript(cr.toErrorCallbackString(callbackId));
+			gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 		}
 		return ( cr != null ? cr.getJSONString() : "{ status: 0, message: 'all good' }" );
 	}
@@ -226,8 +218,9 @@ public final class PluginManager {
 			if (isPhoneGapPlugin(c)) {
 				IPlugin plugin = (IPlugin)c.newInstance();
 				this.plugins.put(className, plugin);
-				plugin.setContext(this.ctx);
-				plugin.setView(this.app);
+				plugin.setContext(ctx);
+                plugin.setController(gapController);
+				plugin.setView(this.webView);
 				plugin.onResume(true);
 				return plugin;
 			}
@@ -300,6 +293,8 @@ public final class PluginManager {
      * The final call you receive before your activity is destroyed. 
      */
     public void onDestroy() {
+        Log.i(TAG, "Destroy.");
+
     	java.util.Set<Entry<String,IPlugin>> s = this.plugins.entrySet();
     	java.util.Iterator<Entry<String,IPlugin>> it = s.iterator();
     	while(it.hasNext()) {
@@ -307,6 +302,8 @@ public final class PluginManager {
     		IPlugin plugin = entry.getValue();
     		plugin.onDestroy();
     	}
+
+        ctx = null;
     }
     
     /**
