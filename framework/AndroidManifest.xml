@@ -32,6 +32,7 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name"
         android:debuggable="true">
+<!--
         <activity android:name=".StandAlone" android:windowSoftInputMode="adjustPan"
                   android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
             <intent-filter>
@@ -39,6 +40,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+-->
+        <activity android:name=".DemoPhonegapViewActivity" android:windowSoftInputMode="adjustPan"
+                  android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+<!--
         <activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"
                   android:configChanges="orientation|keyboardHidden">
             <intent-filter>
@@ -46,6 +56,7 @@
         </activity>
         <activity android:name="com.phonegap.GapViewActivity"
                   android:configChanges="orientation|keyboardHidden"/>
+-->
     </application>
 
     <uses-sdk android:minSdkVersion="2" />

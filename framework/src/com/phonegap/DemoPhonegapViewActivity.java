@@ -10,11 +10,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
+import android.widget.Toast;
 
-public class StandAlone extends Activity {
+public class DemoPhonegapViewActivity extends Activity {
+	private static final String TAG = DemoPhonegapViewActivity.class.getSimpleName();
+
     private GapView gapView;
     private ActivityEventsDispatcher activityEventsDispatcher;
 
@@ -33,6 +34,26 @@ public class StandAlone extends Activity {
 		gapView.loadGapUrl("file:///android_asset/www/demo_index.html");
 
         activityEventsDispatcher = gapView.getActivityEventsDispatcher();
+
+		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a button", Toast.LENGTH_SHORT);
+			}
+		});
+
+		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a native button.\nWeb-based view below me can do lots of mobile magic. While it is still HTML5.", Toast.LENGTH_SHORT).show();
+			}
+		});
+		findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Toast.makeText(DemoPhonegapViewActivity.this, "I am button too.", Toast.LENGTH_SHORT).show();
+			}
+		});
     }
 
     @Override

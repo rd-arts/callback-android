@@ -11,11 +11,24 @@
 			android:text="do nothing button"
 			/>
 
-	<com.phonegap.GapView
-			android:id="@+id/gapView"
-			android:layout_height="256dip"
-			android:layout_width="fill_parent"
+	<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Here is PhoneGap view seamlessly embedded into this Activity:"
 			/>
+
+	<FrameLayout
+			android:background="#aa3333"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:padding="10dip"
+			>
+		<com.phonegap.GapView
+				android:id="@+id/gapView"
+				android:layout_height="256dip"
+				android:layout_width="fill_parent"
+				/>
+	</FrameLayout>
 
 	<Button android:id="@+id/button2"
 			android:layout_height="wrap_content"
