@@ -45,8 +45,8 @@ public class GapViewClient extends WebViewClient {
         //Log.v(TAG, "URL: " + url);
 
         // new activity
-        String prefixTargetNew = "_GOBLANK_";
-        if (!url.contains(prefixTargetNew)) {
+        String prefixTargetNew = "_LOADINTERNAL_";
+        if (url.contains(prefixTargetNew)) {
             // in-control loading
             view.loadUrl(url);
             return true;

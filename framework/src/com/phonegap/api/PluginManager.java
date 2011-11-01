@@ -225,8 +225,7 @@ public final class PluginManager {
 				return plugin;
 			}
     	} catch (Exception e) {
-    		  e.printStackTrace();
-    		  System.out.println("Error adding plugin "+className+".");
+			Log.e(TAG, "Error adding plugin " + pluginName + ". You might set wrong Plugin class FQN: " + className, e);
     	}
     	return null;
     }
