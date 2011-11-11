@@ -10,19 +10,17 @@ package com.phonegap.api;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class PluginResult {
 	private final int status;
 	private final String message;
 	private boolean keepCallback = false;
 	private String cast = null;
-	
+
 	public PluginResult(Status status) {
 		this.status = status.ordinal();
 		this.message = "'" + PluginResult.StatusMessages[this.status] + "'";
 	}
-	
+
 	public PluginResult(Status status, String message) {
 		this.status = status.ordinal();
 		this.message = JSONObject.quote(message);
@@ -52,23 +50,23 @@ public class PluginResult {
 
 	public PluginResult(Status status, int i) {
 		this.status = status.ordinal();
-		this.message = ""+i;
+		this.message = "" + i;
 	}
 
 	public PluginResult(Status status, float f) {
 		this.status = status.ordinal();
-		this.message = ""+f;
+		this.message = "" + f;
 	}
 
 	public PluginResult(Status status, boolean b) {
 		this.status = status.ordinal();
-		this.message = ""+b;
+		this.message = "" + b;
 	}
-	
+
 	public void setKeepCallback(boolean b) {
 		this.keepCallback = b;
 	}
-	
+
 	public int getStatus() {
 		return status;
 	}
@@ -76,44 +74,43 @@ public class PluginResult {
 	public String getMessage() {
 		return message;
 	}
-	
+
 	public boolean getKeepCallback() {
 		return this.keepCallback;
 	}
-	
+
 	public String getJSONString() {
 		return "{status:" + this.status + ",message:" + this.message + ",keepCallback:" + this.keepCallback + "}";
 	}
-	
+
 	public String toSuccessCallbackString(String callbackId) {
 		StringBuffer buf = new StringBuffer("");
 		if (cast != null) {
-			buf.append("var temp = "+cast+"("+this.getJSONString() + ");\n");
-			buf.append("PhoneGap.callbackSuccess('"+callbackId+"',temp);");
-		}
-		else {
-			buf.append("PhoneGap.callbackSuccess('"+callbackId+"',"+this.getJSONString()+");");			
+			buf.append("var temp = " + cast + "(" + this.getJSONString() + ");\n");
+			buf.append("PhoneGap.callbackSuccess('" + callbackId + "',temp);");
+		} else {
+			buf.append("PhoneGap.callbackSuccess('" + callbackId + "'," + this.getJSONString() + ");");
 		}
 		return buf.toString();
 	}
-	
+
 	public String toErrorCallbackString(String callbackId) {
-		return "PhoneGap.callbackError('"+callbackId+"', " + this.getJSONString()+ ");";
+		return "PhoneGap.callbackError('" + callbackId + "', " + this.getJSONString() + ");";
 	}
-	
-	public static String[] StatusMessages = new String[] {
-		"No result",
-		"OK",
-		"Class not found",
-		"Illegal access",
-		"Instantiation error",
-		"Malformed url",
-		"IO error",
-		"Invalid action",
-		"JSON error",
-		"Error"
+
+	public static String[] StatusMessages = new String[]{
+			"No result",
+			"OK",
+			"Class not found",
+			"Illegal access",
+			"Instantiation error",
+			"Malformed url",
+			"IO error",
+			"Invalid action",
+			"JSON error",
+			"Error"
 	};
-	
+
 	public enum Status {
 		NO_RESULT,
 		OK,

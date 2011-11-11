@@ -10,23 +10,26 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class DemoPhonegapViewActivity extends Activity {
 	private static final String TAG = DemoPhonegapViewActivity.class.getSimpleName();
 
-    private GapView gapView;
-    private ActivityEventsDispatcher activityEventsDispatcher;
+	private GapView gapView;
+	private ActivityEventsDispatcher activityEventsDispatcher;
 
-    @Override
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		setContentView(R.layout.screen_demo);
 		gapView = (GapView) findViewById(R.id.gapView);
@@ -35,7 +38,7 @@ public class DemoPhonegapViewActivity extends Activity {
 //		gapView.loadGapUrl("file:///android_asset/www/demo_index2.html");
 //		gapView.loadGapUrl("file:///android_asset/js/demo_index3.html");
 
-        activityEventsDispatcher = gapView.getActivityEventsDispatcher();
+		activityEventsDispatcher = gapView.getActivityEventsDispatcher();
 
 		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -51,32 +54,32 @@ public class DemoPhonegapViewActivity extends Activity {
 				Toast.makeText(DemoPhonegapViewActivity.this, "I am button too.", Toast.LENGTH_SHORT).show();
 			}
 		});
-    }
+	}
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // You can hijack all input to PhoneGap WebView "return gapView.onKeyDown(keyCode, event);".
-        // Or filter for example only KeyEvent.KEYCODE_BACK.
-        //return gapView.onKeyDown(keyCode, event);
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// You can hijack all input to PhoneGap WebView "return gapView.onKeyDown(keyCode, event);".
+		// Or filter for example only KeyEvent.KEYCODE_BACK.
+		//return gapView.onKeyDown(keyCode, event);
 
-        return super.onKeyDown(keyCode, event);
-    }
+		return super.onKeyDown(keyCode, event);
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        activityEventsDispatcher.onResume();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		activityEventsDispatcher.onResume();
+	}
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        activityEventsDispatcher.onNewIntent(intent);
-    }
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		activityEventsDispatcher.onNewIntent(intent);
+	}
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        activityEventsDispatcher.onActivityResult(requestCode, requestCode, data);
-    }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		activityEventsDispatcher.onActivityResult(requestCode, requestCode, data);
+	}
 }

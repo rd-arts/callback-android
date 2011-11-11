@@ -8,10 +8,10 @@
 package com.phonegap.api;
 
 import android.content.Context;
-import com.phonegap.GapView;
-import org.json.JSONArray;
 import android.content.Intent;
 import android.webkit.WebView;
+import com.phonegap.GapView;
+import org.json.JSONArray;
 
 /**
  * Plugin interface must be implemented by any plugin classes.

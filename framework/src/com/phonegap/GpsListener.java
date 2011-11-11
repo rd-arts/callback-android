@@ -7,20 +7,17 @@
  */
 package com.phonegap;
 
-import com.phonegap.api.PhonegapActivity;
-
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
  * This class handles requests for GPS location services.
- *
  */
 public class GpsListener implements LocationListener {
-	
+
 	private Context mContext;
 
 	private LocationManager mLocMan;			// Location manager object
@@ -28,11 +25,11 @@ public class GpsListener implements LocationListener {
 	private boolean hasData = false;			// Flag indicates if location data is available in cLoc
 	private Location cLoc;						// Last recieved location
 	private boolean running = false;			// Flag indicates if listener is running
-	
+
 	/**
-	 * Constructor.  
+	 * Constructor.
 	 * Automatically starts listening.
-	 * 
+	 *
 	 * @param ctx
 	 * @param interval
 	 * @param m
@@ -44,11 +41,11 @@ public class GpsListener implements LocationListener {
 		this.running = false;
 		this.start(interval);
 	}
-	
+
 	/**
 	 * Get last location.
-	 * 
-	 * @return 				Location object
+	 *
+	 * @return Location object
 	 */
 	public Location getLocation() {
 		this.cLoc = this.mLocMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -57,10 +54,10 @@ public class GpsListener implements LocationListener {
 		}
 		return this.cLoc;
 	}
-	
+
 	/**
 	 * Called when the provider is disabled by the user.
-	 * 
+	 *
 	 * @param provider
 	 */
 	@Override
@@ -70,19 +67,19 @@ public class GpsListener implements LocationListener {
 
 	/**
 	 * Called when the provider is enabled by the user.
-	 * 
+	 *
 	 * @param provider
 	 */
 	@Override
 	public void onProviderEnabled(String provider) {
-		System.out.println("GpsListener: The provider "+ provider + " is enabled");
+		System.out.println("GpsListener: The provider " + provider + " is enabled");
 	}
 
 	/**
-	 * Called when the provider status changes. This method is called when a 
-	 * provider is unable to fetch a location or if the provider has recently 
+	 * Called when the provider status changes. This method is called when a
+	 * provider is unable to fetch a location or if the provider has recently
 	 * become available after a period of unavailability.
-	 * 
+	 *
 	 * @param provider
 	 * @param status
 	 * @param extras
@@ -93,18 +90,16 @@ public class GpsListener implements LocationListener {
 		if (status == 0) {
 			System.out.println("GpsListener: " + provider + " is OUT OF SERVICE");
 			this.owner.fail(GeoListener.POSITION_UNAVAILABLE, "GPS out of service.");
-		}
-		else if (status == 1) {
+		} else if (status == 1) {
 			System.out.println("GpsListener: " + provider + " is TEMPORARILY_UNAVAILABLE");
-		}
-		else {
+		} else {
 			System.out.println("GpsListener: " + provider + " is Available");
 		}
 	}
 
 	/**
 	 * Called when the location has changed.
-	 * 
+	 *
 	 * @param location
 	 */
 	@Override
@@ -117,16 +112,16 @@ public class GpsListener implements LocationListener {
 
 	/**
 	 * Determine if location data is available.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasLocation() {
 		return this.hasData;
 	}
-	
+
 	/**
 	 * Start requesting location updates.
-	 * 
+	 *
 	 * @param interval
 	 */
 	public void start(int interval) {
@@ -151,5 +146,5 @@ public class GpsListener implements LocationListener {
 		}
 		this.running = false;
 	}
-	
+
 }

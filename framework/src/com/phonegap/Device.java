@@ -7,55 +7,54 @@
  */
 package com.phonegap;
 
-import java.util.TimeZone;
-
 import android.content.Context;
+import android.provider.Settings;
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import android.provider.Settings;
+
+import java.util.TimeZone;
 
 public class Device extends Plugin {
-	
-    public static String phonegapVersion = "1.1.0";               // PhoneGap version
+
+	public static String phonegapVersion = "1.1.0";			   // PhoneGap version
 	public static String platform = "Android";					// Device OS
 	public static String uuid;									// Device UUID
-    
-    /**
-     * Constructor.
-     */
+
+	/**
+	 * Constructor.
+	 */
 	public Device() {
-    }
-	
+	}
+
 	/**
 	 * Sets the context of the Command. This can then be used to do things like
 	 * get file paths associated with the Activity.
-	 * 
+	 *
 	 * @param ctx The context of the main Activity.
 	 */
 	@Override
 	public void setContext(Context context) {
 		super.setContext(context);
 		// TODO wtf here?
-        Device.uuid = getUuid();
+		Device.uuid = getUuid();
 	}
 
 	/**
 	 * Executes the request and returns PluginResult.
-	 * 
-	 * @param action 		The action to execute.
-	 * @param args 			JSONArry of arguments for the plugin.
-	 * @param callbackId	The callback id used when calling back into JavaScript.
-	 * @return 				A PluginResult object with a status and message.
+	 *
+	 * @param action	 The action to execute.
+	 * @param args	   JSONArry of arguments for the plugin.
+	 * @param callbackId The callback id used when calling back into JavaScript.
+	 * @return A PluginResult object with a status and message.
 	 */
 	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
-		String result = "";		
-	
+		String result = "";
+
 		try {
 			if (action.equals("getDeviceInfo")) {
 				JSONObject r = new JSONObject();
@@ -77,9 +76,9 @@ public class Device extends Plugin {
 
 	/**
 	 * Identifies if action to be executed returns a value and should be run synchronously.
-	 * 
-	 * @param action	The action to execute
-	 * @return			T=returns value
+	 *
+	 * @param action The action to execute
+	 * @return T=returns value
 	 */
 	@Override
 	public boolean isSynch(String action) {
@@ -89,68 +88,68 @@ public class Device extends Plugin {
 		return false;
 	}
 
-    //--------------------------------------------------------------------------
-    // LOCAL METHODS
-    //--------------------------------------------------------------------------
-		
+	//--------------------------------------------------------------------------
+	// LOCAL METHODS
+	//--------------------------------------------------------------------------
+
 	/**
 	 * Get the OS name.
-	 * 
+	 *
 	 * @return
 	 */
-	public String getPlatform()	{
+	public String getPlatform() {
 		return Device.platform;
 	}
-	
+
 	/**
 	 * Get the device's Universally Unique Identifier (UUID).
-	 * 
+	 *
 	 * @return
 	 */
-	public String getUuid()	{		
+	public String getUuid() {
 		String uuid = Settings.Secure.getString(this.context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 		return uuid;
 	}
 
 	/**
 	 * Get the PhoneGap version.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPhonegapVersion() {
 		return Device.phonegapVersion;
-	}	
-	
+	}
+
 	public String getModel() {
 		String model = android.os.Build.MODEL;
 		return model;
 	}
-	
+
 	public String getProductName() {
 		String productname = android.os.Build.PRODUCT;
 		return productname;
 	}
-	
+
 	/**
 	 * Get the OS version.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getOSVersion() {
 		String osversion = android.os.Build.VERSION.RELEASE;
 		return osversion;
 	}
-	
+
 	public String getSDKVersion() {
 		String sdkversion = android.os.Build.VERSION.SDK;
 		return sdkversion;
 	}
-	
-    
-    public String getTimeZoneID() {
-       TimeZone tz = TimeZone.getDefault();
-        return(tz.getID());
-    } 
-    
+
+
+	public String getTimeZoneID() {
+		TimeZone tz = TimeZone.getDefault();
+		return (tz.getID());
+	}
+
 }
 

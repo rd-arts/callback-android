@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import com.phonegap.api.LOG;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -18,49 +17,48 @@ public class GapConfig {
 	/**
 	 * Load PhoneGap configuration from res/xml/phonegap.xml.
 	 * Approved list of URLs that can be loaded into DroidGap
-	 * 		<access origin="http://server regexp" subdomains="true" />
+	 * <access origin="http://server regexp" subdomains="true" />
 	 * Log level: ERROR, WARN, INFO, DEBUG, VERBOSE (default=ERROR)
-	 *      <log level="DEBUG" />
+	 * <log level="DEBUG" />
 	 */
-    public static ArrayList<Pattern> loadConfiguration(Context context) {
+	public static ArrayList<Pattern> loadConfiguration(Context context) {
 		ArrayList<Pattern> whiteList = new ArrayList<Pattern>();
 
-        int id = context.getResources().getIdentifier("phonegap", "xml", context.getPackageName());
-        if (id == 0) {
-            LOG.i("PhoneGapLog", "phonegap.xml missing. Ignoring...");
+		int id = context.getResources().getIdentifier("phonegap", "xml", context.getPackageName());
+		if (id == 0) {
+			LOG.i("PhoneGapLog", "phonegap.xml missing. Ignoring...");
 			return whiteList;
-        }
-        XmlResourceParser xml = context.getResources().getXml(id);
-        int eventType = -1;
-        while (eventType != XmlResourceParser.END_DOCUMENT) {
-            if (eventType == XmlResourceParser.START_TAG) {
-                String strNode = xml.getName();
-                if (strNode.equals("access")) {
-                    String origin = xml.getAttributeValue(null, "origin");
-                    String subdomains = xml.getAttributeValue(null, "subdomains");
-                    if (origin != null) {
-                        addWhiteListEntry(whiteList, origin, (subdomains != null) && (subdomains.compareToIgnoreCase("true") == 0));
-                    }
-                }
-                else if (strNode.equals("log")) {
-                    String level = xml.getAttributeValue(null, "level");
-                    LOG.i("PhoneGapLog", "Found log level %s", level);
-                    if (level != null) {
-                        LOG.setLogLevel(level);
-                    }
-                }
-            }
-            try {
-                eventType = xml.next();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+		}
+		XmlResourceParser xml = context.getResources().getXml(id);
+		int eventType = -1;
+		while (eventType != XmlResourceParser.END_DOCUMENT) {
+			if (eventType == XmlResourceParser.START_TAG) {
+				String strNode = xml.getName();
+				if (strNode.equals("access")) {
+					String origin = xml.getAttributeValue(null, "origin");
+					String subdomains = xml.getAttributeValue(null, "subdomains");
+					if (origin != null) {
+						addWhiteListEntry(whiteList, origin, (subdomains != null) && (subdomains.compareToIgnoreCase("true") == 0));
+					}
+				} else if (strNode.equals("log")) {
+					String level = xml.getAttributeValue(null, "level");
+					LOG.i("PhoneGapLog", "Found log level %s", level);
+					if (level != null) {
+						LOG.setLogLevel(level);
+					}
+				}
+			}
+			try {
+				eventType = xml.next();
+			} catch (XmlPullParserException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return whiteList;
-    }
+	}
 
 	/**
 	 * Add entry to approved list of URLs (whitelist)
@@ -105,7 +103,6 @@ public class GapConfig {
 	/**
 	 * Get boolean property for activity.
 	 *
-	 *
 	 * @param name
 	 * @param defaultValue
 	 * @param activity
@@ -116,7 +113,7 @@ public class GapConfig {
 		if (bundle == null) {
 			return defaultValue;
 		}
-		Boolean p = (Boolean)bundle.get(name);
+		Boolean p = (Boolean) bundle.get(name);
 		if (p == null) {
 			return defaultValue;
 		}
@@ -124,109 +121,106 @@ public class GapConfig {
 	}
 
 	/**
-     * Get int property for activity.
-     *
-     *
+	 * Get int property for activity.
+	 *
 	 * @param name
-     * @param defaultValue
-     * @param activity
+	 * @param defaultValue
+	 * @param activity
 	 * @return
-     */
-    public int getIntegerProperty(String name, int defaultValue, Activity activity) {
-        Bundle bundle = activity.getIntent().getExtras();
-        if (bundle == null) {
-            return defaultValue;
-        }
-        Integer p = (Integer)bundle.get(name);
-        if (p == null) {
-            return defaultValue;
-        }
-        return p.intValue();
-    }
+	 */
+	public int getIntegerProperty(String name, int defaultValue, Activity activity) {
+		Bundle bundle = activity.getIntent().getExtras();
+		if (bundle == null) {
+			return defaultValue;
+		}
+		Integer p = (Integer) bundle.get(name);
+		if (p == null) {
+			return defaultValue;
+		}
+		return p.intValue();
+	}
 
 	/**
-     * Get string property for activity.
-     *
-     *
+	 * Get string property for activity.
+	 *
 	 * @param name
-     * @param defaultValue
-     * @param activity
+	 * @param defaultValue
+	 * @param activity
 	 * @return
-     */
-    public static String getStringProperty(String name, String defaultValue, Activity activity) {
-        Bundle bundle = activity.getIntent().getExtras();
-        if (bundle == null) {
-            return defaultValue;
-        }
-        String p = bundle.getString(name);
-        if (p == null) {
-            return defaultValue;
-        }
-        return p;
-    }
+	 */
+	public static String getStringProperty(String name, String defaultValue, Activity activity) {
+		Bundle bundle = activity.getIntent().getExtras();
+		if (bundle == null) {
+			return defaultValue;
+		}
+		String p = bundle.getString(name);
+		if (p == null) {
+			return defaultValue;
+		}
+		return p;
+	}
 
 	/**
-     * Get double property for activity.
-     *
-     *
+	 * Get double property for activity.
+	 *
 	 * @param name
-     * @param defaultValue
-     * @param activity
+	 * @param defaultValue
+	 * @param activity
 	 * @return
-     */
-    public double getDoubleProperty(String name, double defaultValue, Activity activity) {
-        Bundle bundle = activity.getIntent().getExtras();
-        if (bundle == null) {
-            return defaultValue;
-        }
-        Double p = (Double)bundle.get(name);
-        if (p == null) {
-            return defaultValue;
-        }
-        return p.doubleValue();
-    }
+	 */
+	public double getDoubleProperty(String name, double defaultValue, Activity activity) {
+		Bundle bundle = activity.getIntent().getExtras();
+		if (bundle == null) {
+			return defaultValue;
+		}
+		Double p = (Double) bundle.get(name);
+		if (p == null) {
+			return defaultValue;
+		}
+		return p.doubleValue();
+	}
 
 	/**
-     * Set boolean property on activity.
-     *
+	 * Set boolean property on activity.
+	 *
 	 * @param name
-     * @param value
+	 * @param value
 	 * @param activity
 	 */
-    public void setBooleanProperty(String name, boolean value, Activity activity) {
-        activity.getIntent().putExtra(name, value);
-    }
+	public void setBooleanProperty(String name, boolean value, Activity activity) {
+		activity.getIntent().putExtra(name, value);
+	}
 
 	/**
-     * Set int property on activity.
-     *
+	 * Set int property on activity.
+	 *
 	 * @param name
-     * @param value
+	 * @param value
 	 * @param activity
 	 */
-    public void setIntegerProperty(String name, int value, Activity activity) {
-        activity.getIntent().putExtra(name, value);
-    }
+	public void setIntegerProperty(String name, int value, Activity activity) {
+		activity.getIntent().putExtra(name, value);
+	}
 
 	/**
-     * Set string property on activity.
-     *
+	 * Set string property on activity.
+	 *
 	 * @param name
-     * @param value
+	 * @param value
 	 * @param activity
 	 */
-    public void setStringProperty(String name, String value, Activity activity) {
-        activity.getIntent().putExtra(name, value);
-    }
+	public void setStringProperty(String name, String value, Activity activity) {
+		activity.getIntent().putExtra(name, value);
+	}
 
 	/**
-     * Set double property on activity.
-     *
+	 * Set double property on activity.
+	 *
 	 * @param name
-     * @param value
+	 * @param value
 	 * @param activity
 	 */
-    public void setDoubleProperty(String name, double value, Activity activity) {
-        activity.getIntent().putExtra(name, value);
-    }
+	public void setDoubleProperty(String name, double value, Activity activity) {
+		activity.getIntent().putExtra(name, value);
+	}
 }

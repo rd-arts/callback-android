@@ -22,8 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
-* This class provides access to notifications on the device.
-*/
+ * This class provides access to notifications on the device.
+ */
 public class Notification extends Plugin {
 
 	public ProgressDialog spinnerDialog = null;
@@ -38,10 +38,10 @@ public class Notification extends Plugin {
 	/**
 	 * Executes the request and returns PluginResult.
 	 *
-	 * @param action 		The action to execute.
-	 * @param args 			JSONArry of arguments for the plugin.
-	 * @param callbackId	The callback id used when calling back into JavaScript.
-	 * @return 				A PluginResult object with a status and message.
+	 * @param action	 The action to execute.
+	 * @param args	   JSONArry of arguments for the plugin.
+	 * @param callbackId The callback id used when calling back into JavaScript.
+	 * @return A PluginResult object with a status and message.
 	 */
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
@@ -50,35 +50,27 @@ public class Notification extends Plugin {
 		try {
 			if (action.equals("beep")) {
 				this.beep(args.getLong(0));
-			}
-			else if (action.equals("vibrate")) {
+			} else if (action.equals("vibrate")) {
 				this.vibrate(args.getLong(0));
-			}
-			else if (action.equals("alert")) {
-				this.alert(args.getString(0),args.getString(1),args.getString(2), callbackId);
+			} else if (action.equals("alert")) {
+				this.alert(args.getString(0), args.getString(1), args.getString(2), callbackId);
 				PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
 				r.setKeepCallback(true);
 				return r;
-			}
-			else if (action.equals("confirm")) {
-				this.confirm(args.getString(0),args.getString(1),args.getString(2), callbackId);
+			} else if (action.equals("confirm")) {
+				this.confirm(args.getString(0), args.getString(1), args.getString(2), callbackId);
 				PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
 				r.setKeepCallback(true);
 				return r;
-			}
-			else if (action.equals("activityStart")) {
-				this.activityStart(args.getString(0),args.getString(1));
-			}
-			else if (action.equals("activityStop")) {
+			} else if (action.equals("activityStart")) {
+				this.activityStart(args.getString(0), args.getString(1));
+			} else if (action.equals("activityStop")) {
 				this.activityStop();
-			}
-			else if (action.equals("progressStart")) {
-				this.progressStart(args.getString(0),args.getString(1));
-			}
-			else if (action.equals("progressValue")) {
+			} else if (action.equals("progressStart")) {
+				this.progressStart(args.getString(0), args.getString(1));
+			} else if (action.equals("progressValue")) {
 				this.progressValue(args.getInt(0));
-			}
-			else if (action.equals("progressStop")) {
+			} else if (action.equals("progressStop")) {
 				this.progressStop();
 			}
 			return new PluginResult(status, result);
@@ -90,44 +82,37 @@ public class Notification extends Plugin {
 	/**
 	 * Identifies if action to be executed returns a value and should be run synchronously.
 	 *
-	 * @param action	The action to execute
-	 * @return			T=returns value
+	 * @param action The action to execute
+	 * @return T=returns value
 	 */
 	public boolean isSynch(String action) {
 		if (action.equals("alert")) {
 			return true;
-		}
-		else if (action.equals("confirm")) {
+		} else if (action.equals("confirm")) {
 			return true;
-		}
-		else if (action.equals("activityStart")) {
+		} else if (action.equals("activityStart")) {
 			return true;
-		}
-		else if (action.equals("activityStop")) {
+		} else if (action.equals("activityStop")) {
 			return true;
-		}
-		else if (action.equals("progressStart")) {
+		} else if (action.equals("progressStart")) {
 			return true;
-		}
-		else if (action.equals("progressValue")) {
+		} else if (action.equals("progressValue")) {
 			return true;
-		}
-		else if (action.equals("progressStop")) {
+		} else if (action.equals("progressStop")) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
-    //--------------------------------------------------------------------------
-    // LOCAL METHODS
-    //--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
+	// LOCAL METHODS
+	//--------------------------------------------------------------------------
 
 	/**
 	 * Beep plays the default notification ringtone.
 	 *
-	 * @param count			Number of times to play notification
+	 * @param count Number of times to play notification
 	 */
 	public void beep(long count) {
 		Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -152,23 +137,24 @@ public class Notification extends Plugin {
 	/**
 	 * Vibrates the device for the specified amount of time.
 	 *
-	 * @param time			Time to vibrate in ms.
+	 * @param time Time to vibrate in ms.
 	 */
-	public void vibrate(long time){
-        // Start the vibration, 0 defaults to half a second.
+	public void vibrate(long time) {
+		// Start the vibration, 0 defaults to half a second.
 		if (time == 0) {
 			time = 500;
 		}
-        Vibrator vibrator = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(time);
+		Vibrator vibrator = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(time);
 	}
 
 	/**
 	 * Builds and shows a native Android alert with given Strings
-	 * @param message 		The message the alert should display
-	 * @param title 		The title of the alert
-	 * @param buttonLabel 	The label of the button
-	 * @param callbackId	The callback id
+	 *
+	 * @param message	 The message the alert should display
+	 * @param title	   The title of the alert
+	 * @param buttonLabel The label of the button
+	 * @param callbackId  The callback id
 	 */
 	public synchronized void alert(final String message, final String title, final String buttonLabel, final String callbackId) {
 
@@ -184,11 +170,11 @@ public class Notification extends Plugin {
 				dlg.setCancelable(false);
 				dlg.setPositiveButton(buttonLabel,
 						new AlertDialog.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-						notification.success(new PluginResult(PluginResult.Status.OK, 0), callbackId);
-					}
-				});
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+								notification.success(new PluginResult(PluginResult.Status.OK, 0), callbackId);
+							}
+						});
 				dlg.create();
 				dlg.show();
 			}
@@ -201,10 +187,10 @@ public class Notification extends Plugin {
 	 * This dialog only shows up to 3 buttons.  Any labels after that will be ignored.
 	 * The index of the button pressed will be returned to the JavaScript callback identified by callbackId.
 	 *
-	 * @param message 		The message the dialog should display
-	 * @param title 		The title of the dialog
-	 * @param buttonLabels 	A comma separated list of button labels (Up to 3 buttons)
-	 * @param callbackId	The callback id
+	 * @param message	  The message the dialog should display
+	 * @param title		The title of the dialog
+	 * @param buttonLabels A comma separated list of button labels (Up to 3 buttons)
+	 * @param callbackId   The callback id
 	 */
 	public synchronized void confirm(final String message, final String title, String buttonLabels, final String callbackId) {
 
@@ -223,33 +209,33 @@ public class Notification extends Plugin {
 				if (fButtons.length > 0) {
 					dlg.setPositiveButton(fButtons[0],
 							new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-							notification.success(new PluginResult(PluginResult.Status.OK, 1), callbackId);
-						}
-					});
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									notification.success(new PluginResult(PluginResult.Status.OK, 1), callbackId);
+								}
+							});
 				}
 
 				// Second button
 				if (fButtons.length > 1) {
 					dlg.setNeutralButton(fButtons[1],
 							new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-							notification.success(new PluginResult(PluginResult.Status.OK, 2), callbackId);
-						}
-					});
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									notification.success(new PluginResult(PluginResult.Status.OK, 2), callbackId);
+								}
+							});
 				}
 
 				// Third button
 				if (fButtons.length > 2) {
 					dlg.setNegativeButton(fButtons[2],
 							new AlertDialog.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-							notification.success(new PluginResult(PluginResult.Status.OK, 3), callbackId);
-						}
-					}
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									notification.success(new PluginResult(PluginResult.Status.OK, 3), callbackId);
+								}
+							}
 					);
 				}
 
@@ -263,8 +249,8 @@ public class Notification extends Plugin {
 	/**
 	 * Show the spinner.
 	 *
-	 * @param title			Title of the dialog
-	 * @param message		The message of the dialog
+	 * @param title   Title of the dialog
+	 * @param message The message of the dialog
 	 */
 	public synchronized void activityStart(final String title, final String message) {
 		if (this.spinnerDialog != null) {
@@ -275,14 +261,14 @@ public class Notification extends Plugin {
 		final Activity ctx = this.ctx.activity;
 		Runnable runnable = new Runnable() {
 			public void run() {
-				notification.spinnerDialog = ProgressDialog.show(ctx, title , message, true, true,
-					new DialogInterface.OnCancelListener() {
-						public void onCancel(DialogInterface dialog) {
-							notification.spinnerDialog = null;
-						}
-					});
-				}
-			};
+				notification.spinnerDialog = ProgressDialog.show(ctx, title, message, true, true,
+						new DialogInterface.OnCancelListener() {
+							public void onCancel(DialogInterface dialog) {
+								notification.spinnerDialog = null;
+							}
+						});
+			}
+		};
 		ctx.runOnUiThread(runnable);
 	}
 
@@ -299,8 +285,8 @@ public class Notification extends Plugin {
 	/**
 	 * Show the progress dialog.
 	 *
-	 * @param title			Title of the dialog
-	 * @param message		The message of the dialog
+	 * @param title   Title of the dialog
+	 * @param message The message of the dialog
 	 */
 	public synchronized void progressStart(final String title, final String message) {
 		if (this.progressDialog != null) {
@@ -319,11 +305,11 @@ public class Notification extends Plugin {
 				notification.progressDialog.setMax(100);
 				notification.progressDialog.setProgress(0);
 				notification.progressDialog.setOnCancelListener(
-					new DialogInterface.OnCancelListener() {
-						public void onCancel(DialogInterface dialog) {
-							notification.progressDialog = null;
-						}
-					});
+						new DialogInterface.OnCancelListener() {
+							public void onCancel(DialogInterface dialog) {
+								notification.progressDialog = null;
+							}
+						});
 				notification.progressDialog.show();
 			}
 		};
@@ -333,7 +319,7 @@ public class Notification extends Plugin {
 	/**
 	 * Set value of progress bar.
 	 *
-	 * @param value			0-100
+	 * @param value 0-100
 	 */
 	public synchronized void progressValue(int value) {
 		if (this.progressDialog != null) {

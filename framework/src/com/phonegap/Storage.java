@@ -7,13 +7,14 @@
  */
 package com.phonegap;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import android.database.Cursor;
-import android.database.sqlite.*;
 
 /**
  * This class implements the HTML5 database support for Android 1.X devices. It
@@ -26,7 +27,7 @@ public class Storage extends Plugin {
 	private static final String CREATE = "create";
 	private static final String DROP = "drop";
 	private static final String TRUNCATE = "truncate";
-	
+
 	SQLiteDatabase myDb = null; // Database object
 	String path = null; // Database path
 	String dbName = null; // Database name
@@ -39,13 +40,10 @@ public class Storage extends Plugin {
 
 	/**
 	 * Executes the request and returns PluginResult.
-	 * 
-	 * @param action
-	 *            The action to execute.
-	 * @param args
-	 *            JSONArry of arguments for the plugin.
-	 * @param callbackId
-	 *            The callback id used when calling back into JavaScript.
+	 *
+	 * @param action	 The action to execute.
+	 * @param args	   JSONArry of arguments for the plugin.
+	 * @param callbackId The callback id used when calling back into JavaScript.
 	 * @return A PluginResult object with a status and message.
 	 */
 	@Override
@@ -84,9 +82,8 @@ public class Storage extends Plugin {
 	/**
 	 * Identifies if action to be executed returns a value and should be run
 	 * synchronously.
-	 * 
-	 * @param action
-	 *            The action to execute
+	 *
+	 * @param action The action to execute
 	 * @return T=returns value
 	 */
 	@Override
@@ -113,12 +110,11 @@ public class Storage extends Plugin {
 	 * Set the application package for the database. Each application saves its
 	 * database files in a directory with the application package as part of the
 	 * file name.
-	 * 
+	 * <p/>
 	 * For example, application "com.phonegap.demo.Demo" would save its database
 	 * files in "/data/data/com.phonegap.demo/databases/" directory.
-	 * 
-	 * @param appPackage
-	 *            The application package.
+	 *
+	 * @param appPackage The application package.
 	 */
 	public void setStorage(String appPackage) {
 		this.path = "/data/data/" + appPackage + "/databases/";
@@ -126,18 +122,14 @@ public class Storage extends Plugin {
 
 	/**
 	 * Open database.
-	 * 
-	 * @param db
-	 *            The name of the database
-	 * @param version
-	 *            The version
-	 * @param display_name
-	 *            The display name
-	 * @param size
-	 *            The size in bytes
+	 *
+	 * @param db		   The name of the database
+	 * @param version	  The version
+	 * @param display_name The display name
+	 * @param size		 The size in bytes
 	 */
 	public void openDatabase(String db, String version, String display_name,
-			long size) {
+							 long size) {
 
 		// If database is open, then close it
 		if (this.myDb != null) {
@@ -157,30 +149,25 @@ public class Storage extends Plugin {
 
 	/**
 	 * Execute SQL statement.
-	 * 
-	 * @param query
-	 *            The SQL query
-	 * @param params
-	 *            Parameters for the query
-	 * @param tx_id
-	 *            Transaction id
+	 *
+	 * @param query  The SQL query
+	 * @param params Parameters for the query
+	 * @param tx_id  Transaction id
 	 */
 	public void executeSql(String query, String[] params, String tx_id) {
 		try {
 			if (isDDL(query)) {
 				this.myDb.execSQL(query);
 				this.sendJavascript("droiddb.completeQuery('" + tx_id + "', '');");
-			} 
-			else {
+			} else {
 				Cursor myCursor = this.myDb.rawQuery(query, params);
 				this.processResults(myCursor, tx_id);
 				myCursor.close();
 			}
-		} 
-		catch (SQLiteException ex) {
+		} catch (SQLiteException ex) {
 			ex.printStackTrace();
-			System.out.println("Storage.executeSql(): Error=" +  ex.getMessage());
-			
+			System.out.println("Storage.executeSql(): Error=" + ex.getMessage());
+
 			// Send error message back to JavaScript
 			this.sendJavascript("droiddb.fail('" + ex.getMessage() + "','" + tx_id + "');");
 		}
@@ -188,7 +175,7 @@ public class Storage extends Plugin {
 
 	/**
 	 * Checks to see the the query is a Data Definintion command
-	 * 
+	 *
 	 * @param query to be executed
 	 * @return true if it is a DDL command, false otherwise
 	 */
@@ -202,11 +189,9 @@ public class Storage extends Plugin {
 
 	/**
 	 * Process query results.
-	 * 
-	 * @param cur
-	 *            Cursor into query results
-	 * @param tx_id
-	 *            Transaction id
+	 *
+	 * @param cur   Cursor into query results
+	 * @param tx_id Transaction id
 	 */
 	public void processResults(Cursor cur, String tx_id) {
 

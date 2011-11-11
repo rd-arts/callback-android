@@ -7,34 +7,33 @@
  */
 package com.phonegap.api;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.XmlResourceParser;
 import android.util.Log;
+import android.webkit.WebView;
 import com.phonegap.GapView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.content.Intent;
-import android.content.res.XmlResourceParser;
-import android.webkit.WebView;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * PluginManager is exposed to JavaScript in the PhoneGap WebView.
- * 
+ * <p/>
  * Calling native plugin code can be done by calling PluginManager.exec(...)
  * from JavaScript.
  */
 public final class PluginManager {
-    private static final String TAG = PluginManager.class.getSimpleName();
+	private static final String TAG = PluginManager.class.getSimpleName();
 
-	private HashMap<String, IPlugin> plugins = new HashMap<String,IPlugin>();
-	private HashMap<String, String> services = new HashMap<String,String>();
-	
+	private HashMap<String, IPlugin> plugins = new HashMap<String, IPlugin>();
+	private HashMap<String, String> services = new HashMap<String, String>();
+
 	private Context ctx;
 	private final WebView webView;
 	/**
@@ -43,22 +42,24 @@ public final class PluginManager {
 	private final GapView gapController;
 
 	// Map URL schemes like foo: to plugins that want to handle those schemes
-    // This would allow how all URLs are handled to be offloaded to a plugin
-    protected HashMap<String, String> urlMap = new HashMap<String,String>();
+	// This would allow how all URLs are handled to be offloaded to a plugin
+	protected HashMap<String, String> urlMap = new HashMap<String, String>();
 
-    public PluginManager(Context ctx, WebView webView, GapView gapController) {
+	public PluginManager(Context ctx, WebView webView, GapView gapController) {
 		this.ctx = ctx;
 		this.webView = webView;
 		this.gapController = gapController;
 		this.loadPlugins();
 	}
-	
+
 	/**
 	 * Load plugins from res/xml/plugins.xml
 	 */
 	public void loadPlugins() {
 		int id = ctx.getResources().getIdentifier("plugins", "xml", ctx.getPackageName());
-		if (id == 0) { pluginConfigurationMissing(); }
+		if (id == 0) {
+			pluginConfigurationMissing();
+		}
 		XmlResourceParser xml = ctx.getResources().getXml(id);
 		int eventType = -1;
 		String pluginClass = "", pluginName = "";
@@ -87,24 +88,23 @@ public final class PluginManager {
 	/**
 	 * Receives a request for execution and fulfills it by finding the appropriate
 	 * Java class and calling it's execute method.
-	 * 
-	 * PluginManager.exec can be used either synchronously or async. In either case, a JSON encoded 
+	 * <p/>
+	 * PluginManager.exec can be used either synchronously or async. In either case, a JSON encoded
 	 * string is returned that will indicate if any errors have occurred when trying to find
 	 * or execute the class denoted by the clazz argument.
-	 * 
-	 * @param service 		String containing the service to run
-	 * @param action 		String containt the action that the class is supposed to perform. This is
-	 * 						passed to the plugin execute method and it is up to the plugin developer 
-	 * 						how to deal with it.
-	 * @param callbackId 	String containing the id of the callback that is execute in JavaScript if
-	 * 						this is an async plugin call.
-	 * @param args 			An Array literal string containing any arguments needed in the
-	 * 						plugin execute method.
-	 * @param async 		Boolean indicating whether the calling JavaScript code is expecting an
-	 * 						immediate return value. If true, either PhoneGap.callbackSuccess(...) or 
-	 * 						PhoneGap.callbackError(...) is called once the plugin code has executed.
-	 * 
-	 * @return 				JSON encoded string with a response message and status.
+	 *
+	 * @param service	String containing the service to run
+	 * @param action	 String containt the action that the class is supposed to perform. This is
+	 *                   passed to the plugin execute method and it is up to the plugin developer
+	 *                   how to deal with it.
+	 * @param callbackId String containing the id of the callback that is execute in JavaScript if
+	 *                   this is an async plugin call.
+	 * @param args	   An Array literal string containing any arguments needed in the
+	 *                   plugin execute method.
+	 * @param async	  Boolean indicating whether the calling JavaScript code is expecting an
+	 *                   immediate return value. If true, either PhoneGap.callbackSuccess(...) or
+	 *                   PhoneGap.callbackError(...) is called once the plugin code has executed.
+	 * @return JSON encoded string with a response message and status.
 	 */
 	@SuppressWarnings("unchecked")
 	public String exec(final String service, final String action, final String callbackId, final String jsonArgs, final boolean async) {
@@ -112,7 +112,7 @@ public final class PluginManager {
 		boolean runAsync = async;
 		try {
 			final JSONArray args = new JSONArray(jsonArgs);
-			final IPlugin plugin = this.getPlugin(service); 
+			final IPlugin plugin = this.getPlugin(service);
 			if (plugin != null) {
 				runAsync = async && !plugin.isSynch(action);
 				if (runAsync) {
@@ -132,16 +132,16 @@ public final class PluginManager {
 								// Check the success (OK, NO_RESULT & !KEEP_CALLBACK)
 								else if ((status == PluginResult.Status.OK.ordinal()) || (status == PluginResult.Status.NO_RESULT.ordinal())) {
 									gapController.sendJavascript(cr.toSuccessCallbackString(callbackId));
-								} 
-								
+								}
+
 								// If error
 								else {
 									gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 								}
 							} catch (Exception e) {
-                                Log.e(TAG, "exec", e);
+								Log.e(TAG, "exec", e);
 								PluginResult cr = new PluginResult(PluginResult.Status.ERROR, e.getMessage());
-                                gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
+								gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 							}
 						}
 					});
@@ -158,22 +158,22 @@ public final class PluginManager {
 				}
 			}
 		} catch (JSONException e) {
-			System.out.println("ERROR: "+e.toString());
+			System.out.println("ERROR: " + e.toString());
 			cr = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 		// if async we have already returned at this point unless there was an error...
 		if (runAsync) {
 			if (cr == null) {
-				cr = new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION);				
+				cr = new PluginResult(PluginResult.Status.CLASS_NOT_FOUND_EXCEPTION);
 			}
 			gapController.sendJavascript(cr.toErrorCallbackString(callbackId));
 		}
-		return ( cr != null ? cr.getJSONString() : "{ status: 0, message: 'all good' }" );
+		return (cr != null ? cr.getJSONString() : "{ status: 0, message: 'all good' }");
 	}
-	
+
 	/**
 	 * Get the class.
-	 * 
+	 *
 	 * @param clazz
 	 * @return
 	 * @throws ClassNotFoundException
@@ -190,7 +190,7 @@ public final class PluginManager {
 	/**
 	 * Get the interfaces that a class implements and see if it implements the
 	 * com.phonegap.api.Plugin interface.
-	 * 
+	 *
 	 * @param c The class to check the interfaces of.
 	 * @return Boolean indicating if the class implements com.phonegap.api.Plugin
 	 */
@@ -202,143 +202,143 @@ public final class PluginManager {
 		return false;
 	}
 
-    /**
-     * Add plugin to be loaded and cached.  This creates an instance of the plugin.
-     * If plugin is already created, then just return it.
-     * 
-     * @param className				The class to load
-     * @param clazz					The class object (must be a class object of the className)
-     * @param callbackId			The callback id to use when calling back into JavaScript
-     * @return						The plugin
-     */
+	/**
+	 * Add plugin to be loaded and cached.  This creates an instance of the plugin.
+	 * If plugin is already created, then just return it.
+	 *
+	 * @param className  The class to load
+	 * @param clazz	  The class object (must be a class object of the className)
+	 * @param callbackId The callback id to use when calling back into JavaScript
+	 * @return The plugin
+	 */
 	@SuppressWarnings("unchecked")
 	private IPlugin addPlugin(String pluginName, String className) {
 		try {
 			Class c = getClassByName(className);
 			if (isPhoneGapPlugin(c)) {
-				IPlugin plugin = (IPlugin)c.newInstance();
+				IPlugin plugin = (IPlugin) c.newInstance();
 				this.plugins.put(className, plugin);
 				plugin.setContext(ctx);
-                plugin.setController(gapController);
+				plugin.setController(gapController);
 				plugin.setView(this.webView);
 				plugin.onResume(true);
 				return plugin;
 			}
-    	} catch (Exception e) {
+		} catch (Exception e) {
 			Log.e(TAG, "Error adding plugin " + pluginName + ". You might set wrong Plugin class FQN: " + className, e);
-    	}
-    	return null;
-    }
-    
-    /**
-     * Get the loaded plugin.
-     * 
-     * If the plugin is not already loaded then load it.
-     * 
-     * @param className				The class of the loaded plugin.
-     * @return
-     */
-    private IPlugin getPlugin(String pluginName) {
+		}
+		return null;
+	}
+
+	/**
+	 * Get the loaded plugin.
+	 * <p/>
+	 * If the plugin is not already loaded then load it.
+	 *
+	 * @param className The class of the loaded plugin.
+	 * @return
+	 */
+	private IPlugin getPlugin(String pluginName) {
 		String className = this.services.get(pluginName);
-    	if (this.plugins.containsKey(className)) {
-    		return this.plugins.get(className);
-    	} else {
-	    	return this.addPlugin(pluginName, className);
-	    }
-    }
-    
-    /**
-     * Add a class that implements a service.
-     * This does not create the class instance.  It just maps service name to class name.
-     * 
-     * @param serviceType
-     * @param className
-     */
-    public void addService(String serviceType, String className) {
-    	this.services.put(serviceType, className);
-    }
+		if (this.plugins.containsKey(className)) {
+			return this.plugins.get(className);
+		} else {
+			return this.addPlugin(pluginName, className);
+		}
+	}
 
-    /**
-     * Called when the system is about to start resuming a previous activity. 
-     * 
-     * @param multitasking		Flag indicating if multitasking is turned on for app
-     */
-    public void onPause(boolean multitasking) {
-    	java.util.Set<Entry<String,IPlugin>> s = this.plugins.entrySet();
-    	java.util.Iterator<Entry<String,IPlugin>> it = s.iterator();
-    	while(it.hasNext()) {
-    		Entry<String,IPlugin> entry = it.next();
-    		IPlugin plugin = entry.getValue();
-    		plugin.onPause(multitasking);
-    	}
-    }
-    
-    /**
-     * Called when the activity will start interacting with the user. 
-     * 
-     * @param multitasking		Flag indicating if multitasking is turned on for app
-     */
-    public void onResume(boolean multitasking) {
-    	java.util.Set<Entry<String,IPlugin>> s = this.plugins.entrySet();
-    	java.util.Iterator<Entry<String,IPlugin>> it = s.iterator();
-    	while(it.hasNext()) {
-    		Entry<String,IPlugin> entry = it.next();
-    		IPlugin plugin = entry.getValue();
-    		plugin.onResume(multitasking);
-    	}    	
-    }
+	/**
+	 * Add a class that implements a service.
+	 * This does not create the class instance.  It just maps service name to class name.
+	 *
+	 * @param serviceType
+	 * @param className
+	 */
+	public void addService(String serviceType, String className) {
+		this.services.put(serviceType, className);
+	}
 
-    /**
-     * The final call you receive before your activity is destroyed. 
-     */
-    public void onDestroy() {
-        Log.i(TAG, "Destroy.");
+	/**
+	 * Called when the system is about to start resuming a previous activity.
+	 *
+	 * @param multitasking Flag indicating if multitasking is turned on for app
+	 */
+	public void onPause(boolean multitasking) {
+		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
+		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
+		while (it.hasNext()) {
+			Entry<String, IPlugin> entry = it.next();
+			IPlugin plugin = entry.getValue();
+			plugin.onPause(multitasking);
+		}
+	}
 
-    	java.util.Set<Entry<String,IPlugin>> s = this.plugins.entrySet();
-    	java.util.Iterator<Entry<String,IPlugin>> it = s.iterator();
-    	while(it.hasNext()) {
-    		Entry<String,IPlugin> entry = it.next();
-    		IPlugin plugin = entry.getValue();
-    		plugin.onDestroy();
-    	}
+	/**
+	 * Called when the activity will start interacting with the user.
+	 *
+	 * @param multitasking Flag indicating if multitasking is turned on for app
+	 */
+	public void onResume(boolean multitasking) {
+		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
+		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
+		while (it.hasNext()) {
+			Entry<String, IPlugin> entry = it.next();
+			IPlugin plugin = entry.getValue();
+			plugin.onResume(multitasking);
+		}
+	}
 
-        ctx = null;
-    }
-    
-    /**
-     * Called when the activity receives a new intent. 
-     */    
-    public void onNewIntent(Intent intent) {
-    	java.util.Set<Entry<String,IPlugin>> s = this.plugins.entrySet();
-    	java.util.Iterator<Entry<String,IPlugin>> it = s.iterator();
-    	while(it.hasNext()) {
-    		Entry<String,IPlugin> entry = it.next();
-    		IPlugin plugin = entry.getValue();
-    		plugin.onNewIntent(intent);
-    	}
-    }
+	/**
+	 * The final call you receive before your activity is destroyed.
+	 */
+	public void onDestroy() {
+		Log.i(TAG, "Destroy.");
 
-    /**
-     * Called when the URL of the webview changes.
-     * 
-     * @param url The URL that is being changed to.
-     * @return Return false to allow the URL to load, return true to prevent the URL from loading.
-     */
-    public boolean onOverrideUrlLoading(String url) {
-    	Iterator<Entry<String, String>> it = this.urlMap.entrySet().iterator();
-        while (it.hasNext()) {
-            HashMap.Entry<String, String> pairs = it.next();
-            if (url.startsWith(pairs.getKey())) {
-            	return this.getPlugin(pairs.getValue()).onOverrideUrlLoading(url);
-            }
-        }
-    	return false;
-    }
+		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
+		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
+		while (it.hasNext()) {
+			Entry<String, IPlugin> entry = it.next();
+			IPlugin plugin = entry.getValue();
+			plugin.onDestroy();
+		}
+
+		ctx = null;
+	}
+
+	/**
+	 * Called when the activity receives a new intent.
+	 */
+	public void onNewIntent(Intent intent) {
+		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
+		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
+		while (it.hasNext()) {
+			Entry<String, IPlugin> entry = it.next();
+			IPlugin plugin = entry.getValue();
+			plugin.onNewIntent(intent);
+		}
+	}
+
+	/**
+	 * Called when the URL of the webview changes.
+	 *
+	 * @param url The URL that is being changed to.
+	 * @return Return false to allow the URL to load, return true to prevent the URL from loading.
+	 */
+	public boolean onOverrideUrlLoading(String url) {
+		Iterator<Entry<String, String>> it = this.urlMap.entrySet().iterator();
+		while (it.hasNext()) {
+			HashMap.Entry<String, String> pairs = it.next();
+			if (url.startsWith(pairs.getKey())) {
+				return this.getPlugin(pairs.getValue()).onOverrideUrlLoading(url);
+			}
+		}
+		return false;
+	}
 
 	private void pluginConfigurationMissing() {
 		System.err.println("=====================================================================================");
-		System.err.println("ERROR: plugin.xml is missing.  Add res/xml/plugins.xml to your project.");      
-		System.err.println("https://raw.github.com/phonegap/phonegap-android/master/framework/res/xml/plugins.xml");        
+		System.err.println("ERROR: plugin.xml is missing.  Add res/xml/plugins.xml to your project.");
+		System.err.println("https://raw.github.com/phonegap/phonegap-android/master/framework/res/xml/plugins.xml");
 		System.err.println("=====================================================================================");
 	}
 }

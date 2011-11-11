@@ -15,35 +15,35 @@ import android.content.Intent;
  */
 public interface PhonegapActivity {
 
-    /**
-     * Add a class that implements a service.
-     * 
-     * @param serviceType
-     * @param className
-     */
-    public void addService(String serviceType, String className);
-    
-    /**
-     * Send JavaScript statement back to JavaScript.
-     * 
-     * @param message
-     */
-    public void sendJavascript(String statement);
+	/**
+	 * Add a class that implements a service.
+	 *
+	 * @param serviceType
+	 * @param className
+	 */
+	public void addService(String serviceType, String className);
 
-    /**
-     * Launch an activity for which you would like a result when it finished. When this activity exits, 
-     * your onActivityResult() method will be called.
-     *  
-     * @param command			The command object
-     * @param intent			The intent to start
-     * @param requestCode		The request code that is passed to callback to identify the activity
-     */
-    public void startActivityForResult(IPlugin command, Intent intent, int requestCode);
+	/**
+	 * Send JavaScript statement back to JavaScript.
+	 *
+	 * @param message
+	 */
+	public void sendJavascript(String statement);
 
-    /**
-     * Load the specified URL in the PhoneGap webview.
-     * 
-     * @param url				The URL to load.
-     */
-    public void loadUrl(String url);
+	/**
+	 * Launch an activity for which you would like a result when it finished. When this activity exits,
+	 * your onActivityResult() method will be called.
+	 *
+	 * @param command	 The command object
+	 * @param intent	  The intent to start
+	 * @param requestCode The request code that is passed to callback to identify the activity
+	 */
+	public void startActivityForResult(IPlugin command, Intent intent, int requestCode);
+
+	/**
+	 * Load the specified URL in the PhoneGap webview.
+	 *
+	 * @param url The URL to load.
+	 */
+	public void loadUrl(String url);
 }

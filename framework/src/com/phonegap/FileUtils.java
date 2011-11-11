@@ -7,6 +7,20 @@
  */
 package com.phonegap;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
+import com.phonegap.file.*;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,35 +28,13 @@ import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.util.Vector;
 
-import android.content.Context;
-import org.apache.commons.codec.binary.Base64;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.webkit.MimeTypeMap;
-
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.file.EncodingException;
-import com.phonegap.file.FileExistsException;
-import com.phonegap.file.InvalidModificationException;
-import com.phonegap.file.NoModificationAllowedException;
-import com.phonegap.file.TypeMismatchException;
-
 /**
  * This class provides SD card file and directory services to JavaScript.
  * Only files on the SD card can be accessed.
  */
 public class FileUtils extends Plugin {
 	private static final String LOG_TAG = "FileUtils";
-	private static final String _DATA = "_data";    // The column name where the file path is stored
+	private static final String _DATA = "_data";	// The column name where the file path is stored
 
 	public static int NOT_FOUND_ERR = 1;
 	public static int SECURITY_ERR = 2;
@@ -54,18 +46,18 @@ public class FileUtils extends Plugin {
 	public static int INVALID_STATE_ERR = 7;
 	public static int SYNTAX_ERR = 8;
 	public static int INVALID_MODIFICATION_ERR = 9;
-    public static int QUOTA_EXCEEDED_ERR = 10;
-    public static int TYPE_MISMATCH_ERR = 11;
-    public static int PATH_EXISTS_ERR = 12;
+	public static int QUOTA_EXCEEDED_ERR = 10;
+	public static int TYPE_MISMATCH_ERR = 11;
+	public static int PATH_EXISTS_ERR = 12;
 
 	public static int TEMPORARY = 0;
 	public static int PERSISTENT = 1;
 	public static int RESOURCE = 2;
 	public static int APPLICATION = 3;
-	
+
 	FileReader f_in;
 	FileWriter f_out;
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -74,101 +66,85 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Executes the request and returns PluginResult.
-	 * 
-	 * @param action 		The action to execute.
-	 * @param args 			JSONArry of arguments for the plugin.
-	 * @param callbackId	The callback id used when calling back into JavaScript.
-	 * @return 				A PluginResult object with a status and message.
+	 *
+	 * @param action	 The action to execute.
+	 * @param args	   JSONArry of arguments for the plugin.
+	 * @param callbackId The callback id used when calling back into JavaScript.
+	 * @return A PluginResult object with a status and message.
 	 */
 	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
-		String result = "";		
+		String result = "";
 		//System.out.println("FileUtils.execute("+action+")");
-		
+
 		try {
 			try {
 				if (action.equals("testSaveLocationExists")) {
-			        boolean b = DirectoryManager.testSaveLocationExists();
-			        return new PluginResult(status, b);
-			    }  
-				else if (action.equals("getFreeDiskSpace")) {
-			        long l = DirectoryManager.getFreeDiskSpace();
-			        return new PluginResult(status, l);
-			    }
-				else if (action.equals("testFileExists")) {
-			        boolean b = DirectoryManager.testFileExists(args.getString(0));
-			        return new PluginResult(status, b);
-			    }
-				else if (action.equals("testDirectoryExists")) {
-			        boolean b = DirectoryManager.testFileExists(args.getString(0));
-			        return new PluginResult(status, b);
-			    }
-				else if (action.equals("readAsText")) {
+					boolean b = DirectoryManager.testSaveLocationExists();
+					return new PluginResult(status, b);
+				} else if (action.equals("getFreeDiskSpace")) {
+					long l = DirectoryManager.getFreeDiskSpace();
+					return new PluginResult(status, l);
+				} else if (action.equals("testFileExists")) {
+					boolean b = DirectoryManager.testFileExists(args.getString(0));
+					return new PluginResult(status, b);
+				} else if (action.equals("testDirectoryExists")) {
+					boolean b = DirectoryManager.testFileExists(args.getString(0));
+					return new PluginResult(status, b);
+				} else if (action.equals("readAsText")) {
 					String s = this.readAsText(args.getString(0), args.getString(1));
-			        return new PluginResult(status, s);
-			    }
-				else if (action.equals("readAsDataURL")) {
+					return new PluginResult(status, s);
+				} else if (action.equals("readAsDataURL")) {
 					String s = this.readAsDataURL(args.getString(0));
-			        return new PluginResult(status, s);
-			    }
-				else if (action.equals("write")) {
+					return new PluginResult(status, s);
+				} else if (action.equals("write")) {
 					long fileSize = this.write(args.getString(0), args.getString(1), args.getInt(2));
 					return new PluginResult(status, fileSize);
-			    }
-				else if (action.equals("truncate")) {
+				} else if (action.equals("truncate")) {
 					long fileSize = this.truncateFile(args.getString(0), args.getLong(1));
 					return new PluginResult(status, fileSize);
-			    }
-				else if (action.equals("requestFileSystem")) {
+				} else if (action.equals("requestFileSystem")) {
 					long size = args.optLong(1);
 					if (size != 0) {
-						if (size > (DirectoryManager.getFreeDiskSpace()*1024)) {
+						if (size > (DirectoryManager.getFreeDiskSpace() * 1024)) {
 							JSONObject error = new JSONObject().put("code", FileUtils.QUOTA_EXCEEDED_ERR);
 							return new PluginResult(PluginResult.Status.ERROR, error);
 						}
 					}
 					JSONObject obj = requestFileSystem(args.getInt(0));
 					return new PluginResult(status, obj, "window.localFileSystem._castFS");
-				}
-				else if (action.equals("resolveLocalFileSystemURI")) {
+				} else if (action.equals("resolveLocalFileSystemURI")) {
 					JSONObject obj = resolveLocalFileSystemURI(args.getString(0));
 					return new PluginResult(status, obj, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("getMetadata")) {
+				} else if (action.equals("getMetadata")) {
 					JSONObject obj = getMetadata(args.getString(0));
 					return new PluginResult(status, obj, "window.localFileSystem._castDate");
-				}
-				else if (action.equals("getFileMetadata")) {
+				} else if (action.equals("getFileMetadata")) {
 					JSONObject obj = getFileMetadata(args.getString(0));
 					return new PluginResult(status, obj, "window.localFileSystem._castDate");
-				}
-				else if (action.equals("getParent")) {
+				} else if (action.equals("getParent")) {
 					JSONObject obj = getParent(args.getString(0));
 					return new PluginResult(status, obj, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("getDirectory")) {
+				} else if (action.equals("getDirectory")) {
 					JSONObject obj = getFile(args.getString(0), args.getString(1), args.optJSONObject(2), true);
 					return new PluginResult(status, obj, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("getFile")) {
+				} else if (action.equals("getFile")) {
 					JSONObject obj = getFile(args.getString(0), args.getString(1), args.optJSONObject(2), false);
 					return new PluginResult(status, obj, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("remove")) {
+				} else if (action.equals("remove")) {
 					boolean success;
-					
+
 					success = remove(args.getString(0));
-					
+
 					if (success) {
-					    notifyDelete(args.getString(0));
+						notifyDelete(args.getString(0));
 						return new PluginResult(status);
 					} else {
 						JSONObject error = new JSONObject().put("code", FileUtils.NO_MODIFICATION_ALLOWED_ERR);
 						return new PluginResult(PluginResult.Status.ERROR, error);
 					}
-				}
-				else if (action.equals("removeRecursively")) {
+				} else if (action.equals("removeRecursively")) {
 					boolean success = removeRecursively(args.getString(0));
 					if (success) {
 						return new PluginResult(status);
@@ -176,16 +152,13 @@ public class FileUtils extends Plugin {
 						JSONObject error = new JSONObject().put("code", FileUtils.NO_MODIFICATION_ALLOWED_ERR);
 						return new PluginResult(PluginResult.Status.ERROR, error);
 					}
-				}
-				else if (action.equals("moveTo")) {
+				} else if (action.equals("moveTo")) {
 					JSONObject entry = transferTo(args.getString(0), args.getJSONObject(1), args.optString(2), true);
 					return new PluginResult(status, entry, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("copyTo")) {
+				} else if (action.equals("copyTo")) {
 					JSONObject entry = transferTo(args.getString(0), args.getJSONObject(1), args.optString(2), false);
 					return new PluginResult(status, entry, "window.localFileSystem._castEntry");
-				}
-				else if (action.equals("readEntries")) {
+				} else if (action.equals("readEntries")) {
 					JSONArray entries = readEntries(args.getString(0));
 					return new PluginResult(status, entries, "window.localFileSystem._castEntries");
 				}
@@ -226,67 +199,67 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Need to check to see if we need to clean up the content store
-	 * 
+	 *
 	 * @param filePath the path to check
 	 */
 	private void notifyDelete(String filePath) {
-        int result = this.context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                MediaStore.Images.Media.DATA + " = ?", 
-                new String[] {filePath});
+		int result = this.context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+				MediaStore.Images.Media.DATA + " = ?",
+				new String[]{filePath});
 	}
 
-    /**
+	/**
 	 * Allows the user to look up the Entry for a file or directory referred to by a local URI.
-	 * 
+	 *
 	 * @param url of the file/directory to look up
 	 * @return a JSONObject representing a Entry from the filesystem
 	 * @throws MalformedURLException if the url is not valid
 	 * @throws FileNotFoundException if the file does not exist
-	 * @throws IOException if the user can't read the file
+	 * @throws IOException		   if the user can't read the file
 	 * @throws JSONException
 	 */
 	private JSONObject resolveLocalFileSystemURI(String url) throws IOException, JSONException {
-        String decoded = URLDecoder.decode(url, "UTF-8");
-        
-        File fp;
+		String decoded = URLDecoder.decode(url, "UTF-8");
 
-        // Handle the special case where you get an Android content:// uri.
-        if (decoded.startsWith("content:")) {
-            Cursor cursor = context.getContentResolver().query(
+		File fp;
+
+		// Handle the special case where you get an Android content:// uri.
+		if (decoded.startsWith("content:")) {
+			Cursor cursor = context.getContentResolver().query(
 					Uri.parse(decoded),
 					new String[]{MediaStore.Images.Media.DATA},
 					null, null, null);
-            // Note: MediaStore.Images/Audio/Video.Media.DATA is always "_data"
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
+			// Note: MediaStore.Images/Audio/Video.Media.DATA is always "_data"
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
 			String resolvedURI = cursor.getString(column_index);
 			cursor.close();
 
 			fp = new File(resolvedURI);
-        } else {
-    		// Test to see if this is a valid URL first
-    		URL testUrl = new URL(decoded);
+		} else {
+			// Test to see if this is a valid URL first
+			URL testUrl = new URL(decoded);
 			new Vector<URL>().add(testUrl);
 
 			if (decoded.startsWith("file://")) {
-    			fp = new File(decoded.substring(7, decoded.length()));
-    		} else {
-    			fp = new File(decoded);
-    		}
-        }
+				fp = new File(decoded.substring(7, decoded.length()));
+			} else {
+				fp = new File(decoded);
+			}
+		}
 
-        if (!fp.exists()) {
-            throw new FileNotFoundException();
-        }
-        if (!fp.canRead()) {
-            throw new IOException();
-        }
+		if (!fp.exists()) {
+			throw new FileNotFoundException();
+		}
+		if (!fp.canRead()) {
+			throw new IOException();
+		}
 		return getEntry(fp);
 	}
 
 	/**
 	 * Read the list of files from this directory.
-	 * 
+	 *
 	 * @param fileName the directory to read from
 	 * @return a JSONArray containing JSONObjects that represent Entry objects.
 	 * @throws FileNotFoundException if the directory is not found.
@@ -301,24 +274,24 @@ public class FileUtils extends Plugin {
 		}
 
 		JSONArray entries = new JSONArray();
-		
+
 		if (fp.isDirectory()) {
 			File[] files = fp.listFiles();
-			for (int i=0; i<files.length; i++) {
+			for (int i = 0; i < files.length; i++) {
 				entries.put(getEntry(files[i]));
 			}
 		}
-		
+
 		return entries;
 	}
 
 	/**
 	 * A setup method that handles the move/copy of files/directories
-	 * 
-	 * @param fileName to be copied/moved
+	 *
+	 * @param fileName  to be copied/moved
 	 * @param newParent is the location where the file will be copied/moved to
-	 * @param newName for the file directory to be called, if null use existing file name
-	 * @param move if false do a copy, if true do a move
+	 * @param newName   for the file directory to be called, if null use existing file name
+	 * @param move	  if false do a copy, if true do a move
 	 * @return a Entry object
 	 * @throws FileExistsException
 	 * @throws NoModificationAllowedException
@@ -332,14 +305,14 @@ public class FileUtils extends Plugin {
 		if (newName != null && newName.contains(":")) {
 			throw new EncodingException("Bad file name");
 		}
-		
+
 		File source = new File(fileName);
 
 		if (!source.exists()) {
 			// The file/directory we are copying doesn't exist so we should fail.
 			throw new FileNotFoundException("The source does not exist");
 		}
-		
+
 		File destinationDir = new File(newParent.getString("fullPath"));
 		if (!destinationDir.exists()) {
 			// The destination does not exist so we should fail.
@@ -348,10 +321,10 @@ public class FileUtils extends Plugin {
 
 		// Figure out where we should be copying to
 		File destination = createDestination(newName, source, destinationDir);
-		
+
 		//Log.d(LOG_TAG, "Source: " + source.getAbsolutePath());
 		//Log.d(LOG_TAG, "Destin: " + destination.getAbsolutePath());
-		
+
 		// Check to see if source and destination are the same file 
 		if (source.getAbsolutePath().equals(destination.getAbsolutePath())) {
 			throw new InvalidModificationException("Can't copy a file onto itself");
@@ -374,20 +347,20 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Creates the destination File object based on name passed in
-	 * 
-	 * @param newName for the file directory to be called, if null use existing file name
-	 * @param fp represents the source file
+	 *
+	 * @param newName	 for the file directory to be called, if null use existing file name
+	 * @param fp		  represents the source file
 	 * @param destination represents the destination file
 	 * @return a File object that represents the destination
 	 */
 	private File createDestination(String newName, File fp, File destination) {
 		File destFile = null;
-		
+
 		// I know this looks weird but it is to work around a JSON bug.
-		if ("null".equals(newName) || "".equals(newName) ) {
+		if ("null".equals(newName) || "".equals(newName)) {
 			newName = null;
 		}
-		
+
 		if (newName != null) {
 			destFile = new File(destination.getAbsolutePath() + File.separator + newName);
 		} else {
@@ -397,26 +370,26 @@ public class FileUtils extends Plugin {
 	}
 
 	/**
-	 * Copy a file 
-	 * 
-	 * @param srcFile file to be copied
+	 * Copy a file
+	 *
+	 * @param srcFile  file to be copied
 	 * @param destFile destination to be copied to
 	 * @return a FileEntry object
 	 * @throws IOException
 	 * @throws InvalidModificationException
 	 * @throws JSONException
 	 */
-	private JSONObject copyFile(File srcFile, File destFile) throws IOException, InvalidModificationException, JSONException  {
+	private JSONObject copyFile(File srcFile, File destFile) throws IOException, InvalidModificationException, JSONException {
 		// Renaming a file to an existing directory should fail
 		if (destFile.exists() && destFile.isDirectory()) {
 			throw new InvalidModificationException("Can't rename a file to a directory");
 		}
-		
+
 		FileChannel input = new FileInputStream(srcFile).getChannel();
 		FileChannel output = new FileOutputStream(destFile).getChannel();
-		
+
 		input.transferTo(0, input.size(), output);
-		
+
 		input.close();
 		output.close();
 
@@ -430,9 +403,9 @@ public class FileUtils extends Plugin {
 	}
 
 	/**
-	 * Copy a directory 
-	 * 
-	 * @param srcDir directory to be copied
+	 * Copy a directory
+	 *
+	 * @param srcDir		 directory to be copied
 	 * @param destinationDir destination to be copied to
 	 * @return a DirectoryEntry object
 	 * @throws JSONException
@@ -445,12 +418,12 @@ public class FileUtils extends Plugin {
 		if (destinationDir.exists() && destinationDir.isFile()) {
 			throw new InvalidModificationException("Can't rename a file to a directory");
 		}
-		
+
 		// Check to make sure we are not copying the directory into itself
 		if (isCopyOnItself(srcDir.getAbsolutePath(), destinationDir.getAbsolutePath())) {
 			throw new InvalidModificationException("Can't copy itself into itself");
 		}
-		
+
 		// See if the destination directory exists. If not create it.
 		if (!destinationDir.exists()) {
 			if (!destinationDir.mkdir()) {
@@ -467,34 +440,34 @@ public class FileUtils extends Plugin {
 				copyFile(file, destination);
 			}
 		}
-		
+
 		return getEntry(destinationDir);
 	}
 
 	/**
-	 * Check to see if the user attempted to copy an entry into its parent without changing its name, 
+	 * Check to see if the user attempted to copy an entry into its parent without changing its name,
 	 * or attempted to copy a directory into a directory that it contains directly or indirectly.
-	 * 
+	 *
 	 * @param srcDir
 	 * @param destinationDir
-	 * @return 
+	 * @return
 	 */
-    private boolean isCopyOnItself(String src, String dest) {
-        
-        // This weird test is to determine if we are copying or moving a directory into itself.  
-        // Copy /sdcard/myDir to /sdcard/myDir-backup is okay but
-        // Copy /sdcard/myDir to /sdcard/myDir/backup should thow an INVALID_MODIFICATION_ERR
-        if (dest.startsWith(src) && dest.indexOf(File.separator, src.length()-1) != -1) {
-            return true;
-        }
-        
-        return false;
-    }
+	private boolean isCopyOnItself(String src, String dest) {
+
+		// This weird test is to determine if we are copying or moving a directory into itself.
+		// Copy /sdcard/myDir to /sdcard/myDir-backup is okay but
+		// Copy /sdcard/myDir to /sdcard/myDir/backup should thow an INVALID_MODIFICATION_ERR
+		if (dest.startsWith(src) && dest.indexOf(File.separator, src.length() - 1) != -1) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
-	 * Move a file 
-	 * 
-	 * @param srcFile file to be copied
+	 * Move a file
+	 *
+	 * @param srcFile  file to be copied
 	 * @param destFile destination to be copied to
 	 * @return a FileEntry object
 	 * @throws IOException
@@ -506,22 +479,22 @@ public class FileUtils extends Plugin {
 		if (destFile.exists() && destFile.isDirectory()) {
 			throw new InvalidModificationException("Can't rename a file to a directory");
 		}
-		
+
 		// Try to rename the file
 		if (!srcFile.renameTo(destFile)) {
 			// Trying to rename the file failed.  Possibly because we moved across file system on the device.
 			// Now we have to do things the hard way
 			// 1) Copy all the old file
 			// 2) delete the src file 
-		}	
-		
+		}
+
 		return getEntry(destFile);
 	}
 
 	/**
-	 * Move a directory 
-	 * 
-	 * @param srcDir directory to be copied
+	 * Move a directory
+	 *
+	 * @param srcDir		 directory to be copied
 	 * @param destinationDir destination to be copied to
 	 * @return a DirectoryEntry object
 	 * @throws JSONException
@@ -534,36 +507,36 @@ public class FileUtils extends Plugin {
 		if (destinationDir.exists() && destinationDir.isFile()) {
 			throw new InvalidModificationException("Can't rename a file to a directory");
 		}
-		
+
 		// Check to make sure we are not copying the directory into itself
 		if (isCopyOnItself(srcDir.getAbsolutePath(), destinationDir.getAbsolutePath())) {
 			throw new InvalidModificationException("Can't move itself into itself");
 		}
-		
+
 		// If the destination directory already exists and is empty then delete it.  This is according to spec.
 		if (destinationDir.exists()) {
 			if (destinationDir.list().length > 0) {
 				throw new InvalidModificationException("directory is not empty");
 			}
 		}
-		
+
 		// Try to rename the directory
 		if (!srcDir.renameTo(destinationDir)) {
 			// Trying to rename the directory failed.  Possibly because we moved across file system on the device.
 			// Now we have to do things the hard way
 			// 1) Copy all the old files
 			// 2) delete the src directory 
-		}	
-		
+		}
+
 		return getEntry(destinationDir);
 	}
 
-	/** 
-	 * Deletes a directory and all of its contents, if any. In the event of an error 
-	 * [e.g. trying to delete a directory that contains a file that cannot be removed], 
-	 * some of the contents of the directory may be deleted. 
+	/**
+	 * Deletes a directory and all of its contents, if any. In the event of an error
+	 * [e.g. trying to delete a directory that contains a file that cannot be removed],
+	 * some of the contents of the directory may be deleted.
 	 * It is an error to attempt to delete the root directory of a filesystem.
-	 * 
+	 *
 	 * @param filePath the directory to be removed
 	 * @return a boolean representing success of failure
 	 * @throws FileExistsException
@@ -578,10 +551,10 @@ public class FileUtils extends Plugin {
 
 		return removeDirRecursively(fp);
 	}
-	
+
 	/**
 	 * Loops through a directory deleting all the files.
-	 * 
+	 *
 	 * @param directory to be removed
 	 * @return a boolean representing success of failure
 	 * @throws FileExistsException
@@ -601,9 +574,9 @@ public class FileUtils extends Plugin {
 	}
 
 	/**
-	 * Deletes a file or directory. It is an error to attempt to delete a directory that is not empty. 
+	 * Deletes a file or directory. It is an error to attempt to delete a directory that is not empty.
 	 * It is an error to attempt to delete the root directory of a filesystem.
-	 * 
+	 *
 	 * @param filePath file or directory to be removed
 	 * @return a boolean representing success of failure
 	 * @throws NoModificationAllowedException
@@ -611,26 +584,26 @@ public class FileUtils extends Plugin {
 	 */
 	private boolean remove(String filePath) throws NoModificationAllowedException, InvalidModificationException {
 		File fp = new File(filePath);
-		
+
 		// You can't delete the root directory.
 		if (atRootDirectory(filePath)) {
 			throw new NoModificationAllowedException("You can't delete the root directory");
 		}
-		
+
 		// You can't delete a directory that is not empty
 		if (fp.isDirectory() && fp.list().length > 0) {
 			throw new InvalidModificationException("You can't delete a directory that is not empty.");
 		}
-		
+
 		return fp.delete();
 	}
 
 	/**
 	 * Creates or looks up a file.
-	 * 
-	 * @param dirPath base directory
-	 * @param fileName file/directory to lookup or create
-	 * @param options specify whether to create or not
+	 *
+	 * @param dirPath   base directory
+	 * @param fileName  file/directory to lookup or create
+	 * @param options   specify whether to create or not
 	 * @param directory if true look up directory, if false look up file
 	 * @return a Entry object
 	 * @throws FileExistsException
@@ -648,14 +621,14 @@ public class FileUtils extends Plugin {
 				exclusive = options.optBoolean("exclusive");
 			}
 		}
-		
+
 		// Check for a ":" character in the file to line up with BB and iOS
 		if (fileName.contains(":")) {
 			throw new EncodingException("This file has a : in it's name");
 		}
-		
+
 		File fp = createFileObject(dirPath, fileName);
-				
+
 		if (create) {
 			if (exclusive && fp.exists()) {
 				throw new FileExistsException("create/exclusive fails");
@@ -666,17 +639,16 @@ public class FileUtils extends Plugin {
 				fp.createNewFile();
 			}
 			if (!fp.exists()) {
-				throw new FileExistsException("create fails");				
+				throw new FileExistsException("create fails");
 			}
-		}
-		else {
+		} else {
 			if (!fp.exists()) {
 				throw new FileNotFoundException("path does not exist");
 			}
 			if (directory) {
 				if (fp.isFile()) {
 					throw new TypeMismatchException("path doesn't exist or is file");
-				}				
+				}
 			} else {
 				if (fp.isDirectory()) {
 					throw new TypeMismatchException("path doesn't exist or is directory");
@@ -689,10 +661,10 @@ public class FileUtils extends Plugin {
 	}
 
 	/**
-	 * If the path starts with a '/' just return that file object. If not construct the file 
+	 * If the path starts with a '/' just return that file object. If not construct the file
 	 * object from the path passed in and the file name.
-	 * 
-	 * @param dirPath root directory
+	 *
+	 * @param dirPath  root directory
 	 * @param fileName new file name
 	 * @return
 	 */
@@ -707,9 +679,9 @@ public class FileUtils extends Plugin {
 	}
 
 	/**
-	 * Look up the parent DirectoryEntry containing this Entry. 
+	 * Look up the parent DirectoryEntry containing this Entry.
 	 * If this Entry is the root of its filesystem, its parent is itself.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws JSONException
@@ -721,10 +693,10 @@ public class FileUtils extends Plugin {
 		return getEntry(new File(filePath).getParent());
 	}
 
-	/** 
-	 * Checks to see if we are at the root directory.  Useful since we are 
+	/**
+	 * Checks to see if we are at the root directory.  Useful since we are
 	 * not allow to delete this directory.
-	 * 
+	 *
 	 * @param filePath to directory
 	 * @return true if we are at the root, false otherwise.
 	 */
@@ -738,7 +710,7 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Look up metadata about this entry.
-	 * 
+	 *
 	 * @param filePath to entry
 	 * @return a Metadata object
 	 * @throws FileNotFoundException
@@ -746,11 +718,11 @@ public class FileUtils extends Plugin {
 	 */
 	private JSONObject getMetadata(String filePath) throws FileNotFoundException, JSONException {
 		File file = new File(filePath);
-		
+
 		if (!file.exists()) {
 			throw new FileNotFoundException("Failed to find file in getMetadata");
 		}
-		
+
 		JSONObject metadata = new JSONObject();
 		metadata.put("modificationTime", file.lastModified());
 
@@ -759,7 +731,7 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Returns a File that represents the current state of the file that this FileEntry represents.
-	 * 
+	 *
 	 * @param filePath to entry
 	 * @return returns a JSONObject represent a W3C File object
 	 * @throws FileNotFoundException
@@ -767,12 +739,12 @@ public class FileUtils extends Plugin {
 	 */
 	private JSONObject getFileMetadata(String filePath) throws FileNotFoundException, JSONException {
 		File file = new File(filePath);
-		
+
 		if (!file.exists()) {
 			throw new FileNotFoundException("File: " + filePath + " does not exist.");
 		}
-		
- 		JSONObject metadata = new JSONObject();
+
+		JSONObject metadata = new JSONObject();
 		metadata.put("size", file.length());
 		metadata.put("type", getMimeType(filePath));
 		metadata.put("name", file.getName());
@@ -784,11 +756,11 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Requests a filesystem in which to store application data.
-	 * 
+	 *
 	 * @param type of file system requested
 	 * @return a JSONObject representing the file system
-	 * @throws IOException 
-	 * @throws JSONException 
+	 * @throws IOException
+	 * @throws JSONException
 	 */
 	private JSONObject requestFileSystem(int type) throws IOException, JSONException {
 		JSONObject fs = new JSONObject();
@@ -797,7 +769,7 @@ public class FileUtils extends Plugin {
 				fs.put("name", "temporary");
 				fs.put("root", getEntry(Environment.getExternalStorageDirectory().getAbsolutePath() +
 						"/Android/data/" + this.context.getPackageName() + "/cache/"));
-				
+
 				// Create the cache dir if it doesn't exist.
 				File fp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
 						"/Android/data/" + this.context.getPackageName() + "/cache/");
@@ -805,24 +777,20 @@ public class FileUtils extends Plugin {
 			} else {
 				throw new IOException("SD Card not mounted");
 			}
-		}
-		else if (type == PERSISTENT) {
+		} else if (type == PERSISTENT) {
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				fs.put("name", "persistent");
 				fs.put("root", getEntry(Environment.getExternalStorageDirectory()));
 			} else {
 				throw new IOException("SD Card not mounted");
 			}
-		}
-		else if (type == RESOURCE) {
+		} else if (type == RESOURCE) {
 			fs.put("name", "resource");
-			
-		}
-		else if (type == APPLICATION) {
+
+		} else if (type == APPLICATION) {
 			fs.put("name", "application");
-			
-		}
-		else {
+
+		} else {
 			throw new IOException("No filesystem of type requested");
 		}
 
@@ -831,10 +799,10 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Returns a JSON Object representing a directory on the device's file system
-	 * 
-	 * @param path to the directory 
+	 *
+	 * @param path to the directory
 	 * @return
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	private JSONObject getEntry(File file) throws JSONException {
 		JSONObject entry = new JSONObject();
@@ -851,10 +819,10 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Returns a JSON Object representing a directory on the device's file system
-	 * 
-	 * @param path to the directory 
+	 *
+	 * @param path to the directory
 	 * @return
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	private JSONObject getEntry(String path) throws JSONException {
 		return getEntry(new File(path));
@@ -862,173 +830,168 @@ public class FileUtils extends Plugin {
 
 	/**
 	 * Identifies if action to be executed returns a value and should be run synchronously.
-	 * 
-	 * @param action	The action to execute
-	 * @return			T=returns value
+	 *
+	 * @param action The action to execute
+	 * @return T=returns value
 	 */
 	@Override
 	public boolean isSynch(String action) {
 		if (action.equals("testSaveLocationExists")) {
 			return true;
-	    }  
-		else if (action.equals("getFreeDiskSpace")) {
+		} else if (action.equals("getFreeDiskSpace")) {
 			return true;
-	    }
-		else if (action.equals("testFileExists")) {
+		} else if (action.equals("testFileExists")) {
 			return true;
-	    }
-		else if (action.equals("testDirectoryExists")) {
+		} else if (action.equals("testDirectoryExists")) {
 			return true;
-	    }
+		}
 		return false;
 	}
 
-    //--------------------------------------------------------------------------
-    // LOCAL METHODS
-    //--------------------------------------------------------------------------
-	
-    /**
-     * Read content of text file.
-     * 
-     * @param filename			The name of the file.
-     * @param encoding			The encoding to return contents as.  Typical value is UTF-8.
-     * 							(see http://www.iana.org/assignments/character-sets)
-     * @return					Contents of file.
-     * @throws FileNotFoundException, IOException
-     */
-    public String readAsText(String filename, String encoding) throws FileNotFoundException, IOException {
-    	byte[] bytes = new byte[1000];
-   		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
-   		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    	int numRead = 0;
-    	while ((numRead = bis.read(bytes, 0, 1000)) >= 0) {
-    	    bos.write(bytes, 0, numRead);
-    	}
-        return new String(bos.toByteArray(), encoding);
-    }
-    
-    /**
-     * Read content of text file and return as base64 encoded data url.
-     * 
-     * @param filename			The name of the file.
-     * @return					Contents of file = data:<media type>;base64,<data>
-     * @throws FileNotFoundException, IOException
-     */
-    public String readAsDataURL(String filename) throws FileNotFoundException, IOException {
-    	byte[] bytes = new byte[1000];
-   		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
-   		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    	int numRead = 0;
-    	while ((numRead = bis.read(bytes, 0, 1000)) >= 0) {
-    	    bos.write(bytes, 0, numRead);
-    	}
-    	
-    	// Determine content type from file name
-    	String contentType = null;
-    	if (filename.startsWith("content:")) {
-    		Uri fileUri = Uri.parse(filename);
-    		contentType = this.context.getContentResolver().getType(fileUri);
-    	}
-    	else {
-        	contentType = getMimeType(filename);  		    		
-    	}
+	//--------------------------------------------------------------------------
+	// LOCAL METHODS
+	//--------------------------------------------------------------------------
+
+	/**
+	 * Read content of text file.
+	 *
+	 * @param filename The name of the file.
+	 * @param encoding The encoding to return contents as.  Typical value is UTF-8.
+	 *                 (see http://www.iana.org/assignments/character-sets)
+	 * @throws FileNotFoundException, IOException
+	 * @return Contents of file.
+	 */
+	public String readAsText(String filename, String encoding) throws FileNotFoundException, IOException {
+		byte[] bytes = new byte[1000];
+		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		int numRead = 0;
+		while ((numRead = bis.read(bytes, 0, 1000)) >= 0) {
+			bos.write(bytes, 0, numRead);
+		}
+		return new String(bos.toByteArray(), encoding);
+	}
+
+	/**
+	 * Read content of text file and return as base64 encoded data url.
+	 *
+	 * @param filename The name of the file.
+	 * @throws FileNotFoundException, IOException
+	 * @return Contents of file = data:<media type>;base64,<data>
+	 */
+	public String readAsDataURL(String filename) throws FileNotFoundException, IOException {
+		byte[] bytes = new byte[1000];
+		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		int numRead = 0;
+		while ((numRead = bis.read(bytes, 0, 1000)) >= 0) {
+			bos.write(bytes, 0, numRead);
+		}
+
+		// Determine content type from file name
+		String contentType = null;
+		if (filename.startsWith("content:")) {
+			Uri fileUri = Uri.parse(filename);
+			contentType = this.context.getContentResolver().getType(fileUri);
+		} else {
+			contentType = getMimeType(filename);
+		}
 
 		byte[] base64 = Base64.encodeBase64(bos.toByteArray());
 		String data = "data:" + contentType + ";base64," + new String(base64);
-    	return data;
-    }
+		return data;
+	}
 
-    /**
-     * Looks up the mime type of a given file name.
-     * 
-     * @param filename
-     * @return a mime type
-     */
+	/**
+	 * Looks up the mime type of a given file name.
+	 *
+	 * @param filename
+	 * @return a mime type
+	 */
 	public static String getMimeType(String filename) {
 		MimeTypeMap map = MimeTypeMap.getSingleton();
 		return map.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(filename));
 	}
-    
-    /**
-     * Write contents of file.
-     * 
-     * @param filename			The name of the file.
-     * @param data				The contents of the file.
-     * @param offset			The position to begin writing the file.			
-     * @throws FileNotFoundException, IOException
-     */
-    /**/
-    public long write(String filename, String data, int offset) throws FileNotFoundException, IOException {
-    	boolean append = false;
-    	if (offset > 0) {
-    		this.truncateFile(filename, offset);
-    		append = true;
-    	}
-    	
-   		byte [] rawData = data.getBytes();
-   		ByteArrayInputStream in = new ByteArrayInputStream(rawData);    			    			
-   		FileOutputStream out = new FileOutputStream(filename, append);
-   		byte buff[] = new byte[rawData.length];
-   		in.read(buff, 0, buff.length);
-   		out.write(buff, 0, rawData.length);
-   		out.flush();
-   		out.close();    			
-    	
-    	return data.length();
-    }
-    
-    /**
-     * Truncate the file to size
-     * 
-     * @param filename
-     * @param size
-     * @throws FileNotFoundException, IOException 
-     */
-    private long truncateFile(String filename, long size) throws FileNotFoundException, IOException {
+
+	/**
+	 * Write contents of file.
+	 *
+	 * @param filename The name of the file.
+	 * @param data	 The contents of the file.
+	 * @param offset   The position to begin writing the file.
+	 * @throws FileNotFoundException, IOException
+	 */
+	/**/
+	public long write(String filename, String data, int offset) throws FileNotFoundException, IOException {
+		boolean append = false;
+		if (offset > 0) {
+			this.truncateFile(filename, offset);
+			append = true;
+		}
+
+		byte[] rawData = data.getBytes();
+		ByteArrayInputStream in = new ByteArrayInputStream(rawData);
+		FileOutputStream out = new FileOutputStream(filename, append);
+		byte buff[] = new byte[rawData.length];
+		in.read(buff, 0, buff.length);
+		out.write(buff, 0, rawData.length);
+		out.flush();
+		out.close();
+
+		return data.length();
+	}
+
+	/**
+	 * Truncate the file to size
+	 *
+	 * @param filename
+	 * @param size
+	 * @throws FileNotFoundException, IOException
+	 */
+	private long truncateFile(String filename, long size) throws FileNotFoundException, IOException {
 		RandomAccessFile raf = new RandomAccessFile(filename, "rw");
 
-		if (raf.length() >= size) {	   			
-   			FileChannel channel = raf.getChannel();
-   			channel.truncate(size);
-   			return size;
+		if (raf.length() >= size) {
+			FileChannel channel = raf.getChannel();
+			channel.truncate(size);
+			return size;
 		}
-		
+
 		return raf.length();
-    }
-    
-    /**
-     * Get an input stream based on file path or content:// uri
-     * 
-     * @param path
-     * @return an input stream
-     * @throws FileNotFoundException 
-     */
-    private InputStream getPathFromUri(String path) throws FileNotFoundException {  	  
-    	if (path.startsWith("content")) {
-    		Uri uri = Uri.parse(path);
-    		return this.context.getContentResolver().openInputStream(uri);
-    	}
-    	else {
-    		return new FileInputStream(path);
-    	}
-    }  
-    
-    /**
-     * Queries the media store to find out what the file path is for the Uri we supply
-     * 
-     * @param contentUri the Uri of the audio/image/video
-     * @param ctx the current application context
-     * @return the full path to the file
-     */
-    protected static String getRealPathFromURI(Context context, Uri contentUri) {
+	}
+
+	/**
+	 * Get an input stream based on file path or content:// uri
+	 *
+	 * @param path
+	 * @return an input stream
+	 * @throws FileNotFoundException
+	 */
+	private InputStream getPathFromUri(String path) throws FileNotFoundException {
+		if (path.startsWith("content")) {
+			Uri uri = Uri.parse(path);
+			return this.context.getContentResolver().openInputStream(uri);
+		} else {
+			return new FileInputStream(path);
+		}
+	}
+
+	/**
+	 * Queries the media store to find out what the file path is for the Uri we supply
+	 *
+	 * @param contentUri the Uri of the audio/image/video
+	 * @param ctx		the current application context
+	 * @return the full path to the file
+	 */
+	protected static String getRealPathFromURI(Context context, Uri contentUri) {
 		Cursor cursor = context.getContentResolver().query(
 				contentUri,
 				new String[]{_DATA},
 				null, null, null);
-        int columnIndex = cursor.getColumnIndexOrThrow(_DATA);
-        cursor.moveToFirst();
+		int columnIndex = cursor.getColumnIndexOrThrow(_DATA);
+		cursor.moveToFirst();
 		String result = cursor.getString(columnIndex);
 		cursor.close();
 		return result;
-    }
+	}
 }

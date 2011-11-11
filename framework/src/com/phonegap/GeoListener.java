@@ -10,7 +10,6 @@ package com.phonegap;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.webkit.WebView;
 
 public class GeoListener {
 	public static int PERMISSION_DENIED = 1;
@@ -20,20 +19,20 @@ public class GeoListener {
 	String id;							// Listener ID
 	String successCallback;				// 
 	String failCallback;
-    GpsListener mGps;					// GPS listener
-    NetworkListener mNetwork;			// Network listener
-    LocationManager mLocMan;			// Location manager
-    
-    private GeoBroker broker;			// GeoBroker object
-	
+	GpsListener mGps;					// GPS listener
+	NetworkListener mNetwork;			// Network listener
+	LocationManager mLocMan;			// Location manager
+
+	private GeoBroker broker;			// GeoBroker object
+
 	int interval;
-	
+
 	/**
 	 * Constructor.
-	 * 
-	 * @param id			Listener id
+	 *
+	 * @param id	  Listener id
 	 * @param ctx
-	 * @param time			Sampling period in msec
+	 * @param time	Sampling period in msec
 	 * @param appView
 	 */
 	GeoListener(GeoBroker broker, String id, int time) {
@@ -48,51 +47,51 @@ public class GeoListener {
 		if (this.mLocMan.getProvider(LocationManager.GPS_PROVIDER) != null) {
 			this.mGps = new GpsListener(broker.context, time, this);
 		}
-		
+
 		// If network provider, then create and start network listener
 		if (this.mLocMan.getProvider(LocationManager.NETWORK_PROVIDER) != null) {
 			this.mNetwork = new NetworkListener(broker.context, time, this);
 		}
 	}
-	
+
 	/**
 	 * Destroy listener.
 	 */
 	public void destroy() {
 		this.stop();
 	}
-	
+
 	/**
 	 * Location found.  Send location back to JavaScript.
-	 * 
+	 *
 	 * @param loc
 	 */
 	void success(Location loc) {
-		
-		String params = loc.getLatitude() + "," + loc.getLongitude() + ", " + loc.getAltitude() + 
+
+		String params = loc.getLatitude() + "," + loc.getLongitude() + ", " + loc.getAltitude() +
 				"," + loc.getAccuracy() + "," + loc.getBearing() +
-		 		"," + loc.getSpeed() + "," + loc.getTime();
-		
+				"," + loc.getSpeed() + "," + loc.getTime();
+
 		if (id == "global") {
 			this.stop();
 		}
-		this.broker.sendJavascript("navigator._geo.success('" + id + "'," +  params + ");");
+		this.broker.sendJavascript("navigator._geo.success('" + id + "'," + params + ");");
 	}
-	
+
 	/**
 	 * Location failed.  Send error back to JavaScript.
-	 * 
-	 * @param code			The error code
-	 * @param msg			The error message
+	 *
+	 * @param code The error code
+	 * @param msg  The error message
 	 */
 	void fail(int code, String msg) {
 		this.broker.sendJavascript("navigator._geo.fail('" + this.id + "', '" + code + "', '" + msg + "');");
 		this.stop();
 	}
-	
+
 	/**
 	 * Start retrieving location.
-	 * 
+	 *
 	 * @param interval
 	 */
 	void start(int interval) {
@@ -106,7 +105,7 @@ public class GeoListener {
 			this.fail(POSITION_UNAVAILABLE, "No location providers available.");
 		}
 	}
-	
+
 	/**
 	 * Stop listening for location.
 	 */

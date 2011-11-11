@@ -7,14 +7,13 @@
  */
 package com.phonegap;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /*
  * This class is the interface to the Geolocation.  It's bound to the geo object.
@@ -23,11 +22,11 @@ import com.phonegap.api.PluginResult;
  */
 
 public class GeoBroker extends Plugin {
-    
-    // List of gGeolocation listeners
-    private HashMap<String, GeoListener> geoListeners;
+
+	// List of gGeolocation listeners
+	private HashMap<String, GeoListener> geoListeners;
 	private GeoListener global;
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -37,26 +36,24 @@ public class GeoBroker extends Plugin {
 
 	/**
 	 * Executes the request and returns PluginResult.
-	 * 
-	 * @param action 		The action to execute.
-	 * @param args 			JSONArry of arguments for the plugin.
-	 * @param callbackId	The callback id used when calling back into JavaScript.
-	 * @return 				A PluginResult object with a status and message.
+	 *
+	 * @param action	 The action to execute.
+	 * @param args	   JSONArry of arguments for the plugin.
+	 * @param callbackId The callback id used when calling back into JavaScript.
+	 * @return A PluginResult object with a status and message.
 	 */
 	@Override
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
-		String result = "";		
-		
+		String result = "";
+
 		try {
 			if (action.equals("getCurrentLocation")) {
 				this.getCurrentLocation(args.getBoolean(0), args.getInt(1), args.getInt(2));
-			}
-			else if (action.equals("start")) {
+			} else if (action.equals("start")) {
 				String s = this.start(args.getString(0), args.getBoolean(1), args.getInt(2), args.getInt(3));
 				return new PluginResult(status, s);
-			}
-			else if (action.equals("stop")) {
+			} else if (action.equals("stop")) {
 				this.stop(args.getString(0));
 			}
 			return new PluginResult(status, result);
@@ -67,86 +64,85 @@ public class GeoBroker extends Plugin {
 
 	/**
 	 * Identifies if action to be executed returns a value and should be run synchronously.
-	 * 
-	 * @param action	The action to execute
-	 * @return			T=returns value
+	 *
+	 * @param action The action to execute
+	 * @return T=returns value
 	 */
 	@Override
 	public boolean isSynch(String action) {
 		// Starting listeners is easier to run on main thread, so don't run async.
 		return true;
 	}
-    
-    /**
-     * Called when the activity is to be shut down.
-     * Stop listener.
-     */
-    @Override
+
+	/**
+	 * Called when the activity is to be shut down.
+	 * Stop listener.
+	 */
+	@Override
 	public void onDestroy() {
-		java.util.Set<Entry<String,GeoListener>> s = this.geoListeners.entrySet();
-        java.util.Iterator<Entry<String,GeoListener>> it = s.iterator();
-        while (it.hasNext()) {
-            Entry<String,GeoListener> entry = it.next();
-            GeoListener listener = entry.getValue();
-            listener.destroy();
+		java.util.Set<Entry<String, GeoListener>> s = this.geoListeners.entrySet();
+		java.util.Iterator<Entry<String, GeoListener>> it = s.iterator();
+		while (it.hasNext()) {
+			Entry<String, GeoListener> entry = it.next();
+			GeoListener listener = entry.getValue();
+			listener.destroy();
 		}
-        this.geoListeners.clear();
-        if (this.global != null) {
-        	this.global.destroy();
-        }
-        this.global = null;
-    }
+		this.geoListeners.clear();
+		if (this.global != null) {
+			this.global.destroy();
+		}
+		this.global = null;
+	}
 
-    //--------------------------------------------------------------------------
-    // LOCAL METHODS
-    //--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
+	// LOCAL METHODS
+	//--------------------------------------------------------------------------
 
-    /**
-     * Get current location.
-     * The result is returned to JavaScript via a callback.
-     * 
+	/**
+	 * Get current location.
+	 * The result is returned to JavaScript via a callback.
+	 *
 	 * @param enableHighAccuracy
 	 * @param timeout
 	 * @param maximumAge
-     */
+	 */
 	public void getCurrentLocation(boolean enableHighAccuracy, int timeout, int maximumAge) {
-		
+
 		// Create a geolocation listener just for getCurrentLocation and call it "global"
 		if (this.global == null) {
 			this.global = new GeoListener(this, "global", maximumAge);
-		}
-		else {
+		} else {
 			this.global.start(maximumAge);
 		}
 	}
-	
+
 	/**
 	 * Start geolocation listener and add to listener list.
-	 * 
-	 * @param key					The listener id
+	 *
+	 * @param key				The listener id
 	 * @param enableHighAccuracy
 	 * @param timeout
 	 * @param maximumAge
 	 * @return
 	 */
 	public String start(String key, boolean enableHighAccuracy, int timeout, int maximumAge) {
-		
+
 		// Make sure this listener doesn't already exist
 		GeoListener listener = geoListeners.get(key);
 		if (listener == null) {
 			listener = new GeoListener(this, key, maximumAge);
 			geoListeners.put(key, listener);
 		}
-		
+
 		// Start it
 		listener.start(maximumAge);
 		return key;
 	}
-	
+
 	/**
 	 * Stop geolocation listener and remove from listener list.
-	 * 
-	 * @param key			The listener id
+	 *
+	 * @param key The listener id
 	 */
 	public void stop(String key) {
 		GeoListener listener = geoListeners.remove(key);
