@@ -237,7 +237,7 @@ public class Capture extends Plugin {
 					try {
 						uri = this.context.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 					} catch (UnsupportedOperationException e) {
-						System.out.println("Can't write to external media storage.");
+						Log.d(TAG, "Can't write to external media storage.");
 						try {
 							uri = this.context.getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
 						} catch (UnsupportedOperationException ex) {

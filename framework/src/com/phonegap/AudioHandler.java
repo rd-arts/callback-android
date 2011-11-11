@@ -9,6 +9,7 @@ package com.phonegap;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
@@ -29,6 +30,7 @@ import java.util.Map.Entry;
  * sdcard:				file name is just sound.mp3
  */
 public class AudioHandler extends Plugin {
+	private final String TAG = this.getClass().getSimpleName();
 
 	HashMap<String, AudioPlayer> players;	// Audio player object
 
@@ -270,7 +272,7 @@ public class AudioHandler extends Plugin {
 		} else if (output == 1) {
 			audiMgr.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_EARPIECE, AudioManager.ROUTE_ALL);
 		} else {
-			System.out.println("AudioHandler.setAudioOutputDevice() Error: Unknown output device.");
+			Log.d(TAG, "AudioHandler.setAudioOutputDevice() Error: Unknown output device.");
 		}
 	}
 
@@ -301,7 +303,7 @@ public class AudioHandler extends Plugin {
 		if (audio != null) {
 			audio.setVolume(volume);
 		} else {
-			System.out.println("AudioHandler.setVolume() Error: Unknown Audio Player " + id);
+			Log.d(TAG, "AudioHandler.setVolume() Error: Unknown Audio Player " + id);
 		}
 	}
 }

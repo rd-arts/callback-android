@@ -7,6 +7,7 @@
  */
 package com.phonegap;
 
+import android.util.Log;
 import android.webkit.WebSettings;
 
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class WebViewReflect {
+	private static final String TAG = WebViewReflect.class.getSimpleName();
+
 	private static Method mWebSettings_setDatabaseEnabled;
 	private static Method mWebSettings_setDatabasePath;
 	private static Method mWebSettings_setDomStorageEnabled;
@@ -99,7 +102,7 @@ public class WebViewReflect {
 			}
 		} else {
 			/* feature not supported, do something else */
-			System.out.println("Native Geolocation not supported - we're ok");
+			Log.d(TAG, "Native Geolocation not supported - we're ok");
 		}
 	}
 

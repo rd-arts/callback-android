@@ -12,11 +12,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * This class handles requests for GPS location services.
  */
 public class GpsListener implements LocationListener {
+	private static final String TAG = GpsListener.class.getSimpleName();
 
 	private Context mContext;
 
@@ -72,7 +74,7 @@ public class GpsListener implements LocationListener {
 	 */
 	@Override
 	public void onProviderEnabled(String provider) {
-		System.out.println("GpsListener: The provider " + provider + " is enabled");
+		Log.d(TAG, "GpsListener: The provider " + provider + " is enabled");
 	}
 
 	/**
@@ -86,14 +88,14 @@ public class GpsListener implements LocationListener {
 	 */
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		System.out.println("GpsListener: The status of the provider " + provider + " has changed");
+		Log.d(TAG, "GpsListener: The status of the provider " + provider + " has changed");
 		if (status == 0) {
-			System.out.println("GpsListener: " + provider + " is OUT OF SERVICE");
+			Log.d(TAG, "GpsListener: " + provider + " is OUT OF SERVICE");
 			this.owner.fail(GeoListener.POSITION_UNAVAILABLE, "GPS out of service.");
 		} else if (status == 1) {
-			System.out.println("GpsListener: " + provider + " is TEMPORARILY_UNAVAILABLE");
+			Log.d(TAG, "GpsListener: " + provider + " is TEMPORARILY_UNAVAILABLE");
 		} else {
-			System.out.println("GpsListener: " + provider + " is Available");
+			Log.d(TAG, "GpsListener: " + provider + " is Available");
 		}
 	}
 
@@ -104,7 +106,7 @@ public class GpsListener implements LocationListener {
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
-		System.out.println("GpsListener: The location has been updated!");
+		Log.d(TAG, "GpsListener: The location has been updated!");
 		this.hasData = true;
 		this.cLoc = location;
 		this.owner.success(location);

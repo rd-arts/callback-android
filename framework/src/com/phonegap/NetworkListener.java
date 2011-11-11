@@ -12,8 +12,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 public class NetworkListener implements LocationListener {
+	private static final String TAG = NetworkListener.class.getSimpleName();
 
 	private Context mContext;
 
@@ -59,7 +61,7 @@ public class NetworkListener implements LocationListener {
 	 */
 	@Override
 	public void onProviderDisabled(String provider) {
-		System.out.println("NetworkListener: The provider " + provider + " is disabled");
+		Log.d(TAG, "NetworkListener: The provider " + provider + " is disabled");
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class NetworkListener implements LocationListener {
 	 */
 	@Override
 	public void onProviderEnabled(String provider) {
-		System.out.println("NetworkListener: The provider " + provider + " is enabled");
+		Log.d(TAG, "NetworkListener: The provider " + provider + " is enabled");
 	}
 
 	/**
@@ -83,13 +85,13 @@ public class NetworkListener implements LocationListener {
 	 */
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		System.out.println("NetworkListener: The status of the provider " + provider + " has changed");
+		Log.d(TAG, "NetworkListener: The status of the provider " + provider + " has changed");
 		if (status == 0) {
-			System.out.println("NetworkListener: " + provider + " is OUT OF SERVICE");
+			Log.d(TAG, "NetworkListener: " + provider + " is OUT OF SERVICE");
 		} else if (status == 1) {
-			System.out.println("NetworkListener: " + provider + " is TEMPORARILY_UNAVAILABLE");
+			Log.d(TAG, "NetworkListener: " + provider + " is TEMPORARILY_UNAVAILABLE");
 		} else {
-			System.out.println("NetworkListener: " + provider + " is Available");
+			Log.d(TAG, "NetworkListener: " + provider + " is Available");
 		}
 	}
 
@@ -100,7 +102,7 @@ public class NetworkListener implements LocationListener {
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
-		System.out.println("NetworkListener: The location has been updated!");
+		Log.d(TAG, "NetworkListener: The location has been updated!");
 		this.hasData = true;
 		this.cLoc = location;
 

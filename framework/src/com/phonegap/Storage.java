@@ -10,6 +10,7 @@ package com.phonegap;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
  * is not used for Android 2.X, since HTML5 database is built in to the browser.
  */
 public class Storage extends Plugin {
+	private final String TAG = this.getClass().getSimpleName();
 
 	// Data Definition Language
 	private static final String ALTER = "alter";
@@ -164,12 +166,11 @@ public class Storage extends Plugin {
 				this.processResults(myCursor, tx_id);
 				myCursor.close();
 			}
-		} catch (SQLiteException ex) {
-			ex.printStackTrace();
-			System.out.println("Storage.executeSql(): Error=" + ex.getMessage());
+		} catch (SQLiteException e) {
+			Log.e(TAG, "Storage.executeSql(): Error=" + e.getMessage(), e);
 
 			// Send error message back to JavaScript
-			this.sendJavascript("droiddb.fail('" + ex.getMessage() + "','" + tx_id + "');");
+			this.sendJavascript("droiddb.fail('" + e.getMessage() + "','" + tx_id + "');");
 		}
 	}
 

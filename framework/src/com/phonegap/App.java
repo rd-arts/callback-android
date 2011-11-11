@@ -7,6 +7,7 @@
  */
 package com.phonegap;
 
+import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
@@ -19,6 +20,8 @@ import java.util.HashMap;
  * This class exposes methods in DroidGap that can be called from JavaScript.
  */
 public class App extends Plugin {
+
+	private static final String TAG = "AppGap";
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -79,7 +82,7 @@ public class App extends Plugin {
 	 * @throws JSONException
 	 */
 	public void loadUrl(String url, JSONObject props) throws JSONException {
-		System.out.println("App.loadUrl(" + url + "," + props + ")");
+		Log.d(TAG, "App.loadUrl(" + url + "," + props + ")");
 		int wait = 0;
 		boolean openExternal = false;
 		boolean clearHistory = false;
@@ -154,7 +157,7 @@ public class App extends Plugin {
 	 * @param override T=override, F=cancel override
 	 */
 	public void overrideBackbutton(boolean override) {
-		System.out.println("WARNING: Back Button Default Behaviour will be overridden.  The backbutton event will be fired!");
+		Log.d(TAG, "WARNING: Back Button Default Behaviour will be overridden.  The backbutton event will be fired!");
 		((GapView) this.ctx).bound = override;
 	}
 

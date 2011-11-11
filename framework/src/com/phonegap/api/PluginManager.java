@@ -158,7 +158,7 @@ public final class PluginManager {
 				}
 			}
 		} catch (JSONException e) {
-			System.out.println("ERROR: " + e.toString());
+			Log.d(TAG, "ERROR: " + e.toString());
 			cr = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 		// if async we have already returned at this point unless there was an error...
