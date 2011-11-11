@@ -89,8 +89,8 @@ public class App extends Plugin {
 	public void loadUrl(String url, JSONObject props) throws JSONException {
 		System.out.println("App.loadUrl("+url+","+props+")");
 		int wait = 0;
-		boolean usePhoneGap = true;
-		boolean clearPrev = false;
+		boolean openExternal = false;
+		boolean clearHistory = false;
 
 		// If there are properties, then set them on the Activity
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -101,11 +101,11 @@ public class App extends Plugin {
 				if (key.equals("wait")) {
 					wait = props.getInt(key);
 				}
-				else if (key.equalsIgnoreCase("usephonegap")) {
-					usePhoneGap = props.getBoolean(key);
+				else if (key.equalsIgnoreCase("openexternal")) {
+					openExternal = props.getBoolean(key);
 				}
-				else if (key.equalsIgnoreCase("clearprev")) {
-					clearPrev = props.getBoolean(key);
+				else if (key.equalsIgnoreCase("clearhistory")) {
+					clearHistory = props.getBoolean(key);
 				}
 				else {
 					Object value = props.get(key);
@@ -136,7 +136,7 @@ public class App extends Plugin {
 				e.printStackTrace();
 			}
 		}
-		((GapView)this.ctx).showWebPage(url, usePhoneGap, clearPrev, params);
+		((GapView)this.ctx).showWebPage(url, openExternal, clearHistory, params);
 	}
 
 	/**
@@ -147,12 +147,10 @@ public class App extends Plugin {
 	}
 	
     /**
-     * Clear web history in this web view.
-     * This does not have any effect since each page has its own activity.
+     * Clear page history for the app.
      */
     public void clearHistory() {
     	((GapView)this.ctx).clearHistory();
-    	// TODO: Kill previous activities?
     }
     
     /**
@@ -187,7 +185,6 @@ public class App extends Plugin {
      * Exit the Android application.
      */
     public void exitApp() {
-        ((GapView)this.ctx).activity.setResult(Activity.RESULT_OK);
     	((GapView)this.ctx).endActivity();
     }
 

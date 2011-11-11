@@ -29,6 +29,8 @@ import com.phonegap.api.PluginResult;
 
 public class Capture extends Plugin {
 
+	private static final String TAG = Capture.class.getSimpleName();
+
     private static final String VIDEO_3GPP = "video/3gpp";
     private static final String AUDIO_3GPP = "audio/3gpp";
     private static final String IMAGE_JPEG = "image/jpeg";
@@ -43,7 +45,7 @@ public class Capture extends Plugin {
     private JSONArray results;                      // The array of results to be returned to the user
     private Uri imageUri;                           // Uri of captured image 
 
-    @Override
+	@Override
     public PluginResult execute(String action, JSONArray args, String callbackId) {
         this.callbackId = callbackId;
         this.limit = 1;
@@ -248,10 +250,10 @@ public class Capture extends Plugin {
                         try {
                             uri = this.context.getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
                         } catch (UnsupportedOperationException ex) {
-                            System.out.println("Can't write to internal media storage.");                           
-                            this.fail("Error capturing image - no media storage found.");
-                            return;
-                        }
+							Log.e(TAG, "Can't write to internal media storage.");
+							this.fail("Error capturing image - no media storage found.");
+							return;
+						}
                     }
 
                     // Add compressed version of captured image to returned media store Uri
@@ -278,8 +280,9 @@ public class Capture extends Plugin {
                         captureImage();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    this.fail("Error capturing image.");
+					String err = "Error capturing image.";
+					Log.e(TAG, err, e);
+					this.fail(err);
                 }
             } else if (requestCode == CAPTURE_VIDEO) {
                 // Get the uri of the video clip
@@ -304,7 +307,9 @@ public class Capture extends Plugin {
             }
             // user canceled the action
             else {
-                this.fail("Canceled.");
+				String err = "Canceled.";
+				Log.e(TAG, err + " :310");
+				this.fail(err);
             }
         }
         // If something else
@@ -315,7 +320,9 @@ public class Capture extends Plugin {
             }
             // something bad happened
             else {
-                this.fail("Did not complete!");
+				String err = "Did not complete!";
+				Log.e(TAG, err + " :321");
+				this.fail(err);
             }
         }
     }

@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.util.Log;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
@@ -19,10 +20,12 @@ import java.util.HashMap;
  */
 public class GapViewClient extends WebViewClient {
 
+	private static final String TAG = GapViewClient.class.getSimpleName();
+
     private GapView view;
     private Activity activity;
 
-    /**
+	/**
      * Constructor.
      *
      * @param view
@@ -42,7 +45,7 @@ public class GapViewClient extends WebViewClient {
      */
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        //Log.v(TAG, "URL: " + url);
+        Log.v(TAG, "Ask URL: " + url);
 
         // new activity
         String prefixTargetNew = "_LOADINTERNAL_";

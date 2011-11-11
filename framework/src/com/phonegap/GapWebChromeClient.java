@@ -3,6 +3,7 @@ package com.phonegap;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.*;
@@ -10,6 +11,8 @@ import android.widget.EditText;
 import com.phonegap.api.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.text.MessageFormat;
 
 /**
  * Set the chrome handler.
@@ -143,90 +146,92 @@ public class GapWebChromeClient extends WebChromeClient {
     @Override
     public boolean onJsPrompt(WebView webView, String url, String message, String defaultValue, JsPromptResult result) {
 
-        // Security check to make sure any requests are coming from the page initially
-        // loaded in webview and not another loaded in an iframe.
-        boolean reqOk = false;
-        if (url.indexOf(this.gapView.baseUrl) == 0 || this.gapView.isUrlWhiteListed(url)) {
-            reqOk = true;
-        }
+		Log.d(TAG, MessageFormat.format("onJsPro url={0}\nmsg={1}\ndef={2}\n", url, message, defaultValue));
 
-        // Calling PluginManager.exec() to call a native service using
-        // prompt(this.stringify(args), "gap:"+this.stringify([service, action, callbackId, true]));
-        if (reqOk && defaultValue != null && defaultValue.length() > 3 && defaultValue.substring(0, 4).equals("gap:")) {
-            JSONArray array;
-            try {
-                array = new JSONArray(defaultValue.substring(4));
-                String service = array.getString(0);
-                String action = array.getString(1);
-                String callbackId = array.getString(2);
-                boolean async = array.getBoolean(3);
-                String r = this.gapView.pluginManager.exec(service, action, callbackId, message, async);
-                result.confirm(r);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+		// Security check to make sure any requests are coming from the page initially
+		// loaded in webview and not another loaded in an iframe.
+		boolean reqOk = false;
+		if (url.indexOf(this.gapView.baseUrl) == 0 || this.gapView.isUrlWhiteListed(url)) {
+			reqOk = true;
+		}
 
-        // Polling for JavaScript messages
-        else if (reqOk && defaultValue != null && defaultValue.equals("gap_poll:")) {
-            String r = this.gapView.callbackServer.getJavascript();
-            result.confirm(r);
-        }
+		// Calling PluginManager.exec() to call a native service using
+		// prompt(this.stringify(args), "gap:"+this.stringify([service, action, callbackId, true]));
+		if (reqOk && defaultValue != null && defaultValue.length() > 3 && defaultValue.substring(0, 4).equals("gap:")) {
+			JSONArray array;
+			try {
+				array = new JSONArray(defaultValue.substring(4));
+				String service = array.getString(0);
+				String action = array.getString(1);
+				String callbackId = array.getString(2);
+				boolean async = array.getBoolean(3);
+				String r = this.gapView.pluginManager.exec(service, action, callbackId, message, async);
+				result.confirm(r);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 
-        // Calling into CallbackServer
-        else if (reqOk && defaultValue != null && defaultValue.equals("gap_callbackServer:")) {
-            String r = "";
-            if (message.equals("usePolling")) {
-                r = "" + this.gapView.callbackServer.usePolling();
-            } else if (message.equals("restartServer")) {
-                this.gapView.callbackServer.restartServer();
-            } else if (message.equals("getPort")) {
-                r = Integer.toString(this.gapView.callbackServer.getPort());
-            } else if (message.equals("getToken")) {
-                r = this.gapView.callbackServer.getToken();
-            }
-            result.confirm(r);
-        }
+		// Polling for JavaScript messages
+		else if (reqOk && defaultValue != null && defaultValue.equals("gap_poll:")) {
+			String r = this.gapView.callbackServer.getJavascript();
+			result.confirm(r);
+		}
 
-        // PhoneGap JS has initialized, so show webview
-        // (This solves white flash seen when rendering HTML)
-        else if (reqOk && defaultValue != null && defaultValue.equals("gap_init:")) {
-            this.gapView.appView.setVisibility(View.VISIBLE);
-            this.gapView.spinnerStop();
-            result.confirm("OK");
-        }
+		// Calling into CallbackServer
+		else if (reqOk && defaultValue != null && defaultValue.equals("gap_callbackServer:")) {
+			String r = "";
+			if (message.equals("usePolling")) {
+				r = "" + this.gapView.callbackServer.usePolling();
+			} else if (message.equals("restartServer")) {
+				this.gapView.callbackServer.restartServer();
+			} else if (message.equals("getPort")) {
+				r = Integer.toString(this.gapView.callbackServer.getPort());
+			} else if (message.equals("getToken")) {
+				r = this.gapView.callbackServer.getToken();
+			}
+			result.confirm(r);
+		}
 
-        // Show dialog
-        else {
-            final JsPromptResult res = result;
-            AlertDialog.Builder dlg = new AlertDialog.Builder(this.ctx);
-            dlg.setMessage(message);
-            final EditText input = new EditText(this.ctx);
-            if (defaultValue != null) {
-                input.setText(defaultValue);
-            }
-            dlg.setView(input);
-            dlg.setCancelable(false);
-            dlg.setPositiveButton(android.R.string.ok,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String usertext = input.getText().toString();
-                            res.confirm(usertext);
-                        }
-                    });
-            dlg.setNegativeButton(android.R.string.cancel,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            res.cancel();
-                        }
-                    });
-            dlg.create();
-            dlg.show();
-        }
-        return true;
-    }
+		// PhoneGap JS has initialized, so show webview
+		// (This solves white flash seen when rendering HTML)
+		else if (reqOk && defaultValue != null && defaultValue.equals("gap_init:")) {
+			this.gapView.appView.setVisibility(View.VISIBLE);
+			this.gapView.spinnerStop();
+			result.confirm("OK");
+		}
+
+		// Show dialog
+		else {
+			final JsPromptResult res = result;
+			AlertDialog.Builder dlg = new AlertDialog.Builder(this.ctx);
+			dlg.setMessage(message);
+			final EditText input = new EditText(this.ctx);
+			if (defaultValue != null) {
+				input.setText(defaultValue);
+			}
+			dlg.setView(input);
+			dlg.setCancelable(false);
+			dlg.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String usertext = input.getText().toString();
+							res.confirm(usertext);
+						}
+					});
+			dlg.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							res.cancel();
+						}
+					});
+			dlg.create();
+			dlg.show();
+		}
+		return true;
+	}
 
     /**
      * Handle database quota exceeded notification.

@@ -39,6 +39,7 @@ import android.util.Log;
  * the camera view was shown is redisplayed.
  */
 public class CameraLauncher extends Plugin {
+	private static final String TAG = "CameraLauncher";
 
     private static final int DATA_URL = 0;              // Return base64 encoded string
     private static final int FILE_URI = 1;              // Return file uri (content://media/external/images/media/2 for Android)
@@ -68,7 +69,7 @@ public class CameraLauncher extends Plugin {
      
     public String callbackId;
     private int numPics;
-    
+
     /**
      * Constructor.
      */
@@ -123,6 +124,7 @@ public class CameraLauncher extends Plugin {
             return new PluginResult(status, result);
         } catch (JSONException e) {
             e.printStackTrace();
+			Log.e(TAG, "JSON error", e);
             return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
         }
     }

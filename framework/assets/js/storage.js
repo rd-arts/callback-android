@@ -425,4 +425,6 @@ PhoneGap.addConstructor(function() {
         PhoneGap.waitForInitialization("cupcakeStorage");
     }
 });
+
+	document.write("AHAHA");
 }

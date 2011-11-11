@@ -32,20 +32,17 @@ public class DemoPhonegapViewActivity extends Activity {
 		gapView = (GapView) findViewById(R.id.gapView);
 
 		gapView.loadGapUrl("file:///android_asset/www/demo_index.html");
+//		gapView.loadGapUrl("file:///android_asset/www/demo_index2.html");
+//		gapView.loadGapUrl("file:///android_asset/js/demo_index3.html");
 
         activityEventsDispatcher = gapView.getActivityEventsDispatcher();
 
 		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a button", Toast.LENGTH_SHORT);
-			}
-		});
-
-		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a native button.\nWeb-based view below me can do lots of mobile magic. While it is still HTML5.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a native button.\n" +
+						"Web-based view below me can do lots of mobile magic. While it is still HTML5.",
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
