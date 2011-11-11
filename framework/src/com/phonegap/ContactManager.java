@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class ContactManager extends Plugin {
 
 	private ContactAccessor contactAccessor;
-	private static final String LOG_TAG = "Contact Query";
+	private static final String LOG_TAG = "GAP_" + "ContactQuery";
 
 	public static final int UNKNOWN_ERROR = 0;
 	public static final int INVALID_ARGUMENT_ERROR = 1;

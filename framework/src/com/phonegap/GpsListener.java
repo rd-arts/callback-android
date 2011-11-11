@@ -18,7 +18,7 @@ import android.util.Log;
  * This class handles requests for GPS location services.
  */
 public class GpsListener implements LocationListener {
-	private static final String TAG = GpsListener.class.getSimpleName();
+	private static final String TAG = "GAP_" + GpsListener.class.getSimpleName();
 
 	private Context mContext;
 

@@ -26,7 +26,7 @@ import java.util.Iterator;
 
 public class FileTransfer extends Plugin {
 
-	private static final String LOG_TAG = "FileUploader";
+	private static final String LOG_TAG = "GAP_" + "FileUploader";
 	private static final String LINE_START = "--";
 	private static final String LINE_END = "\r\n";
 	private static final String BOUNDRY = "*****";

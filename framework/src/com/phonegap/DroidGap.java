@@ -145,7 +145,7 @@
 // *      </plugins>
 // */
 //public class DroidGap extends Activity implements PhonegapActivity {
-//    public static String TAG = "DroidGap";
+//    public static String TAG = "GAP_" +"DroidGap";
 //
 //	/**
 //	 * XML config read helper.
@@ -771,7 +771,7 @@
 //     */
 //    public class GapClient extends WebChromeClient {
 //
-//        private String TAG = "PhoneGapLog";
+//        private String TAG = "GAP_" +"PhoneGapLog";
 //        private long MAX_QUOTA = 100 * 1024 * 1024;
 //        private DroidGap ctx;
 //
@@ -1481,7 +1481,7 @@
 //      */
 //     class LinearLayoutSoftKeyboardDetect extends LinearLayout {
 //
-//            private static final String TAG = "SoftKeyboardDetect";
+//            private static final String TAG = "GAP_" +"SoftKeyboardDetect";
 //
 //            private int oldHeight = 0;  // Need to save the old height as not to send redundant events
 //            private int oldWidth = 0; // Need to save old width for orientation change

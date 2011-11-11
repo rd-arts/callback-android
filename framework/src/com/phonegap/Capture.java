@@ -27,7 +27,7 @@ import java.io.OutputStream;
 
 public class Capture extends Plugin {
 
-	private static final String TAG = Capture.class.getSimpleName();
+	private static final String TAG = "GAP_" + Capture.class.getSimpleName();
 
 	private static final String VIDEO_3GPP = "video/3gpp";
 	private static final String AUDIO_3GPP = "audio/3gpp";
@@ -36,7 +36,7 @@ public class Capture extends Plugin {
 	private static final int CAPTURE_AUDIO = 0;	 // Constant for capture audio
 	private static final int CAPTURE_IMAGE = 1;	 // Constant for capture image
 	private static final int CAPTURE_VIDEO = 2;	 // Constant for capture video
-	private static final String LOG_TAG = "Capture";
+	private static final String LOG_TAG = "GAP_" + "Capture";
 	private String callbackId;					  // The ID of the callback to be invoked with our result
 	private long limit;							 // the number of pics/vids/clips to take
 	private double duration;						// optional duration parameter for video recording

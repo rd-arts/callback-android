@@ -10,7 +10,7 @@ import com.phonegap.api.LOG;
  */
 class SoftKeyboardDetectLinearLayout extends LinearLayout {
 
-	private static final String TAG = "SoftKeyboardDetect";
+	private static final String TAG = "GAP_" + "SoftKeyboardDetect";
 
 	private int oldHeight = 0;  // Need to save the old height as not to send redundant events
 	private int oldWidth = 0; // Need to save old width for orientation change

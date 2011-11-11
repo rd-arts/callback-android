@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class AudioPlayer implements OnCompletionListener, OnPreparedListener, OnErrorListener {
 
-	private static final String LOG_TAG = "AudioPlayer";
+	private static final String LOG_TAG = "GAP_" + "AudioPlayer";
 
 	// AudioPlayer states
 	private static int MEDIA_NONE = 0;
@@ -317,8 +317,8 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
 	 *
 	 * @param file The name of the audio file.
 	 * @return The duration in msec.
-	 * -1=can't be determined
-	 * -2=not allowed
+	 *         -1=can't be determined
+	 *         -2=not allowed
 	 */
 	public float getDuration(String file) {
 

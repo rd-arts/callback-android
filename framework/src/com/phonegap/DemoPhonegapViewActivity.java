@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 public class DemoPhonegapViewActivity extends Activity {
-	private static final String TAG = DemoPhonegapViewActivity.class.getSimpleName();
+	private static final String TAG = "GAP_" + DemoPhonegapViewActivity.class.getSimpleName();
 
 	private GapView gapView;
 	private ActivityEventsDispatcher activityEventsDispatcher;

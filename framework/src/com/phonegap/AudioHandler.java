@@ -30,7 +30,7 @@ import java.util.Map.Entry;
  * sdcard:				file name is just sound.mp3
  */
 public class AudioHandler extends Plugin {
-	private final String TAG = this.getClass().getSimpleName();
+	private final String TAG = "GAP_" + this.getClass().getSimpleName();
 
 	HashMap<String, AudioPlayer> players;	// Audio player object
 

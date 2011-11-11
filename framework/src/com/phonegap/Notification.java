@@ -27,7 +27,7 @@ import org.json.JSONException;
  */
 public class Notification extends Plugin {
 
-	private final String TAG = this.getClass().getSimpleName();
+	private final String TAG = "GAP_" + this.getClass().getSimpleName();
 
 	public ProgressDialog spinnerDialog = null;
 	public ProgressDialog progressDialog = null;

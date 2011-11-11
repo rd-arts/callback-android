@@ -22,7 +22,7 @@ import org.json.JSONObject;
  * is not used for Android 2.X, since HTML5 database is built in to the browser.
  */
 public class Storage extends Plugin {
-	private final String TAG = this.getClass().getSimpleName();
+	private final String TAG = "GAP_" + this.getClass().getSimpleName();
 
 	// Data Definition Language
 	private static final String ALTER = "alter";

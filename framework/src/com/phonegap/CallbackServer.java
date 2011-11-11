@@ -40,7 +40,7 @@ import java.util.LinkedList;
  */
 public class CallbackServer implements Runnable {
 
-	private static final String TAG = CallbackServer.class.getSimpleName();
+	private static final String TAG = "GAP_" + CallbackServer.class.getSimpleName();
 
 	/**
 	 * The list of JavaScript statements to be sent to JavaScript.
@@ -97,7 +97,7 @@ public class CallbackServer implements Runnable {
 	 * @param url The URL of the PhoneGap app being loaded
 	 */
 	public void init(String url) {
-		Log.d(TAG, "CallbackServer.start("+url+")");
+		Log.d(TAG, "CallbackServer.start(" + url + ")");
 
 		// Determine if XHR or polling is to be used
 		if ((url != null) && !url.startsWith("file://")) {
@@ -176,9 +176,9 @@ public class CallbackServer implements Runnable {
 			String request;
 			ServerSocket waitSocket = new ServerSocket(0);
 			this.port = waitSocket.getLocalPort();
-			Log.d(TAG, "CallbackServer -- using port " +this.port);
+			Log.d(TAG, "CallbackServer -- using port " + this.port);
 			this.token = java.util.UUID.randomUUID().toString();
-			Log.d(TAG, "CallbackServer -- using token "+this.token);
+			Log.d(TAG, "CallbackServer -- using token " + this.token);
 
 			while (this.active) {
 				Log.d(TAG, "CallbackServer: Waiting for data on socket");
@@ -187,7 +187,7 @@ public class CallbackServer implements Runnable {
 				DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 				request = xhrReader.readLine();
 				String response = "";
-				Log.d(TAG, "CallbackServerRequest="+request);
+				Log.d(TAG, "CallbackServerRequest=" + request);
 				if (this.active && (request != null)) {
 					if (request.contains("GET")) {
 
@@ -236,7 +236,7 @@ public class CallbackServer implements Runnable {
 					} else {
 						response = "HTTP/1.1 400 Bad Request\r\n\r\n ";
 					}
-					Log.d(TAG, "CallbackServer: response="+response);
+					Log.d(TAG, "CallbackServer: response=" + response);
 					Log.d(TAG, "CallbackServer: closing output");
 					output.writeBytes(response);
 					output.flush();
@@ -311,7 +311,7 @@ public class CallbackServer implements Runnable {
 	 * @param statement
 	 */
 	public void sendJavascript(String statement) {
-		Log.d(TAG, "CallbackServer.sendJavascript("+statement+")");
+		Log.d(TAG, "CallbackServer.sendJavascript(" + statement + ")");
 		this.javascript.add(statement);
 		synchronized (this) {
 			this.empty = false;

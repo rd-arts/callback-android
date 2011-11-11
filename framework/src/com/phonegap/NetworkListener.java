@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class NetworkListener implements LocationListener {
-	private static final String TAG = NetworkListener.class.getSimpleName();
+	private static final String TAG = "GAP_" + NetworkListener.class.getSimpleName();
 
 	private Context mContext;
 

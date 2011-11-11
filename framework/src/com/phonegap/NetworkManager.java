@@ -53,7 +53,7 @@ public class NetworkManager extends Plugin {
 	public static final String TYPE_4G = "4g";
 	public static final String TYPE_NONE = "none";
 
-	private static final String LOG_TAG = "NetworkManager";
+	private static final String LOG_TAG = "GAP_" + "NetworkManager";
 
 	private String connectionCallbackId;
 

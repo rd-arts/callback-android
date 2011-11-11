@@ -42,7 +42,7 @@ import java.util.HashMap;
  */
 public abstract class ContactAccessor {
 
-	protected final String LOG_TAG = "ContactsAccessor";
+	protected final String LOG_TAG = "GAP_" + "ContactsAccessor";
 	protected Context mApp;
 	protected WebView mView;
 

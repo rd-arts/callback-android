@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GapView extends WebView {
-	public static String TAG = "GapView";
+	public static String TAG = "GAP_" + "GapView";
 
 	/**
 	 * XML config read helper.
@@ -215,6 +215,7 @@ public class GapView extends WebView {
 	}
 
 	static volatile int times;
+
 	/**
 	 * Load the url into the webview.
 	 * Use it instead of {@link WebView#loadUrl(String)} always.

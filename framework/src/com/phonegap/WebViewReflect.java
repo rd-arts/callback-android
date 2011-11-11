@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class WebViewReflect {
-	private static final String TAG = WebViewReflect.class.getSimpleName();
+	private static final String TAG = "GAP_" + WebViewReflect.class.getSimpleName();
 
 	private static Method mWebSettings_setDatabaseEnabled;
 	private static Method mWebSettings_setDatabasePath;

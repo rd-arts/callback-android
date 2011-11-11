@@ -20,7 +20,7 @@ import org.json.JSONObject;
 
 public class BatteryListener extends Plugin {
 
-	private static final String LOG_TAG = "BatteryManager";
+	private static final String LOG_TAG = "GAP_" + "BatteryManager";
 
 	BroadcastReceiver receiver;
 

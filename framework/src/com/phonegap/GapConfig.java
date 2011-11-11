@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class GapConfig {
-	private static final String TAG = GapConfig.class.getSimpleName();
+	private static final String TAG = "GAP_" + GapConfig.class.getSimpleName();
 
 	/**
 	 * Load PhoneGap configuration from res/xml/phonegap.xml.

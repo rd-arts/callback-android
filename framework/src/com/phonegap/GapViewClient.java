@@ -20,7 +20,7 @@ import java.util.HashMap;
  */
 public class GapViewClient extends WebViewClient {
 
-	private static final String TAG = GapViewClient.class.getSimpleName();
+	private static final String TAG = "GAP_" + GapViewClient.class.getSimpleName();
 
 	private GapView view;
 	private Activity activity;

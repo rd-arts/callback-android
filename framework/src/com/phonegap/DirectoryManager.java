@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class DirectoryManager {
 
-	private static final String LOG_TAG = "DirectoryManager";
+	private static final String LOG_TAG = "GAP_" + "DirectoryManager";
 
 	/**
 	 * Determine if a file or directory exists.

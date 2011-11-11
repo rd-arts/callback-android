@@ -32,7 +32,7 @@ import java.io.*;
  * the camera view was shown is redisplayed.
  */
 public class CameraLauncher extends Plugin {
-	private static final String TAG = "CameraLauncher";
+	private static final String TAG = "GAP_" + "CameraLauncher";
 
 	private static final int DATA_URL = 0;			  // Return base64 encoded string
 	private static final int FILE_URI = 1;			  // Return file uri (content://media/external/images/media/2 for Android)
@@ -51,7 +51,7 @@ public class CameraLauncher extends Plugin {
 	private static final String GET_VIDEO = "Get Video";
 	private static final String GET_All = "Get All";
 
-	private static final String LOG_TAG = "CameraLauncher";
+	private static final String LOG_TAG = "GAP_" + "CameraLauncher";
 
 	private int mQuality;				   // Compression quality hint (0-100: 0=low quality & high compression, 100=compress of max quality)
 	private int targetWidth;				// desired width of the image

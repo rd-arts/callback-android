@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 public class App extends Plugin {
 
-	private static final String TAG = "AppGap";
+	private static final String TAG = "GAP_" + "AppGap";
 
 	/**
 	 * Executes the request and returns PluginResult.

@@ -29,7 +29,7 @@ import java.util.Map.Entry;
  * from JavaScript.
  */
 public final class PluginManager {
-	private static final String TAG = PluginManager.class.getSimpleName();
+	private static final String TAG = "GAP_" + PluginManager.class.getSimpleName();
 
 	private HashMap<String, IPlugin> plugins = new HashMap<String, IPlugin>();
 	private HashMap<String, String> services = new HashMap<String, String>();

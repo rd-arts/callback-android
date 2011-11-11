@@ -34,7 +34,7 @@ import java.util.Vector;
  * Only files on the SD card can be accessed.
  */
 public class FileUtils extends Plugin {
-	private static final String TAG = FileUtils.class.getSimpleName();
+	private static final String TAG = "GAP_" + FileUtils.class.getSimpleName();
 	private static final String _DATA = "_data";	// The column name where the file path is stored
 
 	public static int NOT_FOUND_ERR = 1;
@@ -859,8 +859,8 @@ public class FileUtils extends Plugin {
 	 * @param filename The name of the file.
 	 * @param encoding The encoding to return contents as.  Typical value is UTF-8.
 	 *                 (see http://www.iana.org/assignments/character-sets)
-	 * @throws FileNotFoundException, IOException
 	 * @return Contents of file.
+	 * @throws FileNotFoundException, IOException
 	 */
 	public String readAsText(String filename, String encoding) throws FileNotFoundException, IOException {
 		byte[] bytes = new byte[1000];
@@ -877,8 +877,8 @@ public class FileUtils extends Plugin {
 	 * Read content of text file and return as base64 encoded data url.
 	 *
 	 * @param filename The name of the file.
-	 * @throws FileNotFoundException, IOException
 	 * @return Contents of file = data:<media type>;base64,<data>
+	 * @throws FileNotFoundException, IOException
 	 */
 	public String readAsDataURL(String filename) throws FileNotFoundException, IOException {
 		byte[] bytes = new byte[1000];

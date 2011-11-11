@@ -19,7 +19,7 @@ import java.text.MessageFormat;
  */
 public class GapWebChromeClient extends WebChromeClient {
 
-	private String TAG = "PhoneGapLog";
+	private String TAG = "GAP_" + "PhoneGapLog";
 	@SuppressWarnings({"FieldCanBeLocal"})
 	private long MAX_QUOTA = 100 * 1024 * 1024;
 
