@@ -206,7 +206,8 @@ public class CallbackServer implements Runnable {
 										this.wait(10000); // prevent timeout from happening
 										Log.d(TAG, "CallbackServer>>> break <<<");
 										break;
-									} catch (Exception e) {
+									} catch (InterruptedException e) {
+										Log.i(TAG, "wait empty interrupted");
 									}
 								}
 							}

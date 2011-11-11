@@ -16,6 +16,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
@@ -25,6 +26,8 @@ import org.json.JSONException;
  * This class provides access to notifications on the device.
  */
 public class Notification extends Plugin {
+
+	private final String TAG = this.getClass().getSimpleName();
 
 	public ProgressDialog spinnerDialog = null;
 	public ProgressDialog progressDialog = null;
@@ -128,6 +131,7 @@ public class Notification extends Plugin {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
+						Log.i(TAG, "interrupted:132");
 					}
 				}
 			}

@@ -71,7 +71,7 @@ public class AudioHandler extends Plugin {
 				try {
 					this.setVolume(args.getString(0), Float.parseFloat(args.getString(1)));
 				} catch (NumberFormatException nfe) {
-					//no-op
+					Log.e(TAG, "set vol", nfe);
 				}
 			} else if (action.equals("getCurrentPositionAudio")) {
 				float f = this.getCurrentPositionAudio(args.getString(0));

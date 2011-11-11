@@ -190,6 +190,7 @@ public class GapViewClient extends WebViewClient {
 							}
 						});
 					} catch (InterruptedException e) {
+						Log.i(TAG, "interrupted:193");
 					}
 				}
 			});
