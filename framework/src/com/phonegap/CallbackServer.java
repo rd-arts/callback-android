@@ -7,6 +7,8 @@
  */
 package com.phonegap;
 
+import android.util.Log;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -38,8 +40,8 @@ import java.util.LinkedList;
  */
 public class CallbackServer implements Runnable {
 
-	private static final String LOG_TAG = "CallbackServer";
-
+	private static final String TAG = CallbackServer.class.getSimpleName();
+	
 	/**
 	 * The list of JavaScript statements to be sent to JavaScript.
 	 */
@@ -79,7 +81,7 @@ public class CallbackServer implements Runnable {
 	 * Constructor.
 	 */
 	public CallbackServer() {
-		//System.out.println("CallbackServer()");
+		Log.d(TAG, "CallbackServer()");
 		this.active = false;
 		this.empty = true;
 		this.port = 0;
@@ -95,7 +97,7 @@ public class CallbackServer implements Runnable {
 	 * @param url The URL of the PhoneGap app being loaded
 	 */
 	public void init(String url) {
-		//System.out.println("CallbackServer.start("+url+")");
+		Log.d(TAG, "CallbackServer.start("+url+")");
 
 		// Determine if XHR or polling is to be used
 		if ((url != null) && !url.startsWith("file://")) {
@@ -141,7 +143,7 @@ public class CallbackServer implements Runnable {
 	 * Start the server on a new thread.
 	 */
 	public void startServer() {
-		//System.out.println("CallbackServer.startServer()");
+		Log.d(TAG, "CallbackServer.startServer()");
 		this.active = false;
 
 		// Start server on new thread
@@ -174,18 +176,18 @@ public class CallbackServer implements Runnable {
 			String request;
 			ServerSocket waitSocket = new ServerSocket(0);
 			this.port = waitSocket.getLocalPort();
-			//System.out.println("CallbackServer -- using port " +this.port);
+			Log.d(TAG, "CallbackServer -- using port " +this.port);
 			this.token = java.util.UUID.randomUUID().toString();
-			//System.out.println("CallbackServer -- using token "+this.token);
+			Log.d(TAG, "CallbackServer -- using token "+this.token);
 
 			while (this.active) {
-				//System.out.println("CallbackServer: Waiting for data on socket");
+				Log.d(TAG, "CallbackServer: Waiting for data on socket");
 				Socket connection = waitSocket.accept();
 				BufferedReader xhrReader = new BufferedReader(new InputStreamReader(connection.getInputStream()), 40);
 				DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 				request = xhrReader.readLine();
 				String response = "";
-				//System.out.println("CallbackServerRequest="+request);
+				Log.d(TAG, "CallbackServerRequest="+request);
 				if (this.active && (request != null)) {
 					if (request.contains("GET")) {
 
@@ -194,7 +196,7 @@ public class CallbackServer implements Runnable {
 
 						// Must have security token
 						if ((requestParts.length == 3) && (requestParts[1].substring(1).equals(this.token))) {
-							//System.out.println("CallbackServer -- Processing GET request");
+							Log.d(TAG, "CallbackServer -- Processing GET request");
 
 							// Wait until there is some data to send, or send empty data every 10 sec
 							// to prevent XHR timeout on the client
@@ -202,7 +204,7 @@ public class CallbackServer implements Runnable {
 								while (this.empty) {
 									try {
 										this.wait(10000); // prevent timeout from happening
-										//System.out.println("CallbackServer>>> break <<<");
+										Log.d(TAG, "CallbackServer>>> break <<<");
 										break;
 									} catch (Exception e) {
 									}
@@ -214,10 +216,10 @@ public class CallbackServer implements Runnable {
 
 								// If no data, then send 404 back to client before it times out
 								if (this.empty) {
-									//System.out.println("CallbackServer -- sending data 0");
+									Log.d(TAG, "CallbackServer -- sending data 0");
 									response = "HTTP/1.1 404 NO DATA\r\n\r\n "; // need to send content otherwise some Android devices fail, so send space
 								} else {
-									//System.out.println("CallbackServer -- sending item");
+									Log.d(TAG, "CallbackServer -- sending item");
 									response = "HTTP/1.1 200 OK\r\n\r\n";
 									String js = this.getJavascript();
 									if (js != null) {
@@ -233,8 +235,8 @@ public class CallbackServer implements Runnable {
 					} else {
 						response = "HTTP/1.1 400 Bad Request\r\n\r\n ";
 					}
-					//System.out.println("CallbackServer: response="+response);
-					//System.out.println("CallbackServer: closing output");
+					Log.d(TAG, "CallbackServer: response="+response);
+					Log.d(TAG, "CallbackServer: closing output");
 					output.writeBytes(response);
 					output.flush();
 				}
@@ -243,9 +245,10 @@ public class CallbackServer implements Runnable {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			Log.e(TAG, "IO", e);
 		}
 		this.active = false;
-		//System.out.println("CallbackServer.startServer() - EXIT");
+		Log.d(TAG, "CallbackServer.startServer() - EXIT");
 	}
 
 	/**
@@ -253,7 +256,7 @@ public class CallbackServer implements Runnable {
 	 * This stops the thread that the server is running on.
 	 */
 	public void stopServer() {
-		//System.out.println("CallbackServer.stopServer()");
+		Log.d(TAG, "CallbackServer.stopServer()");
 		if (this.active) {
 			this.active = false;
 
@@ -278,7 +281,7 @@ public class CallbackServer implements Runnable {
 	 */
 	public int getSize() {
 		int size = this.javascript.size();
-		//System.out.println("getSize() = " + size);
+		Log.d(TAG, "getSize() = " + size);
 		return size;
 	}
 
@@ -292,7 +295,7 @@ public class CallbackServer implements Runnable {
 			return null;
 		}
 		String statement = this.javascript.remove(0);
-		//System.out.println("CallbackServer.getJavascript() = " + statement);
+		Log.d(TAG, "CallbackServer.getJavascript() = " + statement);
 		if (this.javascript.size() == 0) {
 			synchronized (this) {
 				this.empty = true;
@@ -307,7 +310,7 @@ public class CallbackServer implements Runnable {
 	 * @param statement
 	 */
 	public void sendJavascript(String statement) {
-		//System.out.println("CallbackServer.sendJavascript("+statement+")");
+		Log.d(TAG, "CallbackServer.sendJavascript("+statement+")");
 		this.javascript.add(statement);
 		synchronized (this) {
 			this.empty = false;

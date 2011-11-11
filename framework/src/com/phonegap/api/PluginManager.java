@@ -69,7 +69,7 @@ public final class PluginManager {
 				if (strNode.equals("plugin")) {
 					pluginClass = xml.getAttributeValue(null, "value");
 					pluginName = xml.getAttributeValue(null, "name");
-					//System.out.println("Plugin: "+name+" => "+value);
+					Log.d(TAG, "Plugin: " + pluginName + " => " + pluginClass);
 					this.addService(pluginName, pluginClass);
 				} else if (strNode.equals("url-filter")) {
 					this.urlMap.put(xml.getAttributeValue(null, "value"), pluginName);

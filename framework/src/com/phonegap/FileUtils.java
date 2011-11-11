@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
@@ -33,7 +34,7 @@ import java.util.Vector;
  * Only files on the SD card can be accessed.
  */
 public class FileUtils extends Plugin {
-	private static final String LOG_TAG = "FileUtils";
+	private static final String TAG = FileUtils.class.getSimpleName();
 	private static final String _DATA = "_data";	// The column name where the file path is stored
 
 	public static int NOT_FOUND_ERR = 1;
@@ -76,7 +77,7 @@ public class FileUtils extends Plugin {
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";
-		//System.out.println("FileUtils.execute("+action+")");
+		Log.d(TAG, "FileUtils.execute(" + action + ")");
 
 		try {
 			try {
@@ -322,8 +323,8 @@ public class FileUtils extends Plugin {
 		// Figure out where we should be copying to
 		File destination = createDestination(newName, source, destinationDir);
 
-		//Log.d(LOG_TAG, "Source: " + source.getAbsolutePath());
-		//Log.d(LOG_TAG, "Destin: " + destination.getAbsolutePath());
+		Log.v(TAG, "Source: " + source.getAbsolutePath());
+		Log.v(TAG, "Destin: " + destination.getAbsolutePath());
 
 		// Check to see if source and destination are the same file 
 		if (source.getAbsolutePath().equals(destination.getAbsolutePath())) {
