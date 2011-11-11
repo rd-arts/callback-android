@@ -41,7 +41,7 @@ import java.util.LinkedList;
 public class CallbackServer implements Runnable {
 
 	private static final String TAG = CallbackServer.class.getSimpleName();
-	
+
 	/**
 	 * The list of JavaScript statements to be sent to JavaScript.
 	 */
@@ -65,7 +65,7 @@ public class CallbackServer implements Runnable {
 	/**
 	 * Indicates that the JavaScript statements list is empty
 	 */
-	private boolean empty;
+	private volatile boolean empty;
 
 	/**
 	 * Indicates that polling should be used instead of XHR.
@@ -204,7 +204,7 @@ public class CallbackServer implements Runnable {
 								while (this.empty) {
 									try {
 										this.wait(10000); // prevent timeout from happening
-										Log.d(TAG, "CallbackServer>>> break <<<");
+										Log.d(TAG, "CallbackServer>>> break <<< Look-ahead: " + ((javascript != null) ? javascript.peek() : ""));
 										break;
 									} catch (InterruptedException e) {
 										Log.i(TAG, "wait empty interrupted");

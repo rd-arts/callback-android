@@ -75,21 +75,21 @@ public class GapConfig {
 				whiteList.add(Pattern.compile(".*"));
 			} else { // specific access
 				// check if subdomains should be included
-				// TODO: we should not add more domains if * has already been added
+				// TODO: we should not to add more domains if * has already been added
 				if (subdomains) {
 					// XXX making it stupid friendly for people who forget to include protocol/SSL
 					if (origin.startsWith("http")) {
-						whiteList.add(Pattern.compile(origin.replaceFirst("https{0,1}://", "^https{0,1}://.*")));
+						whiteList.add(Pattern.compile(origin.replaceFirst("https?://", "^https?://.*")));
 					} else {
-						whiteList.add(Pattern.compile("^https{0,1}://.*" + origin));
+						whiteList.add(Pattern.compile("^https?://.*" + origin));
 					}
 					LOG.d(TAG, "Origin to allow with subdomains: %s", origin);
 				} else {
 					// XXX making it stupid friendly for people who forget to include protocol/SSL
 					if (origin.startsWith("http")) {
-						whiteList.add(Pattern.compile(origin.replaceFirst("https{0,1}://", "^https{0,1}://")));
+						whiteList.add(Pattern.compile(origin.replaceFirst("https?://", "^https?://")));
 					} else {
-						whiteList.add(Pattern.compile("^https{0,1}://" + origin));
+						whiteList.add(Pattern.compile("^https?://" + origin));
 					}
 					LOG.d(TAG, "Origin to allow: %s", origin);
 				}

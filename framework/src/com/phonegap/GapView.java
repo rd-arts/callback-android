@@ -155,10 +155,13 @@ public class GapView extends WebView {
 		//Set the nav dump for HTC
 		//settings.setNavDump(true);
 
+/*
+**!*
 		// Enable database
 		settings.setDatabaseEnabled(true);
 		String databasePath = context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
 		settings.setDatabasePath(databasePath);
+*/
 
 		// Enable DOM storage
 		WebViewReflect.setDomStorage(settings);
@@ -211,6 +214,7 @@ public class GapView extends WebView {
 		this.keepRunning = config.getBooleanProperty("keepRunning", true, activity);
 	}
 
+	static volatile int times;
 	/**
 	 * Load the url into the webview.
 	 * Use it instead of {@link WebView#loadUrl(String)} always.
@@ -218,6 +222,7 @@ public class GapView extends WebView {
 	 * @param url url
 	 */
 	public void loadGapUrl(String url) {
+		Log.i(TAG, ++times + " load URL: " + url);
 
 		// If first page of app, then set URL to load to be the one passed in
 		if (this.firstPage) {
@@ -291,6 +296,7 @@ public class GapView extends WebView {
 				Runnable runnable = new Runnable() {
 					@Override
 					public void run() {
+						Log.e(TAG, "Wait server to start.");
 						try {
 							synchronized (GapView.this) {
 								GapView.this.wait(me.loadUrlTimeoutValue);
@@ -301,8 +307,10 @@ public class GapView extends WebView {
 
 						// If timeout, then stop loading and handle error
 						if (me.loadUrlTimeout == currentLoadUrlTimeout) {
+							String msg = "The connection to the server was unsuccessful.";
+							Log.e(TAG, msg);
 							me.appView.stopLoading();
-							me.webViewClient.onReceivedError(me.appView, -6, "The connection to the server was unsuccessful.", url);
+							me.webViewClient.onReceivedError(me.appView, -6, msg, url);
 						}
 					}
 				};
@@ -696,6 +704,8 @@ public class GapView extends WebView {
 		IPlugin callback = this.activityResultCallback;
 		if (callback != null) {
 			callback.onActivityResult(requestCode, resultCode, intent);
+		} else {
+			Log.w(TAG, String.format("No callback for result!!! req=%d res=%d", requestCode, resultCode));
 		}
 	}
 

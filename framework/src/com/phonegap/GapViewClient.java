@@ -163,6 +163,7 @@ public class GapViewClient extends WebViewClient {
 	 */
 	@Override
 	public void onPageFinished(WebView view, String url) {
+		Log.v(TAG, "onPageFinished URL: " + url);
 		super.onPageFinished(view, url);
 
 		// Clear timeout flag
@@ -223,7 +224,8 @@ public class GapViewClient extends WebViewClient {
 	 */
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-		LOG.d(GapView.TAG, "DroidGap: GapViewClient.onReceivedError: Error code=%s Description=%s URL=%s", errorCode, description, failingUrl);
+		LOG.d(GapView.TAG, "DroidGap: GapViewClient.onReceivedError: Error code=%s Description=%s URL=%s",
+				errorCode, description, failingUrl);
 
 		// Clear timeout flag
 		this.view.loadUrlTimeout++;
@@ -246,7 +248,6 @@ public class GapViewClient extends WebViewClient {
 			if ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
 				// debug = true
 				handler.proceed();
-				return;
 			} else {
 				// debug = false
 				super.onReceivedSslError(view, handler, error);

@@ -123,4 +123,14 @@ public class PluginResult {
 		JSON_EXCEPTION,
 		ERROR
 	}
+
+	@Override
+	public String toString() {
+		return "PRes{" +
+				"status=" + status +
+				", message='" + message + '\'' +
+				", keepCallback=" + keepCallback +
+				", cast='" + cast + '\'' +
+				'}';
+	}
 }

@@ -46,6 +46,8 @@ public class GapWebChromeClient extends WebChromeClient {
 	 */
 	@Override
 	public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+		Log.d(TAG, MessageFormat.format("onJsAlert url={0}\nmsg={1}\n", url, message));
+
 		AlertDialog.Builder dlg = new AlertDialog.Builder(this.ctx);
 		dlg.setMessage(message);
 		dlg.setTitle("Alert");
@@ -91,6 +93,9 @@ public class GapWebChromeClient extends WebChromeClient {
 	 */
 	@Override
 	public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+
+		Log.d(TAG, MessageFormat.format("onJsConfirm url={0}\nmsg={1}\n", url, message));
+
 		AlertDialog.Builder dlg = new AlertDialog.Builder(this.ctx);
 		dlg.setMessage(message);
 		dlg.setTitle("Confirm");
@@ -146,7 +151,7 @@ public class GapWebChromeClient extends WebChromeClient {
 	@Override
 	public boolean onJsPrompt(WebView webView, String url, String message, String defaultValue, JsPromptResult result) {
 
-		Log.d(TAG, MessageFormat.format("onJsPro url={0}\nmsg={1}\ndef={2}\n", url, message, defaultValue));
+		Log.d(TAG, MessageFormat.format("onJsPro url={0}\t msg={1} def={2}", url, message, defaultValue));
 
 		// Security check to make sure any requests are coming from the page initially
 		// loaded in webview and not another loaded in an iframe.
@@ -246,7 +251,8 @@ public class GapWebChromeClient extends WebChromeClient {
 	@Override
 	public void onExceededDatabaseQuota(String url, String databaseIdentifier, long currentQuota, long estimatedSize,
 										long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) {
-		LOG.d(TAG, "DroidGap:  onExceededDatabaseQuota estimatedSize: %d  currentQuota: %d  totalUsedQuota: %d", estimatedSize, currentQuota, totalUsedQuota);
+		LOG.d(TAG, "DroidGap:  onExceededDatabaseQuota estimatedSize: %d  currentQuota: %d  totalUsedQuota: %d",
+				estimatedSize, currentQuota, totalUsedQuota);
 
 		if (estimatedSize < MAX_QUOTA) {
 			//increase for 1Mb
@@ -280,6 +286,7 @@ public class GapWebChromeClient extends WebChromeClient {
 	 * @param callback
 	 */
 	public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+		Log.d(TAG, MessageFormat.format("onGeolocationPermissionsShowPrompt origin={0}", origin));
 		super.onGeolocationPermissionsShowPrompt(origin, callback);
 		callback.invoke(origin, true, false);
 	}

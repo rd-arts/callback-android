@@ -115,8 +115,8 @@ public class CameraLauncher extends Plugin {
 			}
 			return new PluginResult(status, result);
 		} catch (JSONException e) {
-			e.printStackTrace();
 			Log.e(TAG, "JSON error", e);
+			e.printStackTrace();
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 	}
@@ -127,7 +127,7 @@ public class CameraLauncher extends Plugin {
 
 	/**
 	 * Take a picture with the camera.
-	 * When an image is captured or the camera view is cancelled, the result is returned
+	 * When an image is captured or the camera view is canceled, the result is returned
 	 * in PhonegapActivity.onActivityResult, which forwards the result to this.onActivityResult.
 	 * <p/>
 	 * The image can either be returned as a base64 string or a URI that points to the file.
@@ -336,7 +336,7 @@ public class CameraLauncher extends Plugin {
 
 			// If cancelled
 			else if (resultCode == Activity.RESULT_CANCELED) {
-				this.failPicture("Camera cancelled.");
+				this.failPicture("Camera canceled.");
 			}
 
 			// If something else
@@ -399,7 +399,7 @@ public class CameraLauncher extends Plugin {
 					}
 				}
 			} else if (resultCode == Activity.RESULT_CANCELED) {
-				this.failPicture("Selection cancelled.");
+				this.failPicture("Selection canceled.");
 			} else {
 				this.failPicture("Selection did not complete!");
 			}
