@@ -181,13 +181,13 @@ public class CallbackServer implements Runnable {
 			Log.d(TAG, "CallbackServer -- using token " + this.token);
 
 			while (this.active) {
-				Log.d(TAG, "CallbackServer: Waiting for data on socket");
+				//Log.v(TAG, "CallbackServer: Waiting for data on socket");
 				Socket connection = waitSocket.accept();
 				BufferedReader xhrReader = new BufferedReader(new InputStreamReader(connection.getInputStream()), 40);
 				DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 				request = xhrReader.readLine();
 				String response = "";
-				Log.d(TAG, "CallbackServerRequest=" + request);
+				//Log.d(TAG, "Request=" + request);
 				if (this.active && (request != null)) {
 					if (request.contains("GET")) {
 
@@ -196,7 +196,7 @@ public class CallbackServer implements Runnable {
 
 						// Must have security token
 						if ((requestParts.length == 3) && (requestParts[1].substring(1).equals(this.token))) {
-							Log.d(TAG, "CallbackServer -- Processing GET request");
+							//Log.v(TAG, "Processing GET request");
 
 							// Wait until there is some data to send, or send empty data every 10 sec
 							// to prevent XHR timeout on the client
@@ -204,7 +204,7 @@ public class CallbackServer implements Runnable {
 								while (this.empty) {
 									try {
 										this.wait(10000); // prevent timeout from happening
-										Log.d(TAG, "CallbackServer>>> break <<< Look-ahead: " + ((javascript != null) ? javascript.peek() : ""));
+										//Log.v(TAG, ">>> break <<< Look-ahead: " + ((javascript != null) ? javascript.peek() : ""));
 										break;
 									} catch (InterruptedException e) {
 										Log.i(TAG, "wait empty interrupted");
@@ -217,10 +217,10 @@ public class CallbackServer implements Runnable {
 
 								// If no data, then send 404 back to client before it times out
 								if (this.empty) {
-									Log.d(TAG, "CallbackServer -- sending data 0");
+									//Log.v(TAG, "Sending zero data 404.");
 									response = "HTTP/1.1 404 NO DATA\r\n\r\n "; // need to send content otherwise some Android devices fail, so send space
 								} else {
-									Log.d(TAG, "CallbackServer -- sending item");
+									//Log.v(TAG, "Sending JavaScript");
 									response = "HTTP/1.1 200 OK\r\n\r\n";
 									String js = this.getJavascript();
 									if (js != null) {
@@ -236,8 +236,7 @@ public class CallbackServer implements Runnable {
 					} else {
 						response = "HTTP/1.1 400 Bad Request\r\n\r\n ";
 					}
-					Log.d(TAG, "CallbackServer: response=" + response);
-					Log.d(TAG, "CallbackServer: closing output");
+					if (!this.empty) Log.d(TAG, "Closing output. Resp=" + response);
 					output.writeBytes(response);
 					output.flush();
 				}
@@ -293,10 +292,11 @@ public class CallbackServer implements Runnable {
 	 */
 	public String getJavascript() {
 		if (this.javascript.size() == 0) {
+			// Log.v(TAG, "getJS(): No new JS available");
 			return null;
 		}
 		String statement = this.javascript.remove(0);
-		Log.d(TAG, "CallbackServer.getJavascript() = " + statement);
+		Log.v(TAG, "getJS()=" + statement);
 		if (this.javascript.size() == 0) {
 			synchronized (this) {
 				this.empty = true;
@@ -311,7 +311,7 @@ public class CallbackServer implements Runnable {
 	 * @param statement
 	 */
 	public void sendJavascript(String statement) {
-		Log.d(TAG, "CallbackServer.sendJavascript(" + statement + ")");
+		Log.v(TAG, "sendJS=" + statement);
 		this.javascript.add(statement);
 		synchronized (this) {
 			this.empty = false;

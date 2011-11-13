@@ -9,6 +9,7 @@ package com.phonegap.api;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.webkit.WebView;
 import com.phonegap.GapView;
 import org.json.JSONArray;
@@ -20,6 +21,8 @@ import org.json.JSONObject;
  * The execute method is called by the PluginManager.
  */
 public abstract class Plugin implements IPlugin {
+
+	private static final String TAG = "GAP_" + Plugin.class.getSimpleName();
 
 	//TODO omg public fields
 
@@ -160,6 +163,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId   The callback id used when calling back into JavaScript.
 	 */
 	public void success(PluginResult pluginResult, String callbackId) {
+		Log.d(TAG, String.format("Plugin success. %s Result=%s", callbackId, pluginResult));
 		this.ctx.sendJavascript(pluginResult.toSuccessCallbackString(callbackId));
 	}
 
@@ -170,6 +174,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId The callback id used when calling back into JavaScript.
 	 */
 	public void success(JSONObject message, String callbackId) {
+		Log.d(TAG, String.format("Plugin success. %s JsonMsg=%s", callbackId, message));
 		this.ctx.sendJavascript(new PluginResult(PluginResult.Status.OK, message).toSuccessCallbackString(callbackId));
 	}
 
@@ -180,6 +185,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId The callback id used when calling back into JavaScript.
 	 */
 	public void success(String message, String callbackId) {
+		Log.d(TAG, String.format("Plugin success. %s Msg=%s", callbackId, message));
 		this.ctx.sendJavascript(new PluginResult(PluginResult.Status.OK, message).toSuccessCallbackString(callbackId));
 	}
 
@@ -190,6 +196,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId   The callback id used when calling back into JavaScript.
 	 */
 	public void error(PluginResult pluginResult, String callbackId) {
+		Log.d(TAG, String.format("Plugin error. %s Result=%s", callbackId, pluginResult));
 		this.ctx.sendJavascript(pluginResult.toErrorCallbackString(callbackId));
 	}
 
@@ -200,6 +207,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId The callback id used when calling back into JavaScript.
 	 */
 	public void error(JSONObject message, String callbackId) {
+		Log.d(TAG, String.format("Plugin error. %s JsonMsg=%s", callbackId, message));
 		this.ctx.sendJavascript(new PluginResult(PluginResult.Status.ERROR, message).toErrorCallbackString(callbackId));
 	}
 
@@ -210,6 +218,7 @@ public abstract class Plugin implements IPlugin {
 	 * @param callbackId The callback id used when calling back into JavaScript.
 	 */
 	public void error(String message, String callbackId) {
+		Log.d(TAG, String.format("Plugin error. %s Msg=%s", callbackId, message));
 		this.ctx.sendJavascript(new PluginResult(PluginResult.Status.ERROR, message).toErrorCallbackString(callbackId));
 	}
 }

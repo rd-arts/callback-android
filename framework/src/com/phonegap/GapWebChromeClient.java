@@ -151,7 +151,8 @@ public class GapWebChromeClient extends WebChromeClient {
 	@Override
 	public boolean onJsPrompt(WebView webView, String url, String message, String defaultValue, JsPromptResult result) {
 
-		Log.d(TAG, MessageFormat.format("onJsPro url={0}\t msg={1} def={2}", url, message, defaultValue));
+		Log.d(TAG, MessageFormat.format("onJsPrm def={2} msg={1} url={0}",
+				url.substring(url.length() - 12), message, defaultValue));
 
 		// Security check to make sure any requests are coming from the page initially
 		// loaded in webview and not another loaded in an iframe.

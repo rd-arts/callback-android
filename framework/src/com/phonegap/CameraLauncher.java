@@ -32,7 +32,7 @@ import java.io.*;
  * the camera view was shown is redisplayed.
  */
 public class CameraLauncher extends Plugin {
-	private static final String TAG = "GAP_" + "CameraLauncher";
+	private static final String TAG = "GAP_" + CameraLauncher.class.getSimpleName();
 
 	private static final int DATA_URL = 0;			  // Return base64 encoded string
 	private static final int FILE_URI = 1;			  // Return file uri (content://media/external/images/media/2 for Android)

@@ -125,7 +125,7 @@ public final class PluginManager {
 								PluginResult cr = plugin.execute(action, args, callbackId);
 								int status = cr.getStatus();
 
-								Log.v(TAG, String.format("srv:%s %s json:%s callbackId:%s asy:%b", service, cr, jsonArgs, callbackId, async));
+								Log.v(TAG, String.format("srv:%s;%s;json:%s callbackId:%s async:%b", service, cr, jsonArgs, callbackId, async));
 								// If no result to be sent and keeping callback, then no need to sent back to JavaScript
 								if ((status == PluginResult.Status.NO_RESULT.ordinal()) && cr.getKeepCallback()) {
 								}

@@ -126,7 +126,7 @@ public class PluginResult {
 
 	@Override
 	public String toString() {
-		return "PRes{" +
+		return "Res{" +
 				"status=" + status +
 				", message='" + message + '\'' +
 				", keepCallback=" + keepCallback +
