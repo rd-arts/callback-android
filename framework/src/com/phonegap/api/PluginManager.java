@@ -19,7 +19,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
@@ -52,13 +51,13 @@ public final class PluginManager {
 		this.ctx = ctx;
 		this.webView = webView;
 		this.gapController = gapController;
-		this.loadPlugins();
+		this.loadPluginsList();
 	}
 
 	/**
-	 * Load plugins from res/xml/plugins.xml
+	 * Load plugins name to impl class mapping from res/xml/plugins.xml
 	 */
-	private void loadPlugins() {
+	private void loadPluginsList() {
 		int id = ctx.getResources().getIdentifier("plugins", "xml", ctx.getPackageName());
 		if (id == 0) {
 			pluginConfigurationMissing();

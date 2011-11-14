@@ -27,7 +27,7 @@ import org.json.JSONException;
  */
 public class Notification extends Plugin {
 
-	private final String TAG = "GAP_" + this.getClass().getSimpleName();
+	private final static String TAG = "GAP_" + Notification.class.getSimpleName();
 
 	private ProgressDialog spinnerDialog = null;
 	private ProgressDialog progressDialog = null;
@@ -36,6 +36,7 @@ public class Notification extends Plugin {
 	 * Constructor.
 	 */
 	public Notification() {
+		//Log.d(TAG, "Construct Notification plugin");
 	}
 
 	/**
@@ -47,6 +48,7 @@ public class Notification extends Plugin {
 	 * @return A PluginResult object with a status and message.
 	 */
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
+		Log.i(TAG, String.format("%s %s %s ", action, args, callbackId));
 		PluginResult.Status status = PluginResult.Status.OK;
 		String result = "";
 

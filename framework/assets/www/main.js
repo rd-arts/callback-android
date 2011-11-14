@@ -22,6 +22,7 @@ var getLocation = function() {
     var failLoc = function() {
 		alert("Cannot get location.");
     };
+	Geolocation.usePhoneGap(); // use plugin instead of build-in browser support
     navigator.geolocation.getCurrentPosition(successLoc, failLoc);
 };
 

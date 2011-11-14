@@ -7,6 +7,7 @@
  */
 package com.phonegap;
 
+import android.util.Log;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
@@ -23,6 +24,8 @@ import java.util.Map.Entry;
 
 public class GeoBroker extends Plugin {
 
+	private final static String TAG = "GAP_" + GeoBroker.class.getSimpleName();
+
 	// List of GeoLocation listeners
 	private HashMap<String, GeoListener> geoListeners;
 	private GeoListener global;
@@ -31,6 +34,7 @@ public class GeoBroker extends Plugin {
 	 * Constructor.
 	 */
 	public GeoBroker() {
+		Log.i(TAG, "Construct GeoBroker plugin");
 		this.geoListeners = new HashMap<String, GeoListener>();
 	}
 

@@ -138,6 +138,8 @@ class GapWebChromeClient extends WebChromeClient {
 	}
 
 	/**
+	 * Is is entry point for RPC from browser. JS PhoneGap.exec call comes here.
+	 * <p/>
 	 * Tell the client to display a prompt dialog to the user.
 	 * If the client returns true, WebView will assume that the client will
 	 * handle the prompt dialog and call the appropriate JsPromptResult method.
@@ -267,7 +269,9 @@ class GapWebChromeClient extends WebChromeClient {
 		}
 	}
 
-	// console.log in api level 7: http://developer.android.com/guide/developing/debug-tasks.html
+	/**
+	 * console.log in api level 7: http://developer.android.com/guide/developing/debug-tasks.html
+	 */
 	@Override
 	public void onConsoleMessage(String message, int lineNumber, String sourceID) {
 		LOG.d(TAG, "%s: Line %d : %s", sourceID, lineNumber, message);
@@ -279,15 +283,18 @@ class GapWebChromeClient extends WebChromeClient {
 		return true;
 	}
 
-	@Override
 	/**
+	 * Called when browser build-in GEO location functionality is used.
+	 * That means Callback Phonegap Geolocation NOT in use.
+	 * <p/>
 	 * Instructs the client to show a prompt to ask the user to set the Geolocation permission state for the specified origin.
 	 *
 	 * @param origin
 	 * @param callback
 	 */
+	@Override
 	public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-		Log.d(TAG, MessageFormat.format("onGeolocationPermissionsShowPrompt origin={0}", origin));
+		Log.d(TAG, MessageFormat.format("onGeolocationPermissionsShowPrompt origin=''{0}''", origin));
 		super.onGeolocationPermissionsShowPrompt(origin, callback);
 		callback.invoke(origin, true, false);
 	}
