@@ -39,7 +39,7 @@ import java.util.HashMap;
  * Donut, we want to use the {@link ContactAccessorSdk3_4} class. If it is
  * Eclair or higher, we want to use {@link ContactAccessorSdk5}.
  */
-public abstract class ContactAccessor {
+abstract class ContactAccessor {
 
 	final String TAG = "GAP_" + ContactAccessor.class.getSimpleName();
 

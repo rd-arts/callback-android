@@ -23,9 +23,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import com.phonegap.api.IActivityEventsDispatcher;
 import com.phonegap.api.IPlugin;
 import com.phonegap.api.LOG;
-import com.phonegap.api.PluginManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,7 +107,7 @@ public class GapView extends WebView {
 
 	Context context;
 	private Activity activity;
-	private ActivityEventsDispatcher activityEventsDispatcher = new ActivityEventsDispatcher() {
+	private IActivityEventsDispatcher activityEventsDispatcher = new IActivityEventsDispatcher() {
 		@Override
 		public void onNewIntent(Intent intent) {
 			GapView.this.onNewIntent(intent);
@@ -138,7 +138,7 @@ public class GapView extends WebView {
 		//      debug setting
 		whiteList = GapConfig.loadConfiguration(context);
 
-		this.webViewClient = new GapViewClient(this);
+		this.webViewClient = new GapWebViewClient(this);
 		setWebChromeClient(new GapWebChromeClient(context, this));
 		setWebViewClient(this.webViewClient);
 
@@ -797,7 +797,7 @@ public class GapView extends WebView {
 		return false;
 	}
 
-	public ActivityEventsDispatcher getActivityEventsDispatcher() {
+	public IActivityEventsDispatcher getActivityEventsDispatcher() {
 		return activityEventsDispatcher;
 	}
 

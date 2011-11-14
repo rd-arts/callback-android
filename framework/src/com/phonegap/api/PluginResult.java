@@ -11,6 +11,33 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class PluginResult {
+
+	public enum Status {
+		NO_RESULT,
+		OK,
+		CLASS_NOT_FOUND_EXCEPTION,
+		ILLEGAL_ACCESS_EXCEPTION,
+		INSTANTIATION_EXCEPTION,
+		MALFORMED_URL_EXCEPTION,
+		IO_EXCEPTION,
+		INVALID_ACTION,
+		JSON_EXCEPTION,
+		ERROR
+	}
+
+	private static String[] StatusMessages = new String[]{
+			"No result",
+			"OK",
+			"Class not found",
+			"Illegal access",
+			"Instantiation error",
+			"Malformed url",
+			"IO error",
+			"Invalid action",
+			"JSON error",
+			"Error"
+	};
+
 	private final int status;
 	private final String message;
 	private boolean keepCallback = false;
@@ -96,32 +123,6 @@ public class PluginResult {
 
 	public String toErrorCallbackString(String callbackId) {
 		return "PhoneGap.callbackError('" + callbackId + "', " + this.getJSONString() + ");";
-	}
-
-	private static String[] StatusMessages = new String[]{
-			"No result",
-			"OK",
-			"Class not found",
-			"Illegal access",
-			"Instantiation error",
-			"Malformed url",
-			"IO error",
-			"Invalid action",
-			"JSON error",
-			"Error"
-	};
-
-	public enum Status {
-		NO_RESULT,
-		OK,
-		CLASS_NOT_FOUND_EXCEPTION,
-		ILLEGAL_ACCESS_EXCEPTION,
-		INSTANTIATION_EXCEPTION,
-		MALFORMED_URL_EXCEPTION,
-		IO_EXCEPTION,
-		INVALID_ACTION,
-		JSON_EXCEPTION,
-		ERROR
 	}
 
 	@Override

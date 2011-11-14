@@ -59,7 +59,7 @@ import java.util.*;
  * social status updates (see {@link android.provider.ContactsContract.StatusUpdates}).
  * </ul>
  */
-public class ContactAccessorSdk5 extends ContactAccessor {
+class ContactAccessorSdk5 extends ContactAccessor {
 
 	/**
 	 * Keep the photo size under the 1 MB blog limit.

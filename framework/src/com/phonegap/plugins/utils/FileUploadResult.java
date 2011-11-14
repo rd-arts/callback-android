@@ -5,7 +5,7 @@
  * Copyright (c) 2005-2010, Nitobi
  * Copyright (c) 2010, IBM Corporation
  */
-package com.phonegap;
+package com.phonegap.plugins.utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

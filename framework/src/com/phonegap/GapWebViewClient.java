@@ -18,9 +18,9 @@ import java.util.HashMap;
 /**
  * The webview client receives notifications about appView
  */
-class GapViewClient extends WebViewClient {
+class GapWebViewClient extends WebViewClient {
 
-	private static final String TAG = "GAP_" + GapViewClient.class.getSimpleName();
+	private static final String TAG = "GAP_" + GapWebViewClient.class.getSimpleName();
 
 	private GapView view;
 	private Activity activity;
@@ -30,7 +30,7 @@ class GapViewClient extends WebViewClient {
 	 *
 	 * @param view
 	 */
-	public GapViewClient(GapView view) {
+	public GapWebViewClient(GapView view) {
 		this.view = view;
 		activity = view.getActivity();
 	}
@@ -186,8 +186,8 @@ class GapViewClient extends WebViewClient {
 						activity.runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								GapViewClient.this.view.setVisibility(View.VISIBLE);
-								GapViewClient.this.view.spinnerStop();
+								GapWebViewClient.this.view.setVisibility(View.VISIBLE);
+								GapWebViewClient.this.view.spinnerStop();
 							}
 						});
 					} catch (InterruptedException e) {
@@ -224,7 +224,7 @@ class GapViewClient extends WebViewClient {
 	 */
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-		LOG.d(GapView.TAG, "DroidGap: GapViewClient.onReceivedError: Error code=%s Description=%s URL=%s",
+		LOG.d(GapView.TAG, "onReceivedError: Error code=%s Description=%s URL=%s",
 				errorCode, description, failingUrl);
 
 		// Clear timeout flag
@@ -239,6 +239,8 @@ class GapViewClient extends WebViewClient {
 
 	@Override
 	public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+		LOG.d(GapView.TAG, "onReceivedSslError: getPrimaryError=%d error=%s",
+				error.getPrimaryError(), error);
 
 		final String packageName = this.view.context.getPackageName();
 		final PackageManager pm = this.view.context.getPackageManager();

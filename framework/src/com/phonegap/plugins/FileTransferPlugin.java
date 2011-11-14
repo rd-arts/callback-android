@@ -10,7 +10,7 @@ package com.phonegap.plugins;
 import android.net.Uri;
 import android.util.Log;
 import android.webkit.CookieManager;
-import com.phonegap.FileUploadResult;
+import com.phonegap.plugins.utils.FileUploadResult;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import org.json.JSONArray;

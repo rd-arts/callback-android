@@ -16,7 +16,7 @@
 //
 //public class StandAlone extends Activity {
 //	private GapView gapView;
-//	private ActivityEventsDispatcher activityEventsDispatcher;
+//	private IActivityEventsDispatcher activityEventsDispatcher;
 //
 //	@Override
 //	public void onCreate(Bundle savedInstanceState) {

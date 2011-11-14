@@ -5,14 +5,15 @@
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010, IBM Corporation
  */
-package com.phonegap.api;
+package com.phonegap;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
 import android.webkit.WebView;
-import com.phonegap.GapView;
+import com.phonegap.api.IPlugin;
+import com.phonegap.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParserException;

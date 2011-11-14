@@ -1,8 +1,8 @@
-package com.phonegap;
+package com.phonegap.api;
 
 import android.content.Intent;
 
-public interface ActivityEventsDispatcher {
+public interface IActivityEventsDispatcher {
 	public void onNewIntent(Intent intent);
 
 	public void onResume();

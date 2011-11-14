@@ -38,7 +38,7 @@ import java.util.LinkedList;
  * 2. If statement available, then client processes it.
  * 3. The client repeats #1 in loop.
  */
-public class CallbackServer implements Runnable {
+class CallbackServer implements Runnable {
 
 	private static final String TAG = "GAP_" + CallbackServer.class.getSimpleName();
 

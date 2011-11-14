@@ -56,7 +56,7 @@
 //import com.phonegap.api.LOG;
 //import com.phonegap.api.PhonegapActivity;
 //import com.phonegap.api.IPlugin;
-//import com.phonegap.api.PluginManager;
+//import com.phonegap.PluginManager;
 //import 	org.xmlpull.v1.XmlPullParserException;
 //
 ///**
@@ -271,7 +271,7 @@
 //
 //        WebViewReflect.checkCompatibility();
 //
-//        this.webViewClient = new GapViewClient(this);
+//        this.webViewClient = new GapWebViewClient(this);
 //        this.appView.setWebChromeClient(new GapClient(DroidGap.this));
 //		this.appView.setWebViewClient(this.webViewClient);
 //
@@ -1048,7 +1048,7 @@
 //    /**
 //     * The webview client receives notifications about appView
 //     */
-//    public class GapViewClient extends WebViewClient {
+//    public class GapWebViewClient extends WebViewClient {
 //
 //        DroidGap ctx;
 //
@@ -1057,7 +1057,7 @@
 //         *
 //         * @param ctx
 //         */
-//        public GapViewClient(DroidGap ctx) {
+//        public GapWebViewClient(DroidGap ctx) {
 //            this.ctx = ctx;
 //        }
 //
@@ -1249,7 +1249,7 @@
 //         */
 //        @Override
 //        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-//            LOG.d(TAG, "DroidGap: GapViewClient.onReceivedError: Error code=%s Description=%s URL=%s", errorCode, description, failingUrl);
+//            LOG.d(TAG, "DroidGap: GapWebViewClient.onReceivedError: Error code=%s Description=%s URL=%s", errorCode, description, failingUrl);
 //
 //            // Clear timeout flag
 //            this.ctx.loadUrlTimeout++;

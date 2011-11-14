@@ -15,13 +15,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.phonegap.api.IActivityEventsDispatcher;
 
 public class DemoCallbackViewActivity extends Activity {
 
 	private static final String TAG = "GAP_" + DemoCallbackViewActivity.class.getSimpleName();
 
 	private GapView gapView;
-	private ActivityEventsDispatcher activityEventsDispatcher;
+	private IActivityEventsDispatcher activityEventsDispatcher;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
