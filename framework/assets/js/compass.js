@@ -13,7 +13,6 @@ CompassError = function(){
     this.code = null;
 };
 
-// Capture error codes
 CompassError.COMPASS_INTERNAL_ERR = 0;
 CompassError.COMPASS_NOT_SUPPORTED = 20;
 

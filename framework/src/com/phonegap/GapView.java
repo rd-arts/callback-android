@@ -106,7 +106,7 @@ public class GapView extends WebView {
 	private boolean keepRunning = true;
 
 	Context context;
-	Activity activity;
+	private Activity activity;
 	private ActivityEventsDispatcher activityEventsDispatcher = new ActivityEventsDispatcher() {
 		@Override
 		public void onNewIntent(Intent intent) {
@@ -131,7 +131,7 @@ public class GapView extends WebView {
 		if (context instanceof Activity)
 			activity = (Activity) context;
 		else
-			throw new IllegalStateException("Phone Gap view cannot be embeded.");
+			throw new IllegalArgumentException("Phone Gap view cannot be embeded.");
 
 		// Load PhoneGap configuration:
 		//      white list of allowed URLs
@@ -799,5 +799,9 @@ public class GapView extends WebView {
 
 	public ActivityEventsDispatcher getActivityEventsDispatcher() {
 		return activityEventsDispatcher;
+	}
+
+	public Activity getActivity() {
+		return activity;
 	}
 }

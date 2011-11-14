@@ -32,7 +32,7 @@ class GapViewClient extends WebViewClient {
 	 */
 	public GapViewClient(GapView view) {
 		this.view = view;
-		activity = view.activity;
+		activity = view.getActivity();
 	}
 
 	/**

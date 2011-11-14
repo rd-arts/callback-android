@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugins>
-	<plugin name="App" value="com.phonegap.App"/>
-	<plugin name="Geolocation" value="com.phonegap.GeoBroker"/>
-	<plugin name="Device" value="com.phonegap.Device"/>
-	<plugin name="Accelerometer" value="com.phonegap.AccelListener"/>
-	<plugin name="Compass" value="com.phonegap.CompassListener"/>
-	<plugin name="Media" value="com.phonegap.AudioHandler"/>
-	<plugin name="Camera" value="com.phonegap.CameraLauncher"/>
-	<plugin name="Contacts" value="com.phonegap.ContactManager"/>
-	<plugin name="Crypto" value="com.phonegap.CryptoHandler"/>
-	<plugin name="File" value="com.phonegap.FileUtils"/>
-	<plugin name="Network Status" value="com.phonegap.NetworkManager"/>
-	<plugin name="Notification" value="com.phonegap.Notification"/>
-	<plugin name="Storage" value="com.phonegap.Storage"/>
-	<plugin name="Temperature" value="com.phonegap.TempListener"/>
-	<plugin name="FileTransfer" value="com.phonegap.FileTransfer"/>
-	<plugin name="Capture" value="com.phonegap.Capture"/>
-	<plugin name="Battery" value="com.phonegap.BatteryListener"/>
+	<plugin name="ControlViewPlugin" value="com.phonegap.ControlViewPlugin"/>
+	<plugin name="Geolocation" value="com.phonegap.plugins.GeoBrokerPlugin"/>
+	<plugin name="Device" value="com.phonegap.plugins.DevicePlugin"/>
+	<plugin name="Accelerometer" value="com.phonegap.plugins.AccelListenerPlugin"/>
+	<plugin name="Compass" value="com.phonegap.plugins.CompassListenerPlugin"/>
+	<plugin name="Media" value="com.phonegap.plugins.AudioHandlerPlugin"/>
+	<plugin name="Camera" value="com.phonegap.plugins.CameraLauncherPlugin"/>
+	<plugin name="Contacts" value="com.phonegap.plugins.ContactManagerPlugin"/>
+	<plugin name="Crypto" value="com.phonegap.plugins.CryptoHandlerPlugin"/>
+	<plugin name="File" value="com.phonegap.plugins.FileUtilsPlugin"/>
+	<plugin name="NetworkStatus" value="com.phonegap.plugins.NetworkManagerPlugin"/>
+	<plugin name="Notification" value="com.phonegap.plugins.NotificationPlugin"/>
+	<plugin name="Storage" value="com.phonegap.plugins.StoragePlugin"/>
+	<plugin name="Temperature" value="com.phonegap.plugins.TempratureListenerPlugin"/>
+	<plugin name="FileTransfer" value="com.phonegap.plugins.FileTransferPlugin"/>
+	<plugin name="Capture" value="com.phonegap.plugins.CapturePlugin"/>
+	<plugin name="Battery" value="com.phonegap.plugins.BatteryListenerPlugin"/>
 </plugins>

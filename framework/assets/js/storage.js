@@ -46,7 +46,7 @@ var DroidDB_Result = function() {
 };
 
 /**
- * Storage object that is called by native code when performing queries.
+ * StoragePlugin object that is called by native code when performing queries.
  * PRIVATE METHOD
  * @constructor
  */

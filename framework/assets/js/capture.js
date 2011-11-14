@@ -54,7 +54,7 @@ var MediaFileData = function(codecs, bitrate, height, width, duration){
 };
 
 /**
- * The CaptureError interface encapsulates all errors in the Capture API.
+ * The CaptureError interface encapsulates all errors in the CapturePlugin API.
  */
 var CaptureError = function(){
 	this.code = null;

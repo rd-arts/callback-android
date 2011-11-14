@@ -50,13 +50,13 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
 
     // successCallback required
     if (typeof successCallback !== "function") {
-        console.log("Device Error: successCallback is not a function");
+        console.log("DevicePlugin Error: successCallback is not a function");
         return;
     }
 
     // errorCallback optional
     if (errorCallback && (typeof errorCallback !== "function")) {
-        console.log("Device Error: errorCallback is not a function");
+        console.log("DevicePlugin Error: errorCallback is not a function");
         return;
     }
 
@@ -71,7 +71,7 @@ Device.prototype.getInfo = function(successCallback, errorCallback) {
  * You must explicitly override the back button.
  */
 Device.prototype.overrideBackButton = function() {
-	console.log("Device.overrideBackButton() is deprecated.  Use App.overrideBackbutton(true).");
+	console.log("Device.overrideBackButton() is deprecated.  Use ControlViewPlugin.overrideBackbutton(true).");
 	navigator.app.overrideBackbutton(true);
 };
 
@@ -82,7 +82,7 @@ Device.prototype.overrideBackButton = function() {
  * This resets the back button to the default behaviour
  */
 Device.prototype.resetBackButton = function() {
-	console.log("Device.resetBackButton() is deprecated.  Use App.overrideBackbutton(false).");
+	console.log("Device.resetBackButton() is deprecated.  Use ControlViewPlugin.overrideBackbutton(false).");
 	navigator.app.overrideBackbutton(false);
 };
 
@@ -93,7 +93,7 @@ Device.prototype.resetBackButton = function() {
  * This terminates the activity!
  */
 Device.prototype.exitApp = function() {
-	console.log("Device.exitApp() is deprecated.  Use App.exitApp().");
+	console.log("Device.exitApp() is deprecated.  Use ControlViewPlugin.exitApp().");
 	navigator.app.exitApp();
 };
 

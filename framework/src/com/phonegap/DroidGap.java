@@ -140,7 +140,7 @@
 // *          value attribute is the Java class name to call.
 // *
 // *      <plugins>
-// *          <plugin name="App" value="com.phonegap.App"/>
+// *          <plugin name="ControlViewPlugin" value="com.phonegap.ControlViewPlugin"/>
 // *          ...
 // *      </plugins>
 // */

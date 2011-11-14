@@ -73,7 +73,7 @@ Connection.NONE = "none";
  */
 Connection.prototype.getInfo = function(successCallback, errorCallback) {
     // Get info
-    PhoneGap.exec(successCallback, errorCallback, "Network Status", "getConnectionInfo", []);
+    PhoneGap.exec(successCallback, errorCallback, "NetworkStatus", "getConnectionInfo", []);
 };
 
 

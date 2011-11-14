@@ -10,7 +10,7 @@ if (!PhoneGap.hasResource("filetransfer")) {
 PhoneGap.addResource("filetransfer");
 
 /**
- * FileTransfer uploads a file to a remote server.
+ * FileTransferPlugin uploads a file to a remote server.
  * @constructor
  */
 var FileTransfer = function() {};
