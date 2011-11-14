@@ -29,8 +29,8 @@ public class Notification extends Plugin {
 
 	private final String TAG = "GAP_" + this.getClass().getSimpleName();
 
-	public ProgressDialog spinnerDialog = null;
-	public ProgressDialog progressDialog = null;
+	private ProgressDialog spinnerDialog = null;
+	private ProgressDialog progressDialog = null;
 
 	/**
 	 * Constructor.
@@ -117,7 +117,7 @@ public class Notification extends Plugin {
 	 *
 	 * @param count Number of times to play notification
 	 */
-	public void beep(long count) {
+	private void beep(long count) {
 		Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		Ringtone notification = RingtoneManager.getRingtone(context, ringtone);
 
@@ -143,7 +143,7 @@ public class Notification extends Plugin {
 	 *
 	 * @param time Time to vibrate in ms.
 	 */
-	public void vibrate(long time) {
+	private void vibrate(long time) {
 		// Start the vibration, 0 defaults to half a second.
 		if (time == 0) {
 			time = 500;
@@ -160,7 +160,7 @@ public class Notification extends Plugin {
 	 * @param buttonLabel The label of the button
 	 * @param callbackId  The callback id
 	 */
-	public synchronized void alert(final String message, final String title, final String buttonLabel, final String callbackId) {
+	private synchronized void alert(final String message, final String title, final String buttonLabel, final String callbackId) {
 
 		final Activity ctx = this.ctx.activity;
 		final Notification notification = this;
@@ -196,7 +196,7 @@ public class Notification extends Plugin {
 	 * @param buttonLabels A comma separated list of button labels (Up to 3 buttons)
 	 * @param callbackId   The callback id
 	 */
-	public synchronized void confirm(final String message, final String title, String buttonLabels, final String callbackId) {
+	private synchronized void confirm(final String message, final String title, String buttonLabels, final String callbackId) {
 
 		final Activity ctx = this.ctx.activity;
 		final Notification notification = this;
@@ -256,7 +256,7 @@ public class Notification extends Plugin {
 	 * @param title   Title of the dialog
 	 * @param message The message of the dialog
 	 */
-	public synchronized void activityStart(final String title, final String message) {
+	private synchronized void activityStart(final String title, final String message) {
 		if (this.spinnerDialog != null) {
 			this.spinnerDialog.dismiss();
 			this.spinnerDialog = null;
@@ -279,7 +279,7 @@ public class Notification extends Plugin {
 	/**
 	 * Stop spinner.
 	 */
-	public synchronized void activityStop() {
+	private synchronized void activityStop() {
 		if (this.spinnerDialog != null) {
 			this.spinnerDialog.dismiss();
 			this.spinnerDialog = null;
@@ -292,7 +292,7 @@ public class Notification extends Plugin {
 	 * @param title   Title of the dialog
 	 * @param message The message of the dialog
 	 */
-	public synchronized void progressStart(final String title, final String message) {
+	private synchronized void progressStart(final String title, final String message) {
 		if (this.progressDialog != null) {
 			this.progressDialog.dismiss();
 			this.progressDialog = null;
@@ -325,7 +325,7 @@ public class Notification extends Plugin {
 	 *
 	 * @param value 0-100
 	 */
-	public synchronized void progressValue(int value) {
+	private synchronized void progressValue(int value) {
 		if (this.progressDialog != null) {
 			this.progressDialog.setProgress(value);
 		}
@@ -334,7 +334,7 @@ public class Notification extends Plugin {
 	/**
 	 * Stop progress dialog.
 	 */
-	public synchronized void progressStop() {
+	private synchronized void progressStop() {
 		if (this.progressDialog != null) {
 			this.progressDialog.dismiss();
 			this.progressDialog = null;

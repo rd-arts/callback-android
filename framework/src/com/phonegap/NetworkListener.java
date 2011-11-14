@@ -14,10 +14,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class NetworkListener implements LocationListener {
+class NetworkListener implements LocationListener {
 	private static final String TAG = "GAP_" + NetworkListener.class.getSimpleName();
-
-	private Context mContext;
 
 	private LocationManager mLocMan;			// Location manager object
 	private GeoListener owner;					// Geolistener object (parent)
@@ -35,7 +33,6 @@ public class NetworkListener implements LocationListener {
 	 */
 	public NetworkListener(Context context, int interval, GeoListener m) {
 		this.owner = m;
-		this.mContext = context;
 		this.mLocMan = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.running = false;
 		this.start(interval);
@@ -46,7 +43,7 @@ public class NetworkListener implements LocationListener {
 	 *
 	 * @return Location object
 	 */
-	public Location getLocation() {
+	private Location getLocation() {
 		this.cLoc = this.mLocMan.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if (this.cLoc != null) {
 			this.hasData = true;

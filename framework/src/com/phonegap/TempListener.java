@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TempListener extends Plugin implements SensorEventListener {
 
-	Sensor mSensor;
+	private Sensor mSensor;
 	private SensorManager sensorManager;
 
 	/**
@@ -75,7 +75,7 @@ public class TempListener extends Plugin implements SensorEventListener {
 	// LOCAL METHODS
 	//--------------------------------------------------------------------------
 
-	public void start() {
+	private void start() {
 		List<Sensor> list = this.sensorManager.getSensorList(Sensor.TYPE_TEMPERATURE);
 		if (list.size() > 0) {
 			this.mSensor = list.get(0);
@@ -83,7 +83,7 @@ public class TempListener extends Plugin implements SensorEventListener {
 		}
 	}
 
-	public void stop() {
+	private void stop() {
 		this.sensorManager.unregisterListener(this);
 	}
 

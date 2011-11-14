@@ -26,14 +26,14 @@ import java.util.Iterator;
 
 public class FileTransfer extends Plugin {
 
-	private static final String LOG_TAG = "GAP_" + "FileUploader";
+	private static final String TAG = "GAP_" + "FileUploader";
 	private static final String LINE_START = "--";
 	private static final String LINE_END = "\r\n";
 	private static final String BOUNDRY = "*****";
 
-	public static int FILE_NOT_FOUND_ERR = 1;
-	public static int INVALID_URL_ERR = 2;
-	public static int CONNECTION_ERR = 3;
+	private static int FILE_NOT_FOUND_ERR = 1;
+	private static int INVALID_URL_ERR = 2;
+	private static int CONNECTION_ERR = 3;
 
 	private SSLSocketFactory defaultSSLSocketFactory = null;
 	private HostnameVerifier defaultHostnameVerifier = null;
@@ -49,7 +49,7 @@ public class FileTransfer extends Plugin {
 			file = args.getString(0);
 			server = args.getString(1);
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Missing filename or server name");
+			Log.d(TAG, "Missing filename or server name");
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION, "Missing filename or server name");
 		}
 
@@ -69,36 +69,36 @@ public class FileTransfer extends Plugin {
 
 			if (action.equals("upload")) {
 				FileUploadResult r = upload(file, server, fileKey, fileName, mimeType, params, trustEveryone, chunkedMode);
-				Log.d(LOG_TAG, "****** About to return a result from upload");
+				Log.d(TAG, "****** About to return a result from upload");
 				return new PluginResult(PluginResult.Status.OK, r.toJSONObject());
 			} else {
 				return new PluginResult(PluginResult.Status.INVALID_ACTION);
 			}
 		} catch (FileNotFoundException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			JSONObject error = createFileUploadError(FILE_NOT_FOUND_ERR);
 			return new PluginResult(PluginResult.Status.IO_EXCEPTION, error);
 		} catch (IllegalArgumentException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			JSONObject error = createFileUploadError(INVALID_URL_ERR);
 			return new PluginResult(PluginResult.Status.IO_EXCEPTION, error);
 		} catch (SSLException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
-			Log.d(LOG_TAG, "Got my ssl exception!!!");
+			Log.e(TAG, e.getMessage(), e);
+			Log.d(TAG, "Got my ssl exception!!!");
 			JSONObject error = createFileUploadError(CONNECTION_ERR);
 			return new PluginResult(PluginResult.Status.IO_EXCEPTION, error);
 		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			JSONObject error = createFileUploadError(CONNECTION_ERR);
 			return new PluginResult(PluginResult.Status.IO_EXCEPTION, error);
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 	}
 
 	// always verify the host - don't check for certificate
-	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+	private final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
 		@Override
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
@@ -141,7 +141,7 @@ public class FileTransfer extends Plugin {
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		} catch (Exception e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class FileTransfer extends Plugin {
 			error = new JSONObject();
 			error.put("code", errorCode);
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return error;
 	}
@@ -193,8 +193,8 @@ public class FileTransfer extends Plugin {
 	 * @param params   key:value pairs of user-defined parameters
 	 * @return FileUploadResult containing result of upload request
 	 */
-	public FileUploadResult upload(String file, String server, final String fileKey, final String fileName,
-								   final String mimeType, JSONObject params, boolean trustEveryone, boolean chunkedMode) throws IOException, SSLException {
+	private FileUploadResult upload(String file, String server, final String fileKey, final String fileName,
+									final String mimeType, JSONObject params, boolean trustEveryone, boolean chunkedMode) throws IOException, SSLException {
 		// Create return object
 		FileUploadResult result = new FileUploadResult();
 
@@ -275,7 +275,7 @@ public class FileTransfer extends Plugin {
 				dos.writeBytes(LINE_END);
 			}
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 
 		dos.writeBytes(LINE_START + BOUNDRY + LINE_END);
@@ -311,7 +311,7 @@ public class FileTransfer extends Plugin {
 		dos.close();
 
 		//------------------ read the SERVER RESPONSE
-		StringBuffer responseString = new StringBuffer("");
+		StringBuilder responseString = new StringBuilder();
 		DataInputStream inStream;
 		try {
 			inStream = new DataInputStream(conn.getInputStream());
@@ -323,8 +323,8 @@ public class FileTransfer extends Plugin {
 		while ((line = inStream.readLine()) != null) {
 			responseString.append(line);
 		}
-		Log.d(LOG_TAG, "got response from server");
-		Log.d(LOG_TAG, responseString.toString());
+		Log.d(TAG, "got response from server");
+		Log.d(TAG, responseString.toString());
 
 		// send request and retrieve response
 		result.setResponseCode(conn.getResponseCode());

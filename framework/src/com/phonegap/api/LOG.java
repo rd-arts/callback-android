@@ -17,14 +17,14 @@ import android.util.Log;
  */
 public class LOG {
 
-	public static final int VERBOSE = Log.VERBOSE;
-	public static final int DEBUG = Log.DEBUG;
-	public static final int INFO = Log.INFO;
-	public static final int WARN = Log.WARN;
-	public static final int ERROR = Log.ERROR;
+	private static final int VERBOSE = Log.VERBOSE;
+	private static final int DEBUG = Log.DEBUG;
+	private static final int INFO = Log.INFO;
+	private static final int WARN = Log.WARN;
+	private static final int ERROR = Log.ERROR;
 
 	// Current log level
-	public static int LOGLEVEL = Log.ERROR;
+	private static int LOGLEVEL = Log.ERROR;
 
 	/**
 	 * Set the current log level.

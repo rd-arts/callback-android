@@ -20,45 +20,45 @@ import org.json.JSONArray;
 
 public class NetworkManager extends Plugin {
 
+	private static final String TAG = "GAP_" + NetworkManager.class.getSimpleName();
+
 	public static int NOT_REACHABLE = 0;
 	public static int REACHABLE_VIA_CARRIER_DATA_NETWORK = 1;
 	public static int REACHABLE_VIA_WIFI_NETWORK = 2;
 
-	public static final String WIFI = "wifi";
+	private static final String WIFI = "wifi";
 	public static final String WIMAX = "wimax";
 	// mobile
-	public static final String MOBILE = "mobile";
+	private static final String MOBILE = "mobile";
 	// 2G network types
-	public static final String GSM = "gsm";
-	public static final String GPRS = "gprs";
-	public static final String EDGE = "edge";
+	private static final String GSM = "gsm";
+	private static final String GPRS = "gprs";
+	private static final String EDGE = "edge";
 	// 3G network types
-	public static final String CDMA = "cdma";
-	public static final String UMTS = "umts";
-	public static final String HSPA = "hspa";
-	public static final String HSUPA = "hsupa";
-	public static final String HSDPA = "hsdpa";
-	public static final String ONEXRTT = "1xrtt";
-	public static final String EHRPD = "ehrpd";
+	private static final String CDMA = "cdma";
+	private static final String UMTS = "umts";
+	private static final String HSPA = "hspa";
+	private static final String HSUPA = "hsupa";
+	private static final String HSDPA = "hsdpa";
+	private static final String ONEXRTT = "1xrtt";
+	private static final String EHRPD = "ehrpd";
 	// 4G network types
-	public static final String LTE = "lte";
-	public static final String UMB = "umb";
-	public static final String HSPA_PLUS = "hspa+";
+	private static final String LTE = "lte";
+	private static final String UMB = "umb";
+	private static final String HSPA_PLUS = "hspa+";
 	// return types
-	public static final String TYPE_UNKNOWN = "unknown";
+	private static final String TYPE_UNKNOWN = "unknown";
 	public static final String TYPE_ETHERNET = "ethernet";
-	public static final String TYPE_WIFI = "wifi";
-	public static final String TYPE_2G = "2g";
-	public static final String TYPE_3G = "3g";
-	public static final String TYPE_4G = "4g";
-	public static final String TYPE_NONE = "none";
-
-	private static final String LOG_TAG = "GAP_" + "NetworkManager";
+	private static final String TYPE_WIFI = "wifi";
+	private static final String TYPE_2G = "2g";
+	private static final String TYPE_3G = "3g";
+	private static final String TYPE_4G = "4g";
+	private static final String TYPE_NONE = "none";
 
 	private String connectionCallbackId;
 
-	ConnectivityManager sockMan;
-	BroadcastReceiver receiver;
+	private ConnectivityManager sockMan;
+	private BroadcastReceiver receiver;
 
 	/**
 	 * Constructor.
@@ -139,7 +139,7 @@ public class NetworkManager extends Plugin {
 			try {
 				this.context.unregisterReceiver(this.receiver);
 			} catch (Exception e) {
-				Log.e(LOG_TAG, "Error unregistering network receiver: " + e.getMessage(), e);
+				Log.e(TAG, "unregisterReceiver error onDestroy.", e);
 			}
 		}
 	}

@@ -33,15 +33,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GapView extends WebView {
-	public static String TAG = "GAP_" + "GapView";
+
+	public static String TAG = "GAP_" + GapView.class.getSimpleName();
 
 	/**
 	 * XML config read helper.
 	 */
 	private GapConfig config = new GapConfig();
 	// The webview for our app
-	protected WebView appView;
-	protected WebViewClient webViewClient;
+	WebView appView;
+	private WebViewClient webViewClient;
 	ArrayList<Pattern> whiteList = new ArrayList<Pattern>();
 	/**
 	 * White-list check URL cache.
@@ -53,10 +54,10 @@ public class GapView extends WebView {
 	 */
 	public boolean bound = false;
 	public CallbackServer callbackServer;
-	protected PluginManager pluginManager;
-	protected boolean cancelLoadUrl = false;
-	protected boolean clearHistory = false;
-	protected ProgressDialog spinnerDialog = null;
+	PluginManager pluginManager;
+	private boolean cancelLoadUrl = false;
+	boolean clearHistory = false;
+	private ProgressDialog spinnerDialog = null;
 
 	/**
 	 * The initial URL for our app
@@ -71,8 +72,8 @@ public class GapView extends WebView {
 	String baseUrl = null;
 
 	// Plugin to call when activity result is received
-	protected IPlugin activityResultCallback = null;
-	protected boolean activityResultKeepRunning;
+	private IPlugin activityResultCallback = null;
+	private boolean activityResultKeepRunning;
 	private static int PG_REQUEST_CODE = 99;
 
 	// Flag indicates that a loadUrl timeout occurred
@@ -90,19 +91,19 @@ public class GapView extends WebView {
 	 * Flag indicates that a URL navigated to from PhoneGap app should be loaded into same webview
 	 * instead of being loaded into the web browser.
 	 */
-	protected boolean loadInWebView = false;
+	boolean loadInWebView = false;
 
 	// Draw a splash screen using an image located in the drawable resource directory.
 	// This is not the same as calling super.loadSplashscreen(url)
-	protected int splashscreen = 0;
+	private int splashscreen = 0;
 
 	// LoadUrl timeout value in msec (default of 20 sec)
-	protected int loadUrlTimeoutValue = 20000;
+	private int loadUrlTimeoutValue = 20000;
 
 	// Keep app running when pause is received. (default = true)
 	// If true, then the JavaScript and native code continue to run in the background
 	// when another application (activity) is started.
-	protected boolean keepRunning = true;
+	private boolean keepRunning = true;
 
 	Context context;
 	Activity activity;
@@ -155,13 +156,10 @@ public class GapView extends WebView {
 		//Set the nav dump for HTC
 		//settings.setNavDump(true);
 
-/*
-**!*
 		// Enable database
 		settings.setDatabaseEnabled(true);
 		String databasePath = context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
 		settings.setDatabasePath(databasePath);
-*/
 
 		// Enable DOM storage
 		WebViewReflect.setDomStorage(settings);
@@ -214,7 +212,7 @@ public class GapView extends WebView {
 		this.keepRunning = config.getBooleanProperty("keepRunning", true, activity);
 	}
 
-	static volatile int times;
+	private static volatile int times;
 
 	/**
 	 * Load the url into the webview.
@@ -429,7 +427,7 @@ public class GapView extends WebView {
 	/**
 	 * Called when the activity receives a new intent
 	 */
-	protected void onNewIntent(Intent intent) {
+	private void onNewIntent(Intent intent) {
 		//Forward to plugins
 		this.pluginManager.onNewIntent(intent);
 	}
@@ -437,7 +435,7 @@ public class GapView extends WebView {
 	/**
 	 * activity onResume.
 	 */
-	protected void onResume() {
+	private void onResume() {
 		// Send resume event to JavaScript
 		this.appView.loadUrl("javascript:try{PhoneGap.onResume.fire();}catch(e){};");
 
@@ -562,7 +560,7 @@ public class GapView extends WebView {
 	 * @param title   Title of the dialog
 	 * @param message The message of the dialog
 	 */
-	public void spinnerStart(final String title, final String message) {
+	private void spinnerStart(final String title, final String message) {
 		if (this.spinnerDialog != null) {
 			this.spinnerDialog.dismiss();
 			this.spinnerDialog = null;
@@ -691,7 +689,7 @@ public class GapView extends WebView {
 	 * @param resultCode  The integer result code returned by the child activity through its setResult().
 	 * @param data		An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
 	 */
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	private void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// If a subsequent DroidGap activity is returning
 		if (requestCode == PG_REQUEST_CODE) {
 			// If terminating app, then shut down this activity too
@@ -748,7 +746,7 @@ public class GapView extends WebView {
 	 * @param button
 	 * @param exit
 	 */
-	public void displayError(final String title, final String message, final String button, final boolean exit) {
+	private void displayError(final String title, final String message, final String button, final boolean exit) {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

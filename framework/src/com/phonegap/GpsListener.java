@@ -17,7 +17,7 @@ import android.util.Log;
 /**
  * This class handles requests for GPS location services.
  */
-public class GpsListener implements LocationListener {
+class GpsListener implements LocationListener {
 	private static final String TAG = "GAP_" + GpsListener.class.getSimpleName();
 
 	private Context mContext;
@@ -49,7 +49,7 @@ public class GpsListener implements LocationListener {
 	 *
 	 * @return Location object
 	 */
-	public Location getLocation() {
+	private Location getLocation() {
 		this.cLoc = this.mLocMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if (this.cLoc != null) {
 			this.hasData = true;

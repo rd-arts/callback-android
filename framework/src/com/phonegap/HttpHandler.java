@@ -16,7 +16,7 @@ import java.io.EOFException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-public class HttpHandler {
+class HttpHandler {
 
 	protected Boolean get(String url, String file) {
 		HttpEntity entity = getHttpEntity(url);

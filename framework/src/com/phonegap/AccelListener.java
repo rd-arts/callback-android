@@ -26,20 +26,22 @@ import java.util.List;
  */
 public class AccelListener extends Plugin implements SensorEventListener {
 
-	public static int STOPPED = 0;
-	public static int STARTING = 1;
-	public static int RUNNING = 2;
+	private static int STOPPED = 0;
+	private static int STARTING = 1;
+	private static int RUNNING = 2;
 	public static int ERROR_FAILED_TO_START = 3;
 
-	public float TIMEOUT = 30000;		// Timeout in msec to shut off listener
+	private float TIMEOUT = 30000;		// Timeout in msec to shut off listener
 
-	float x, y, z;						// most recent acceleration values
-	long timestamp;						// time of most recent value
-	int status;							// status of listener
-	long lastAccessTime;				// time the value was last retrieved
+	private float x;
+	private float y;
+	private float z;						// most recent acceleration values
+	private long timestamp;						// time of most recent value
+	private int status;							// status of listener
+	private long lastAccessTime;				// time the value was last retrieved
 
 	private SensorManager sensorManager;// Sensor manager
-	Sensor mSensor;						// Acceleration sensor returned by sensor manager
+	private Sensor mSensor;						// Acceleration sensor returned by sensor manager
 
 	/**
 	 * Create an accelerometer listener.
@@ -177,7 +179,7 @@ public class AccelListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return status of listener
 	 */
-	public int start() {
+	private int start() {
 
 		// If already starting or running, then just return
 		if ((this.status == AccelListener.RUNNING) || (this.status == AccelListener.STARTING)) {
@@ -206,7 +208,7 @@ public class AccelListener extends Plugin implements SensorEventListener {
 	/**
 	 * Stop listening to acceleration sensor.
 	 */
-	public void stop() {
+	private void stop() {
 		if (this.status != AccelListener.STOPPED) {
 			this.sensorManager.unregisterListener(this);
 		}
@@ -260,7 +262,7 @@ public class AccelListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return status
 	 */
-	public int getStatus() {
+	private int getStatus() {
 		return this.status;
 	}
 
@@ -269,7 +271,7 @@ public class AccelListener extends Plugin implements SensorEventListener {
 	 *
 	 * @param timeout Timeout in msec.
 	 */
-	public void setTimeout(float timeout) {
+	private void setTimeout(float timeout) {
 		this.TIMEOUT = timeout;
 	}
 
@@ -278,7 +280,7 @@ public class AccelListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return timeout in msec
 	 */
-	public float getTimeout() {
+	private float getTimeout() {
 		return this.TIMEOUT;
 	}
 

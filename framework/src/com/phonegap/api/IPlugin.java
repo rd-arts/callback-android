@@ -9,7 +9,6 @@ package com.phonegap.api;
 
 import android.content.Context;
 import android.content.Intent;
-import android.webkit.WebView;
 import com.phonegap.GapView;
 import org.json.JSONArray;
 
@@ -47,14 +46,6 @@ public interface IPlugin {
 	 * @param ctx The context of the main Activity.
 	 */
 	public void setController(GapView ctx);
-
-	/**
-	 * Sets the main View of the application, this is the WebView within which
-	 * a PhoneGap app runs.
-	 *
-	 * @param webView The PhoneGap WebView
-	 */
-	void setView(WebView webView);
 
 	/**
 	 * Called when the system is about to start resuming a previous activity.

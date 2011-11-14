@@ -30,9 +30,9 @@ public class Storage extends Plugin {
 	private static final String DROP = "drop";
 	private static final String TRUNCATE = "truncate";
 
-	SQLiteDatabase myDb = null; // Database object
-	String path = null; // Database path
-	String dbName = null; // Database name
+	private SQLiteDatabase myDb = null; // Database object
+	private String path = null; // Database path
+	private String dbName = null; // Database name
 
 	/**
 	 * Constructor.
@@ -118,7 +118,7 @@ public class Storage extends Plugin {
 	 *
 	 * @param appPackage The application package.
 	 */
-	public void setStorage(String appPackage) {
+	private void setStorage(String appPackage) {
 		this.path = "/data/data/" + appPackage + "/databases/";
 	}
 
@@ -130,8 +130,8 @@ public class Storage extends Plugin {
 	 * @param display_name The display name
 	 * @param size		 The size in bytes
 	 */
-	public void openDatabase(String db, String version, String display_name,
-							 long size) {
+	private void openDatabase(String db, String version, String display_name,
+							  long size) {
 
 		// If database is open, then close it
 		if (this.myDb != null) {
@@ -156,7 +156,7 @@ public class Storage extends Plugin {
 	 * @param params Parameters for the query
 	 * @param tx_id  Transaction id
 	 */
-	public void executeSql(String query, String[] params, String tx_id) {
+	private void executeSql(String query, String[] params, String tx_id) {
 		try {
 			if (isDDL(query)) {
 				this.myDb.execSQL(query);
@@ -182,10 +182,7 @@ public class Storage extends Plugin {
 	 */
 	private boolean isDDL(String query) {
 		String cmd = query.toLowerCase();
-		if (cmd.startsWith(DROP) || cmd.startsWith(CREATE) || cmd.startsWith(ALTER) || cmd.startsWith(TRUNCATE)) {
-			return true;
-		}
-		return false;
+		return cmd.startsWith(DROP) || cmd.startsWith(CREATE) || cmd.startsWith(ALTER) || cmd.startsWith(TRUNCATE);
 	}
 
 	/**
@@ -194,7 +191,7 @@ public class Storage extends Plugin {
 	 * @param cur   Cursor into query results
 	 * @param tx_id Transaction id
 	 */
-	public void processResults(Cursor cur, String tx_id) {
+	private void processResults(Cursor cur, String tx_id) {
 
 		String result = "[]";
 		// If query result has rows

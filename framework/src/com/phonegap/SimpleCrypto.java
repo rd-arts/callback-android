@@ -12,7 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 
-public class SimpleCrypto {
+class SimpleCrypto {
 
 	public static String encrypt(String seed, String cleartext) throws Exception {
 		byte[] rawKey = getRawKey(seed.getBytes());
@@ -27,7 +27,7 @@ public class SimpleCrypto {
 		return new String(result);
 	}
 
-	public static byte[] getRawKey(byte[] seed) throws Exception {
+	private static byte[] getRawKey(byte[] seed) throws Exception {
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		sr.setSeed(seed);
@@ -61,7 +61,7 @@ public class SimpleCrypto {
 		return new String(toByte(hex));
 	}
 
-	public static byte[] toByte(String hexString) {
+	private static byte[] toByte(String hexString) {
 		int len = hexString.length() / 2;
 		byte[] result = new byte[len];
 		for (int i = 0; i < len; ++i) {
@@ -70,7 +70,7 @@ public class SimpleCrypto {
 		return result;
 	}
 
-	public static String toHex(byte[] buf) {
+	private static String toHex(byte[] buf) {
 		if (buf == null) {
 			return "";
 		}

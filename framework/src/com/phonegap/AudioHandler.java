@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 public class AudioHandler extends Plugin {
 	private final String TAG = "GAP_" + this.getClass().getSimpleName();
 
-	HashMap<String, AudioPlayer> players;	// Audio player object
+	private HashMap<String, AudioPlayer> players;	// Audio player object
 
 	/**
 	 * Constructor.
@@ -112,9 +112,7 @@ public class AudioHandler extends Plugin {
 	@Override
 	public void onDestroy() {
 		java.util.Set<Entry<String, AudioPlayer>> s = this.players.entrySet();
-		java.util.Iterator<Entry<String, AudioPlayer>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, AudioPlayer> entry = it.next();
+		for (Entry<String, AudioPlayer> entry : s) {
 			AudioPlayer audio = entry.getValue();
 			audio.destroy();
 		}
@@ -146,12 +144,12 @@ public class AudioHandler extends Plugin {
 	 * @param id   The id of the audio player
 	 * @param file The name of the file
 	 */
-	public void startRecordingAudio(String id, String file) {
+	private void startRecordingAudio(String id, String file) {
 		// If already recording, then just return;
 		if (this.players.containsKey(id)) {
 			return;
 		}
-		AudioPlayer audio = new AudioPlayer(this, id);
+		AudioPlayer audio = new AudioPlayer(context, this, id);
 		this.players.put(id, audio);
 		audio.startRecording(file);
 	}
@@ -161,7 +159,7 @@ public class AudioHandler extends Plugin {
 	 *
 	 * @param id The id of the audio player
 	 */
-	public void stopRecordingAudio(String id) {
+	private void stopRecordingAudio(String id) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			audio.stopRecording();
@@ -175,10 +173,10 @@ public class AudioHandler extends Plugin {
 	 * @param id   The id of the audio player
 	 * @param file The name of the audio file.
 	 */
-	public void startPlayingAudio(String id, String file) {
+	private void startPlayingAudio(String id, String file) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio == null) {
-			audio = new AudioPlayer(this, id);
+			audio = new AudioPlayer(context, this, id);
 			this.players.put(id, audio);
 		}
 		audio.startPlaying(file);
@@ -190,7 +188,7 @@ public class AudioHandler extends Plugin {
 	 * @param id		  The id of the audio player
 	 * @param miliseconds int: number of milliseconds to skip 1000 = 1 second
 	 */
-	public void seekToAudio(String id, int milliseconds) {
+	private void seekToAudio(String id, int milliseconds) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			audio.seekToPlaying(milliseconds);
@@ -202,7 +200,7 @@ public class AudioHandler extends Plugin {
 	 *
 	 * @param id The id of the audio player
 	 */
-	public void pausePlayingAudio(String id) {
+	private void pausePlayingAudio(String id) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			audio.pausePlaying();
@@ -214,7 +212,7 @@ public class AudioHandler extends Plugin {
 	 *
 	 * @param id The id of the audio player
 	 */
-	public void stopPlayingAudio(String id) {
+	private void stopPlayingAudio(String id) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			audio.stopPlaying();
@@ -229,7 +227,7 @@ public class AudioHandler extends Plugin {
 	 * @param id The id of the audio player
 	 * @return position in msec
 	 */
-	public float getCurrentPositionAudio(String id) {
+	private float getCurrentPositionAudio(String id) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			return (audio.getCurrentPosition() / 1000.0f);
@@ -244,7 +242,7 @@ public class AudioHandler extends Plugin {
 	 * @param file The name of the audio file.
 	 * @return The duration in msec.
 	 */
-	public float getDurationAudio(String id, String file) {
+	private float getDurationAudio(String id, String file) {
 
 		// Get audio file
 		AudioPlayer audio = this.players.get(id);
@@ -254,7 +252,7 @@ public class AudioHandler extends Plugin {
 
 		// If not already open, then open the file
 		else {
-			audio = new AudioPlayer(this, id);
+			audio = new AudioPlayer(context, this, id);
 			this.players.put(id, audio);
 			return (audio.getDuration(file));
 		}
@@ -298,7 +296,7 @@ public class AudioHandler extends Plugin {
 	 * @param id	 The id of the audio player
 	 * @param volume Volume to adjust to 0.0f - 1.0f
 	 */
-	public void setVolume(String id, float volume) {
+	private void setVolume(String id, float volume) {
 		AudioPlayer audio = this.players.get(id);
 		if (audio != null) {
 			audio.setVolume(volume);

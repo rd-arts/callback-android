@@ -1,20 +1,28 @@
-var deviceInfo = function() {
-    document.getElementById("platform").innerHTML = device.platform;
-    document.getElementById("version").innerHTML = device.version;
-    document.getElementById("uuid").innerHTML = device.uuid;
-    document.getElementById("name").innerHTML = device.name;
-    document.getElementById("width").innerHTML = screen.width;
-    document.getElementById("height").innerHTML = screen.height;
-    document.getElementById("colorDepth").innerHTML = screen.colorDepth;
+function setDeviceInfo() {
+	document.getElementById("platform").innerHTML = device.platform;
+	document.getElementById("version").innerHTML = device.version;
+	document.getElementById("uuid").innerHTML = device.uuid;
+	document.getElementById("name").innerHTML = device.name;
+	document.getElementById("width").innerHTML = screen.width;
+	document.getElementById("height").innerHTML = screen.height;
+	document.getElementById("colorDepth").innerHTML = screen.colorDepth;
+}
+
+var deviceReadyHandler = function() {
+	setDeviceInfo();
+	/*// start listening location changes
+	navigator.geolocation.watchPosition();*/
 };
 
 var getLocation = function() {
-    var suc = function(p) {
+	console.log("getLocation();");
+    var successLoc = function(p) {
         alert(p.coords.latitude + " " + p.coords.longitude);
     };
-    var locFail = function() {
+    var failLoc = function() {
+		alert("Cannot get location.");
     };
-    navigator.geolocation.getCurrentPosition(suc, locFail);
+    navigator.geolocation.getCurrentPosition(successLoc, failLoc);
 };
 
 var beep = function() {
@@ -119,9 +127,9 @@ function check_network() {
     confirm('Connection type:\n ' + states[networkState]);
 }
 
-function init() {
+function onLoadHandler() {
     // the next line makes it impossible to see Contacts on the HTC Evo since it
     // doesn't have a scroll button
     // document.addEventListener("touchmove", preventBehavior, false);
-    document.addEventListener("deviceready", deviceInfo, true);
+    document.addEventListener("deviceready", deviceReadyHandler, true);
 }

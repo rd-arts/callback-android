@@ -142,7 +142,7 @@ public class CallbackServer implements Runnable {
 	/**
 	 * Start the server on a new thread.
 	 */
-	public void startServer() {
+	private void startServer() {
 		Log.d(TAG, "CallbackServer.startServer()");
 		this.active = false;
 
@@ -255,7 +255,7 @@ public class CallbackServer implements Runnable {
 	 * Stop server.
 	 * This stops the thread that the server is running on.
 	 */
-	public void stopServer() {
+	private void stopServer() {
 		Log.d(TAG, "CallbackServer.stopServer()");
 		if (this.active) {
 			this.active = false;
@@ -339,7 +339,7 @@ public class CallbackServer implements Runnable {
 		 *  See the License for the specific language governing permissions and
 		 *  limitations under the License.
 		 */
-	static final String digits = "0123456789ABCDEF";
+	private static final String digits = "0123456789ABCDEF";
 
 	/**
 	 * This will encode the return value to JavaScript.  We revert the encoding for
@@ -350,7 +350,7 @@ public class CallbackServer implements Runnable {
 	 * @param enc encoding type
 	 * @return encoded string
 	 */
-	public static String encode(String s, String enc) throws UnsupportedEncodingException {
+	private static String encode(String s, String enc) throws UnsupportedEncodingException {
 		if (s == null || enc == null) {
 			throw new NullPointerException();
 		}

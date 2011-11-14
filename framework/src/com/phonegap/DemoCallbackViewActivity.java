@@ -16,8 +16,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class DemoPhonegapViewActivity extends Activity {
-	private static final String TAG = "GAP_" + DemoPhonegapViewActivity.class.getSimpleName();
+public class DemoCallbackViewActivity extends Activity {
+
+	private static final String TAG = "GAP_" + DemoCallbackViewActivity.class.getSimpleName();
 
 	private GapView gapView;
 	private ActivityEventsDispatcher activityEventsDispatcher;
@@ -43,7 +44,7 @@ public class DemoPhonegapViewActivity extends Activity {
 		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(DemoPhonegapViewActivity.this, "I am just a native button.\n" +
+				Toast.makeText(DemoCallbackViewActivity.this, "I am just a native button.\n" +
 						"Web-based view below me can do lots of mobile magic. While it is still HTML5.",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -51,7 +52,7 @@ public class DemoPhonegapViewActivity extends Activity {
 		findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(DemoPhonegapViewActivity.this, "I am button too.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(DemoCallbackViewActivity.this, "I am button too.", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}

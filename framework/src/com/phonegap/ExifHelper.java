@@ -10,7 +10,7 @@ import android.media.ExifInterface;
 
 import java.io.IOException;
 
-public class ExifHelper {
+class ExifHelper {
 	private String aperature = null;
 	private String datetime = null;
 	private String exposureTime = null;

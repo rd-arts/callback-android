@@ -37,27 +37,24 @@ public class FileUtils extends Plugin {
 	private static final String TAG = "GAP_" + FileUtils.class.getSimpleName();
 	private static final String _DATA = "_data";	// The column name where the file path is stored
 
-	public static int NOT_FOUND_ERR = 1;
+	private static int NOT_FOUND_ERR = 1;
 	public static int SECURITY_ERR = 2;
 	public static int ABORT_ERR = 3;
 
 	public static int NOT_READABLE_ERR = 4;
-	public static int ENCODING_ERR = 5;
-	public static int NO_MODIFICATION_ALLOWED_ERR = 6;
+	private static int ENCODING_ERR = 5;
+	private static int NO_MODIFICATION_ALLOWED_ERR = 6;
 	public static int INVALID_STATE_ERR = 7;
 	public static int SYNTAX_ERR = 8;
-	public static int INVALID_MODIFICATION_ERR = 9;
-	public static int QUOTA_EXCEEDED_ERR = 10;
-	public static int TYPE_MISMATCH_ERR = 11;
-	public static int PATH_EXISTS_ERR = 12;
+	private static int INVALID_MODIFICATION_ERR = 9;
+	private static int QUOTA_EXCEEDED_ERR = 10;
+	private static int TYPE_MISMATCH_ERR = 11;
+	private static int PATH_EXISTS_ERR = 12;
 
-	public static int TEMPORARY = 0;
-	public static int PERSISTENT = 1;
-	public static int RESOURCE = 2;
-	public static int APPLICATION = 3;
-
-	FileReader f_in;
-	FileWriter f_out;
+	private static int TEMPORARY = 0;
+	private static int PERSISTENT = 1;
+	private static int RESOURCE = 2;
+	private static int APPLICATION = 3;
 
 	/**
 	 * Constructor.
@@ -458,11 +455,8 @@ public class FileUtils extends Plugin {
 		// This weird test is to determine if we are copying or moving a directory into itself.
 		// Copy /sdcard/myDir to /sdcard/myDir-backup is okay but
 		// Copy /sdcard/myDir to /sdcard/myDir/backup should thow an INVALID_MODIFICATION_ERR
-		if (dest.startsWith(src) && dest.indexOf(File.separator, src.length() - 1) != -1) {
-			return true;
-		}
+		return dest.startsWith(src) && dest.indexOf(File.separator, src.length() - 1) != -1;
 
-		return false;
 	}
 
 	/**
@@ -702,11 +696,10 @@ public class FileUtils extends Plugin {
 	 * @return true if we are at the root, false otherwise.
 	 */
 	private boolean atRootDirectory(String filePath) {
-		if (filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + this.context.getPackageName() + "/cache") ||
-				filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
-			return true;
-		}
-		return false;
+		return filePath.equals(
+				Environment.getExternalStorageDirectory().getAbsolutePath()
+						+ "/Android/data/" + this.context.getPackageName() + "/cache")
+				|| filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath());
 	}
 
 	/**
@@ -862,7 +855,7 @@ public class FileUtils extends Plugin {
 	 * @return Contents of file.
 	 * @throws FileNotFoundException, IOException
 	 */
-	public String readAsText(String filename, String encoding) throws FileNotFoundException, IOException {
+	private String readAsText(String filename, String encoding) throws FileNotFoundException, IOException {
 		byte[] bytes = new byte[1000];
 		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -880,7 +873,7 @@ public class FileUtils extends Plugin {
 	 * @return Contents of file = data:<media type>;base64,<data>
 	 * @throws FileNotFoundException, IOException
 	 */
-	public String readAsDataURL(String filename) throws FileNotFoundException, IOException {
+	private String readAsDataURL(String filename) throws FileNotFoundException, IOException {
 		byte[] bytes = new byte[1000];
 		BufferedInputStream bis = new BufferedInputStream(getPathFromUri(filename), 1024);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -923,7 +916,7 @@ public class FileUtils extends Plugin {
 	 * @throws FileNotFoundException, IOException
 	 */
 	/**/
-	public long write(String filename, String data, int offset) throws FileNotFoundException, IOException {
+	private long write(String filename, String data, int offset) throws FileNotFoundException, IOException {
 		boolean append = false;
 		if (offset > 0) {
 			this.truncateFile(filename, offset);
@@ -984,7 +977,7 @@ public class FileUtils extends Plugin {
 	 * @param ctx		the current application context
 	 * @return the full path to the file
 	 */
-	protected static String getRealPathFromURI(Context context, Uri contentUri) {
+	static String getRealPathFromURI(Context context, Uri contentUri) {
 		Cursor cursor = context.getContentResolver().query(
 				contentUri,
 				new String[]{_DATA},

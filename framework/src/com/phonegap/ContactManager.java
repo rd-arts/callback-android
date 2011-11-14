@@ -16,17 +16,19 @@ import org.json.JSONObject;
 
 public class ContactManager extends Plugin {
 
+	private static final String TAG = "GAP_" + ContactManager.class.getSimpleName();
+
 	private ContactAccessor contactAccessor;
-	private static final String LOG_TAG = "GAP_" + "ContactQuery";
 
-	public static final int UNKNOWN_ERROR = 0;
-	public static final int INVALID_ARGUMENT_ERROR = 1;
-	public static final int TIMEOUT_ERROR = 2;
-	public static final int PENDING_OPERATION_ERROR = 3;
-	public static final int IO_ERROR = 4;
-	public static final int NOT_SUPPORTED_ERROR = 5;
-	public static final int PERMISSION_DENIED_ERROR = 20;
-
+	public static class ContactManagerErrors {
+		public static final int UNKNOWN_ERROR = 0;
+		public static final int INVALID_ARGUMENT_ERROR = 1;
+		public static final int TIMEOUT_ERROR = 2;
+		public static final int PENDING_OPERATION_ERROR = 3;
+		public static final int IO_ERROR = 4;
+		public static final int NOT_SUPPORTED_ERROR = 5;
+		public static final int PERMISSION_DENIED_ERROR = 20;
+	}
 
 	/**
 	 * Constructor.
@@ -55,11 +57,11 @@ public class ContactManager extends Plugin {
 			JSONObject res = null;
 			try {
 				res = new JSONObject();
-				res.put("code", NOT_SUPPORTED_ERROR);
+				res.put("code", ContactManagerErrors.NOT_SUPPORTED_ERROR);
 				res.put("message", "Contacts are not supported in Android 1.X devices");
 			} catch (JSONException e) {
 				// This should never happen
-				Log.e(LOG_TAG, e.getMessage(), e);
+				Log.e(TAG, "Fail constructing result json.", e);
 			}
 			return new PluginResult(PluginResult.Status.ERROR, res);
 		}
@@ -69,7 +71,7 @@ public class ContactManager extends Plugin {
 		 * older phones.
 		 */
 		if (this.contactAccessor == null) {
-			this.contactAccessor = new ContactAccessorSdk5(this.webView, this.context);
+			this.contactAccessor = new ContactAccessorSdk5(this.context);
 		}
 
 		try {
@@ -91,10 +93,10 @@ public class ContactManager extends Plugin {
 			}
 			// If we get to this point an error has occurred
 			JSONObject r = new JSONObject();
-			r.put("code", UNKNOWN_ERROR);
+			r.put("code", ContactManagerErrors.UNKNOWN_ERROR);
 			return new PluginResult(PluginResult.Status.ERROR, r);
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, "Fail constructing result json.", e);
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 	}

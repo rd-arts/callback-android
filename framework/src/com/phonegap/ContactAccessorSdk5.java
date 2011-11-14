@@ -33,7 +33,6 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.webkit.WebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,9 +112,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 	/**
 	 * Create an contact accessor.
 	 */
-	public ContactAccessorSdk5(WebView view, Context context) {
+	public ContactAccessorSdk5(Context context) {
 		mApp = context;
-		mView = view;
 	}
 
 	/**
@@ -152,9 +150,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			searchTerm = "%";
 		}
 
-		//Log.d(LOG_TAG, "Search Term = " + searchTerm);
-		//Log.d(LOG_TAG, "Field Length = " + fields.length());
-		//Log.d(LOG_TAG, "Fields = " + fields.toString());
+		//Log.d(TAG, "Search Term = " + searchTerm);
+		//Log.d(TAG, "Field Length = " + fields.length());
+		//Log.d(TAG, "Fields = " + fields.toString());
 
 		// Loop through the fields the user provided to see what data should be returned.
 		HashMap<String, Boolean> populate = buildPopulationSet(fields);
@@ -170,7 +168,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				ContactsContract.Data.CONTACT_ID + " ASC");
 
 		// Create a set of unique ids
-		//Log.d(LOG_TAG, "ID cursor query returns = " + idCursor.getCount());
+		//Log.d(TAG, "ID cursor query returns = " + idCursor.getCount());
 		Set<String> contactIds = new HashSet<String>();
 		while (idCursor.moveToNext()) {
 			contactIds.add(idCursor.getString(idCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
@@ -332,7 +330,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 						photos.put(photoQuery(c, contactId));
 					}
 				} catch (JSONException e) {
-					Log.e(LOG_TAG, e.getMessage(), e);
+					Log.e(TAG, e.getMessage(), e);
 				}
 
 				// Set the old contact ID 
@@ -369,10 +367,10 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 
 		// This clause means that there are specific ID's to be populated
 		Iterator<String> it = contactIds.iterator();
-		StringBuffer buffer = new StringBuffer("(");
+		StringBuilder buffer = new StringBuilder("(");
 
 		while (it.hasNext()) {
-			buffer.append("'" + it.next() + "'");
+			buffer.append("'").append(it.next()).append("'");
 			if (it.hasNext()) {
 				buffer.append(",");
 			}
@@ -425,7 +423,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				contact.put("photos", photos);
 			}
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return contact;
 	}
@@ -507,7 +505,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 
 		String key;
 		try {
-			//Log.d(LOG_TAG, "How many fields do we have = " + fields.length());
+			//Log.d(TAG, "How many fields do we have = " + fields.length());
 			for (int i = 0; i < fields.length(); i++) {
 				key = fields.getString(i);
 
@@ -570,11 +568,11 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 
 		// Creating the where string
-		StringBuffer selection = new StringBuffer();
+		StringBuilder selection = new StringBuilder();
 		for (int i = 0; i < where.size(); i++) {
 			selection.append(where.get(i));
 			if (i != (where.size() - 1)) {
@@ -629,7 +627,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			organization.put("name", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.COMPANY)));
 			organization.put("title", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE)));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return organization;
 	}
@@ -653,7 +651,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			address.put("postalCode", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE)));
 			address.put("country", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY)));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return address;
 	}
@@ -674,21 +672,21 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			String honorificSuffix = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.SUFFIX));
 
 			// Create the formatted name
-			StringBuffer formatted = new StringBuffer("");
+			StringBuffer formatted = new StringBuffer();
 			if (honorificPrefix != null) {
-				formatted.append(honorificPrefix + " ");
+				formatted.append(honorificPrefix).append(" ");
 			}
 			if (givenName != null) {
-				formatted.append(givenName + " ");
+				formatted.append(givenName).append(" ");
 			}
 			if (middleName != null) {
-				formatted.append(middleName + " ");
+				formatted.append(middleName).append(" ");
 			}
 			if (familyName != null) {
-				formatted.append(familyName + " ");
+				formatted.append(familyName).append(" ");
 			}
 			if (honorificSuffix != null) {
-				formatted.append(honorificSuffix + " ");
+				formatted.append(honorificSuffix).append(" ");
 			}
 
 			contactName.put("familyName", familyName);
@@ -698,7 +696,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			contactName.put("honorificSuffix", honorificSuffix);
 			contactName.put("formatted", formatted);
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return contactName;
 	}
@@ -717,9 +715,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			phoneNumber.put("value", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 			phoneNumber.put("type", getPhoneType(cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE))));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		} catch (Exception excp) {
-			Log.e(LOG_TAG, excp.getMessage(), excp);
+			Log.e(TAG, excp.getMessage(), excp);
 		}
 		return phoneNumber;
 	}
@@ -738,7 +736,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			email.put("value", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
 			email.put("type", getContactType(cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE))));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return email;
 	}
@@ -757,7 +755,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			im.put("value", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
 			im.put("type", getContactType(cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE))));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return im;
 	}
@@ -776,7 +774,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			website.put("value", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
 			website.put("type", getContactType(cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.TYPE))));
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return website;
 	}
@@ -797,7 +795,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			Uri photoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
 			photo.put("value", photoUri.toString());
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return photo;
 	}
@@ -916,7 +914,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				ops.add(builder.build());
 			}
 		} catch (JSONException e1) {
-			Log.d(LOG_TAG, "Could not get name");
+			Log.d(TAG, "Could not get name");
 		}
 
 		// Modify phone numbers
@@ -951,7 +949,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get phone numbers");
+			Log.d(TAG, "Could not get phone numbers");
 		}
 
 		// Modify emails
@@ -986,7 +984,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get emails");
+			Log.d(TAG, "Could not get emails");
 		}
 
 		// Modify addresses
@@ -1031,7 +1029,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get addresses");
+			Log.d(TAG, "Could not get addresses");
 		}
 
 		// Modify organizations
@@ -1071,7 +1069,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get organizations");
+			Log.d(TAG, "Could not get organizations");
 		}
 
 		// Modify IMs
@@ -1107,7 +1105,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get emails");
+			Log.d(TAG, "Could not get emails");
 		}
 
 		// Modify note
@@ -1163,7 +1161,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get websites");
+			Log.d(TAG, "Could not get websites");
 		}
 
 		// Modify birthday
@@ -1173,7 +1171,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 					.withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " +
 							ContactsContract.Data.MIMETYPE + "=? AND " +
 							ContactsContract.CommonDataKinds.Event.TYPE + "=?",
-							new String[]{id, ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE, new String("" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY)})
+							new String[]{id,
+									ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
+									"" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY})
 					.withValue(ContactsContract.CommonDataKinds.Event.TYPE, ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY)
 					.withValue(ContactsContract.CommonDataKinds.Event.START_DATE, birthday)
 					.build());
@@ -1212,7 +1212,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get photos");
+			Log.d(TAG, "Could not get photos");
 		}
 
 		boolean retVal = true;
@@ -1221,12 +1221,12 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 		try {
 			mApp.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
 		} catch (RemoteException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
-			Log.e(LOG_TAG, Log.getStackTraceString(e), e);
+			Log.e(TAG, e.getMessage(), e);
+			Log.e(TAG, Log.getStackTraceString(e), e);
 			retVal = false;
 		} catch (OperationApplicationException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
-			Log.e(LOG_TAG, Log.getStackTraceString(e), e);
+			Log.e(TAG, e.getMessage(), e);
+			Log.e(TAG, Log.getStackTraceString(e), e);
 			retVal = false;
 		}
 
@@ -1380,9 +1380,9 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 			in.close();
 			buffer.flush();
 		} catch (FileNotFoundException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return buffer.toByteArray();
 	}
@@ -1440,7 +1440,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 						.build());
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get name object");
+			Log.d(TAG, "Could not get name object");
 		}
 
 		//Add phone numbers
@@ -1454,7 +1454,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get phone numbers");
+			Log.d(TAG, "Could not get phone numbers");
 		}
 
 		// Add emails
@@ -1468,7 +1468,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get emails");
+			Log.d(TAG, "Could not get emails");
 		}
 
 		// Add addresses
@@ -1482,7 +1482,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get addresses");
+			Log.d(TAG, "Could not get addresses");
 		}
 
 		// Add organizations
@@ -1496,7 +1496,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get organizations");
+			Log.d(TAG, "Could not get organizations");
 		}
 
 		// Add IMs
@@ -1510,7 +1510,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get emails");
+			Log.d(TAG, "Could not get emails");
 		}
 
 		// Add note
@@ -1544,7 +1544,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get websites");
+			Log.d(TAG, "Could not get websites");
 		}
 
 		// Add birthday
@@ -1569,7 +1569,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get photos");
+			Log.d(TAG, "Could not get photos");
 		}
 
 		String newId = null;
@@ -1580,10 +1580,10 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 				newId = cpResults[0].uri.getLastPathSegment();
 			}
 		} catch (RemoteException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			newId = null;
 		} catch (OperationApplicationException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 			newId = null;
 		}
 		return newId;
@@ -1598,7 +1598,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
 		int result = mApp.getContentResolver().delete(ContactsContract.Data.CONTENT_URI,
 				ContactsContract.Data.CONTACT_ID + " = ?",
 				new String[]{id});
-		return (result > 0) ? true : false;
+		return result > 0;
 	}
 
 /**************************************************************************

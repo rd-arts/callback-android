@@ -25,21 +25,20 @@ import java.util.List;
  */
 public class CompassListener extends Plugin implements SensorEventListener {
 
-	public static int STOPPED = 0;
-	public static int STARTING = 1;
-	public static int RUNNING = 2;
-	public static int ERROR_FAILED_TO_START = 3;
+	private static int STOPPED = 0;
+	private static int STARTING = 1;
+	private static int RUNNING = 2;
+	private static int ERROR_FAILED_TO_START = 3;
 
-	public long TIMEOUT = 30000;		// Timeout in msec to shut off listener
+	private long TIMEOUT = 30000;		// Timeout in msec to shut off listener
 
-	int status;						 // status of listener
-	float heading;					  // most recent heading value
-	long timeStamp;					 // time of most recent value
-	long lastAccessTime;				// time the value was last retrieved
-	int accuracy;					   // accuracy of the sensor
+	private int status;						 // status of listener
+	private float heading;					  // most recent heading value
+	private long timeStamp;					 // time of most recent value
+	private long lastAccessTime;				// time the value was last retrieved
 
 	private SensorManager sensorManager;// Sensor manager
-	Sensor mSensor;					 // Compass sensor returned by sensor manager
+	private Sensor mSensor;					 // Compass sensor returned by sensor manager
 
 	/**
 	 * Constructor.
@@ -156,7 +155,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return status of listener
 	 */
-	public int start() {
+	private int start() {
 
 		// If already starting or running, then just return
 		if ((this.status == CompassListener.RUNNING) || (this.status == CompassListener.STARTING)) {
@@ -185,7 +184,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	/**
 	 * Stop listening to compass sensor.
 	 */
-	public void stop() {
+	private void stop() {
 		if (this.status != CompassListener.STOPPED) {
 			this.sensorManager.unregisterListener(this);
 		}
@@ -225,7 +224,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return status
 	 */
-	public int getStatus() {
+	private int getStatus() {
 		return this.status;
 	}
 
@@ -234,7 +233,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return heading
 	 */
-	public float getHeading() {
+	private float getHeading() {
 		this.lastAccessTime = System.currentTimeMillis();
 		return this.heading;
 	}
@@ -244,7 +243,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	 *
 	 * @param timeout Timeout in msec.
 	 */
-	public void setTimeout(long timeout) {
+	private void setTimeout(long timeout) {
 		this.TIMEOUT = timeout;
 	}
 
@@ -253,7 +252,7 @@ public class CompassListener extends Plugin implements SensorEventListener {
 	 *
 	 * @return timeout in msec
 	 */
-	public long getTimeout() {
+	private long getTimeout() {
 		return this.TIMEOUT;
 	}
 

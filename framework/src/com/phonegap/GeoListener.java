@@ -11,46 +11,43 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
-public class GeoListener {
+class GeoListener {
 	public static int PERMISSION_DENIED = 1;
 	public static int POSITION_UNAVAILABLE = 2;
 	public static int TIMEOUT = 3;
 
-	String id;							// Listener ID
-	String successCallback;				// 
-	String failCallback;
+	private String id;							// Listener ID
 	GpsListener mGps;					// GPS listener
-	NetworkListener mNetwork;			// Network listener
-	LocationManager mLocMan;			// Location manager
+	private NetworkListener mNetwork;			// Network listener
+	private LocationManager mLocMan;			// Location manager
 
 	private GeoBroker broker;			// GeoBroker object
 
-	int interval;
+	private int interval;
 
 	/**
 	 * Constructor.
 	 *
+	 * @param context
 	 * @param id	  Listener id
-	 * @param ctx
-	 * @param time	Sampling period in msec
-	 * @param appView
+	 * @param time	IGNORED Sampling period in msec
 	 */
-	GeoListener(GeoBroker broker, String id, int time) {
+	GeoListener(Context context, GeoBroker broker, String id, int time) {
 		this.id = id;
 		this.interval = time;
 		this.broker = broker;
 		this.mGps = null;
 		this.mNetwork = null;
-		this.mLocMan = (LocationManager) broker.context.getSystemService(Context.LOCATION_SERVICE);
+		this.mLocMan = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
 		// If GPS provider, then create and start GPS listener
 		if (this.mLocMan.getProvider(LocationManager.GPS_PROVIDER) != null) {
-			this.mGps = new GpsListener(broker.context, time, this);
+			this.mGps = new GpsListener(context, time, this);
 		}
 
 		// If network provider, then create and start network listener
 		if (this.mLocMan.getProvider(LocationManager.NETWORK_PROVIDER) != null) {
-			this.mNetwork = new NetworkListener(broker.context, time, this);
+			this.mNetwork = new NetworkListener(context, time, this);
 		}
 	}
 
@@ -72,7 +69,7 @@ public class GeoListener {
 				"," + loc.getAccuracy() + "," + loc.getBearing() +
 				"," + loc.getSpeed() + "," + loc.getTime();
 
-		if (id == "global") {
+		if ("global".equals(id)) {
 			this.stop();
 		}
 		this.broker.sendJavascript("navigator._geo.success('" + id + "'," + params + ");");

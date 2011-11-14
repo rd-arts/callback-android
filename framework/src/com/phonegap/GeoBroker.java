@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 
 public class GeoBroker extends Plugin {
 
-	// List of gGeolocation listeners
+	// List of GeoLocation listeners
 	private HashMap<String, GeoListener> geoListeners;
 	private GeoListener global;
 
@@ -81,9 +81,7 @@ public class GeoBroker extends Plugin {
 	@Override
 	public void onDestroy() {
 		java.util.Set<Entry<String, GeoListener>> s = this.geoListeners.entrySet();
-		java.util.Iterator<Entry<String, GeoListener>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, GeoListener> entry = it.next();
+		for (Entry<String, GeoListener> entry : s) {
 			GeoListener listener = entry.getValue();
 			listener.destroy();
 		}
@@ -106,11 +104,11 @@ public class GeoBroker extends Plugin {
 	 * @param timeout
 	 * @param maximumAge
 	 */
-	public void getCurrentLocation(boolean enableHighAccuracy, int timeout, int maximumAge) {
+	private void getCurrentLocation(boolean enableHighAccuracy, int timeout, int maximumAge) {
 
 		// Create a geolocation listener just for getCurrentLocation and call it "global"
 		if (this.global == null) {
-			this.global = new GeoListener(this, "global", maximumAge);
+			this.global = new GeoListener(context, this, "global", maximumAge);
 		} else {
 			this.global.start(maximumAge);
 		}
@@ -125,12 +123,12 @@ public class GeoBroker extends Plugin {
 	 * @param maximumAge
 	 * @return
 	 */
-	public String start(String key, boolean enableHighAccuracy, int timeout, int maximumAge) {
+	private String start(String key, boolean enableHighAccuracy, int timeout, int maximumAge) {
 
 		// Make sure this listener doesn't already exist
 		GeoListener listener = geoListeners.get(key);
 		if (listener == null) {
-			listener = new GeoListener(this, key, maximumAge);
+			listener = new GeoListener(context, this, key, maximumAge);
 			geoListeners.put(key, listener);
 		}
 
@@ -144,7 +142,7 @@ public class GeoBroker extends Plugin {
 	 *
 	 * @param key The listener id
 	 */
-	public void stop(String key) {
+	private void stop(String key) {
 		GeoListener listener = geoListeners.remove(key);
 		if (listener != null) {
 			listener.stop();

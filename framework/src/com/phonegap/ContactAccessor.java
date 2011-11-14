@@ -26,7 +26,6 @@ package com.phonegap;
 
 import android.content.Context;
 import android.util.Log;
-import android.webkit.WebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,9 +41,9 @@ import java.util.HashMap;
  */
 public abstract class ContactAccessor {
 
-	protected final String LOG_TAG = "GAP_" + "ContactsAccessor";
-	protected Context mApp;
-	protected WebView mView;
+	final String TAG = "GAP_" + ContactAccessor.class.getSimpleName();
+
+	Context mApp;
 
 	/**
 	 * Check to see if the data associated with the key is required to
@@ -54,7 +53,7 @@ public abstract class ContactAccessor {
 	 * @param map created by running buildPopulationSet.
 	 * @return true if the key data is required
 	 */
-	protected boolean isRequired(String key, HashMap<String, Boolean> map) {
+	boolean isRequired(String key, HashMap<String, Boolean> map) {
 		Boolean retVal = map.get(key);
 		return (retVal == null) ? false : retVal.booleanValue();
 	}
@@ -65,7 +64,7 @@ public abstract class ContactAccessor {
 	 * @param fields the list of fields to populate
 	 * @return the hash map of required data
 	 */
-	protected HashMap<String, Boolean> buildPopulationSet(JSONArray fields) {
+	HashMap<String, Boolean> buildPopulationSet(JSONArray fields) {
 		HashMap<String, Boolean> map = new HashMap<String, Boolean>();
 
 		String key;
@@ -117,7 +116,7 @@ public abstract class ContactAccessor {
 				}
 			}
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return map;
 	}
@@ -131,18 +130,18 @@ public abstract class ContactAccessor {
 	 * @param property to be looked up
 	 * @return The value of the property
 	 */
-	protected String getJsonString(JSONObject obj, String property) {
+	String getJsonString(JSONObject obj, String property) {
 		String value = null;
 		try {
 			if (obj != null) {
 				value = obj.getString(property);
 				if (value.equals("null")) {
-					Log.d(LOG_TAG, property + " is string called 'null'");
+					Log.d(TAG, property + " is string called 'null'");
 					value = null;
 				}
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Could not get = " + e.getMessage());
+			Log.d(TAG, "Could not get = " + e.getMessage());
 		}
 		return value;
 	}

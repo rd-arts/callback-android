@@ -41,9 +41,12 @@ public final class PluginManager {
 	 */
 	private final GapView gapController;
 
-	// Map URL schemes like foo: to plugins that want to handle those schemes
-	// This would allow how all URLs are handled to be offloaded to a plugin
-	protected HashMap<String, String> urlMap = new HashMap<String, String>();
+	/**
+	 * Map URL schemes like foo: to plugins that want to handle those schemes.
+	 * <p/>
+	 * This would allow how all URLs are handled to be offloaded to a plugin
+	 */
+	private HashMap<String, String> urlMap = new HashMap<String, String>();
 
 	public PluginManager(Context ctx, WebView webView, GapView gapController) {
 		this.ctx = ctx;
@@ -55,14 +58,14 @@ public final class PluginManager {
 	/**
 	 * Load plugins from res/xml/plugins.xml
 	 */
-	public void loadPlugins() {
+	private void loadPlugins() {
 		int id = ctx.getResources().getIdentifier("plugins", "xml", ctx.getPackageName());
 		if (id == 0) {
 			pluginConfigurationMissing();
 		}
 		XmlResourceParser xml = ctx.getResources().getXml(id);
 		int eventType = -1;
-		String pluginClass = "", pluginName = "";
+		String pluginClass, pluginName;
 		while (eventType != XmlResourceParser.END_DOCUMENT) {
 			if (eventType == XmlResourceParser.START_TAG) {
 				String strNode = xml.getName();
@@ -72,7 +75,7 @@ public final class PluginManager {
 					Log.d(TAG, "Plugin: " + pluginName + " => " + pluginClass);
 					this.addService(pluginName, pluginClass);
 				} else if (strNode.equals("url-filter")) {
-					this.urlMap.put(xml.getAttributeValue(null, "value"), pluginName);
+					this.urlMap.put(xml.getAttributeValue(null, "value"), ""/*pluginName*/);
 				}
 			}
 			try {
@@ -221,7 +224,6 @@ public final class PluginManager {
 				this.plugins.put(className, plugin);
 				plugin.setContext(ctx);
 				plugin.setController(gapController);
-				plugin.setView(this.webView);
 				plugin.onResume(true);
 				return plugin;
 			}
@@ -266,9 +268,7 @@ public final class PluginManager {
 	 */
 	public void onPause(boolean multitasking) {
 		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
-		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, IPlugin> entry = it.next();
+		for (Entry<String, IPlugin> entry : s) {
 			IPlugin plugin = entry.getValue();
 			plugin.onPause(multitasking);
 		}
@@ -281,9 +281,7 @@ public final class PluginManager {
 	 */
 	public void onResume(boolean multitasking) {
 		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
-		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, IPlugin> entry = it.next();
+		for (Entry<String, IPlugin> entry : s) {
 			IPlugin plugin = entry.getValue();
 			plugin.onResume(multitasking);
 		}
@@ -296,9 +294,7 @@ public final class PluginManager {
 		Log.i(TAG, "Destroy.");
 
 		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
-		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, IPlugin> entry = it.next();
+		for (Entry<String, IPlugin> entry : s) {
 			IPlugin plugin = entry.getValue();
 			plugin.onDestroy();
 		}
@@ -311,9 +307,7 @@ public final class PluginManager {
 	 */
 	public void onNewIntent(Intent intent) {
 		java.util.Set<Entry<String, IPlugin>> s = this.plugins.entrySet();
-		java.util.Iterator<Entry<String, IPlugin>> it = s.iterator();
-		while (it.hasNext()) {
-			Entry<String, IPlugin> entry = it.next();
+		for (Entry<String, IPlugin> entry : s) {
 			IPlugin plugin = entry.getValue();
 			plugin.onNewIntent(intent);
 		}
@@ -326,9 +320,7 @@ public final class PluginManager {
 	 * @return Return false to allow the URL to load, return true to prevent the URL from loading.
 	 */
 	public boolean onOverrideUrlLoading(String url) {
-		Iterator<Entry<String, String>> it = this.urlMap.entrySet().iterator();
-		while (it.hasNext()) {
-			HashMap.Entry<String, String> pairs = it.next();
+		for (Entry<String, String> pairs : this.urlMap.entrySet()) {
 			if (url.startsWith(pairs.getKey())) {
 				return this.getPlugin(pairs.getValue()).onOverrideUrlLoading(url);
 			}

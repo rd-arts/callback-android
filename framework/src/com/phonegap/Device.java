@@ -19,9 +19,9 @@ import java.util.TimeZone;
 
 public class Device extends Plugin {
 
-	public static String phonegapVersion = "1.1.0";			   // PhoneGap version
-	public static String platform = "Android";					// Device OS
-	public static String uuid;									// Device UUID
+	private static String phonegapVersion = "1.1.0";			   // PhoneGap version
+	private static String platform = "Android";					// Device OS
+	private static String uuid;									// Device UUID
 
 	/**
 	 * Constructor.
@@ -82,10 +82,7 @@ public class Device extends Plugin {
 	 */
 	@Override
 	public boolean isSynch(String action) {
-		if (action.equals("getDeviceInfo")) {
-			return true;
-		}
-		return false;
+		return action.equals("getDeviceInfo");
 	}
 
 	//--------------------------------------------------------------------------
@@ -106,7 +103,7 @@ public class Device extends Plugin {
 	 *
 	 * @return
 	 */
-	public String getUuid() {
+	private String getUuid() {
 		String uuid = Settings.Secure.getString(this.context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 		return uuid;
 	}
@@ -125,7 +122,7 @@ public class Device extends Plugin {
 		return model;
 	}
 
-	public String getProductName() {
+	private String getProductName() {
 		String productname = android.os.Build.PRODUCT;
 		return productname;
 	}
@@ -135,7 +132,7 @@ public class Device extends Plugin {
 	 *
 	 * @return
 	 */
-	public String getOSVersion() {
+	private String getOSVersion() {
 		String osversion = android.os.Build.VERSION.RELEASE;
 		return osversion;
 	}

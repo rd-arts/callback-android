@@ -45,11 +45,7 @@ public class CryptoHandler extends Plugin {
 		}
 	}
 
-	//--------------------------------------------------------------------------
-	// LOCAL METHODS
-	//--------------------------------------------------------------------------
-
-	public void encrypt(String pass, String text) {
+	private void encrypt(String pass, String text) {
 		try {
 			String encrypted = SimpleCrypto.encrypt(pass, text);
 			// TODO: Why not just return text now?
@@ -59,7 +55,7 @@ public class CryptoHandler extends Plugin {
 		}
 	}
 
-	public void decrypt(String pass, String text) {
+	private void decrypt(String pass, String text) {
 		try {
 			String decrypted = SimpleCrypto.decrypt(pass, text);
 			this.sendJavascript("Crypto.gotPlainString('" + text + "')");

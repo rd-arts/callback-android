@@ -36,7 +36,6 @@ public class Capture extends Plugin {
 	private static final int CAPTURE_AUDIO = 0;	 // Constant for capture audio
 	private static final int CAPTURE_IMAGE = 1;	 // Constant for capture image
 	private static final int CAPTURE_VIDEO = 2;	 // Constant for capture video
-	private static final String LOG_TAG = "GAP_" + "Capture";
 	private String callbackId;					  // The ID of the callback to be invoked with our result
 	private long limit;							 // the number of pics/vids/clips to take
 	private double duration;						// optional duration parameter for video recording
@@ -98,7 +97,7 @@ public class Capture extends Plugin {
 			if (mimeType == null || mimeType.equals("")) {
 				mimeType = FileUtils.getMimeType(filePath);
 			}
-			Log.d(LOG_TAG, "Mime type = " + mimeType);
+			Log.d(TAG, "Mime type = " + mimeType);
 
 			if (mimeType.equals(IMAGE_JPEG) || filePath.endsWith(".jpg")) {
 				obj = getImageData(filePath, obj);
@@ -108,7 +107,7 @@ public class Capture extends Plugin {
 				obj = getAudioVideoData(filePath, obj, true);
 			}
 		} catch (JSONException e) {
-			Log.d(LOG_TAG, "Error: setting media file data object");
+			Log.d(TAG, "Error: setting media file data object");
 		}
 		return obj;
 	}
@@ -148,7 +147,7 @@ public class Capture extends Plugin {
 				obj.put("width", player.getVideoWidth());
 			}
 		} catch (IOException e) {
-			Log.d(LOG_TAG, "Error: loading video file");
+			Log.d(TAG, "Error: loading video file");
 		}
 		return obj;
 	}
@@ -362,7 +361,7 @@ public class Capture extends Plugin {
 	 *
 	 * @param err
 	 */
-	public void fail(String err) {
+	private void fail(String err) {
 		this.error(new PluginResult(PluginResult.Status.ERROR, err), this.callbackId);
 	}
 }

@@ -20,9 +20,9 @@ import org.json.JSONObject;
 
 public class BatteryListener extends Plugin {
 
-	private static final String LOG_TAG = "GAP_" + "BatteryManager";
+	private static final String TAG = "GAP_" + "BatteryManager";
 
-	BroadcastReceiver receiver;
+	private BroadcastReceiver receiver;
 
 	private String batteryCallbackId = null;
 
@@ -96,7 +96,7 @@ public class BatteryListener extends Plugin {
 				this.context.unregisterReceiver(this.receiver);
 				this.receiver = null;
 			} catch (Exception e) {
-				Log.e(LOG_TAG, "Error unregistering battery receiver: " + e.getMessage(), e);
+				Log.e(TAG, "Error unregistering battery receiver: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -111,9 +111,9 @@ public class BatteryListener extends Plugin {
 		JSONObject obj = new JSONObject();
 		try {
 			obj.put("level", batteryIntent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, 0));
-			obj.put("isPlugged", batteryIntent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) > 0 ? true : false);
+			obj.put("isPlugged", batteryIntent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) > 0);
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);
 		}
 		return obj;
 	}

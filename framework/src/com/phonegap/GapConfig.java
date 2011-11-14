@@ -5,13 +5,14 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import com.phonegap.api.LOG;
+import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class GapConfig {
+class GapConfig {
 	private static final String TAG = "GAP_" + GapConfig.class.getSimpleName();
 
 	/**
@@ -148,7 +149,8 @@ public class GapConfig {
 	 * @param activity
 	 * @return
 	 */
-	public static String getStringProperty(String name, String defaultValue, Activity activity) {
+	@Nullable
+	public static String getStringProperty(String name, @Nullable String defaultValue, Activity activity) {
 		Bundle bundle = activity.getIntent().getExtras();
 		if (bundle == null) {
 			return defaultValue;

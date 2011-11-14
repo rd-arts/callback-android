@@ -84,12 +84,12 @@ public class PluginResult {
 	}
 
 	public String toSuccessCallbackString(String callbackId) {
-		StringBuffer buf = new StringBuffer("");
+		StringBuilder buf = new StringBuilder();
 		if (cast != null) {
-			buf.append("var temp = " + cast + "(" + this.getJSONString() + ");\n");
-			buf.append("PhoneGap.callbackSuccess('" + callbackId + "',temp);");
+			buf.append("var temp = ").append(cast).append("(").append(this.getJSONString()).append(");\n");
+			buf.append("PhoneGap.callbackSuccess('").append(callbackId).append("',temp);");
 		} else {
-			buf.append("PhoneGap.callbackSuccess('" + callbackId + "'," + this.getJSONString() + ");");
+			buf.append("PhoneGap.callbackSuccess('").append(callbackId).append("',").append(this.getJSONString()).append(");");
 		}
 		return buf.toString();
 	}
@@ -98,7 +98,7 @@ public class PluginResult {
 		return "PhoneGap.callbackError('" + callbackId + "', " + this.getJSONString() + ");";
 	}
 
-	public static String[] StatusMessages = new String[]{
+	private static String[] StatusMessages = new String[]{
 			"No result",
 			"OK",
 			"Class not found",

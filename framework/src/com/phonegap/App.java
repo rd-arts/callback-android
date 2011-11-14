@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 public class App extends Plugin {
 
-	private static final String TAG = "GAP_" + "AppGap";
+	private static final String TAG = "GAP_AppGap";
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -70,8 +70,8 @@ public class App extends Plugin {
 	/**
 	 * Clear the resource cache.
 	 */
-	public void clearCache() {
-		((GapView) this.ctx).clearCache();
+	private void clearCache() {
+		this.ctx.clearCache();
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class App extends Plugin {
 	 * @param props Properties that can be passed in to the DroidGap activity (i.e. loadingDialog, wait, ...)
 	 * @throws JSONException
 	 */
-	public void loadUrl(String url, JSONObject props) throws JSONException {
+	private void loadUrl(String url, JSONObject props) throws JSONException {
 		Log.d(TAG, "App.loadUrl(" + url + "," + props + ")");
 		int wait = 0;
 		boolean openExternal = false;
@@ -103,12 +103,12 @@ public class App extends Plugin {
 					Object value = props.get(key);
 					if (value == null) {
 
-					} else if (value.getClass().equals(String.class)) {
-						params.put(key, (String) value);
-					} else if (value.getClass().equals(Boolean.class)) {
-						params.put(key, (Boolean) value);
-					} else if (value.getClass().equals(Integer.class)) {
-						params.put(key, (Integer) value);
+					} else if (value instanceof String) {
+						params.put(key, value);
+					} else if (value instanceof Boolean) {
+						params.put(key, value);
+					} else if (value instanceof Integer) {
+						params.put(key, value);
 					}
 				}
 			}
@@ -125,29 +125,29 @@ public class App extends Plugin {
 				e.printStackTrace();
 			}
 		}
-		((GapView) this.ctx).showWebPage(url, openExternal, clearHistory, params);
+		this.ctx.showWebPage(url, openExternal, clearHistory, params);
 	}
 
 	/**
 	 * Cancel loadUrl before it has been loaded.
 	 */
-	public void cancelLoadUrl() {
-		((GapView) this.ctx).cancelLoadUrl();
+	private void cancelLoadUrl() {
+		this.ctx.cancelLoadUrl();
 	}
 
 	/**
 	 * Clear page history for the app.
 	 */
-	public void clearHistory() {
-		((GapView) this.ctx).clearHistory();
+	private void clearHistory() {
+		this.ctx.clearHistory();
 	}
 
 	/**
 	 * Go to previous page displayed.
 	 * This is the same as pressing the backbutton on Android device.
 	 */
-	public void backHistory() {
-		((GapView) this.ctx).endActivity();
+	private void backHistory() {
+		this.ctx.endActivity();
 	}
 
 	/**
@@ -156,9 +156,9 @@ public class App extends Plugin {
 	 *
 	 * @param override T=override, F=cancel override
 	 */
-	public void overrideBackbutton(boolean override) {
+	private void overrideBackbutton(boolean override) {
 		Log.d(TAG, "WARNING: Back Button Default Behaviour will be overridden.  The backbutton event will be fired!");
-		((GapView) this.ctx).bound = override;
+		this.ctx.bound = override;
 	}
 
 	/**
@@ -166,15 +166,15 @@ public class App extends Plugin {
 	 *
 	 * @return boolean
 	 */
-	public boolean isBackbuttonOverridden() {
-		return ((GapView) this.ctx).bound;
+	private boolean isBackbuttonOverridden() {
+		return this.ctx.bound;
 	}
 
 	/**
 	 * Exit the Android application.
 	 */
-	public void exitApp() {
-		((GapView) this.ctx).endActivity();
+	private void exitApp() {
+		this.ctx.endActivity();
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class App extends Plugin {
 	 * @param origin	 URL regular expression to allow
 	 * @param subdomains T=include all subdomains under origin
 	 */
-	public void addWhiteListEntry(String origin, boolean subdomains) {
-		GapConfig.addWhiteListEntry(((GapView) this.ctx).whiteList, origin, subdomains);
+	private void addWhiteListEntry(String origin, boolean subdomains) {
+		GapConfig.addWhiteListEntry(this.ctx.whiteList, origin, subdomains);
 	}
 }

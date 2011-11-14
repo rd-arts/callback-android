@@ -51,8 +51,6 @@ public class CameraLauncher extends Plugin {
 	private static final String GET_VIDEO = "Get Video";
 	private static final String GET_All = "Get All";
 
-	private static final String LOG_TAG = "GAP_" + "CameraLauncher";
-
 	private int mQuality;				   // Compression quality hint (0-100: 0=low quality & high compression, 100=compress of max quality)
 	private int targetWidth;				// desired width of the image
 	private int targetHeight;			   // desired height of the image
@@ -60,7 +58,7 @@ public class CameraLauncher extends Plugin {
 	private int encodingType;			   // Type of encoding to use
 	private int mediaType;				  // What type of media to retrieve
 
-	public String callbackId;
+	private String callbackId;
 	private int numPics;
 
 	/**
@@ -139,7 +137,7 @@ public class CameraLauncher extends Plugin {
 	 * @param quality	Compression quality hint (0-100: 0=low quality & high compression, 100=compress of max quality)
 	 * @param returnType Set the type of image to return.
 	 */
-	public void takePicture(int returnType, int encodingType) {
+	private void takePicture(int returnType, int encodingType) {
 		// Save the number of images currently on disk for later
 		this.numPics = queryImgDB().getCount();
 
@@ -179,7 +177,7 @@ public class CameraLauncher extends Plugin {
 	 * @param returnType Set the type of image to return.
 	 */
 	// TODO: Images selected from SDCARD don't display correctly, but from CAMERA ALBUM do!
-	public void getImage(int srcType, int returnType) {
+	private void getImage(int srcType, int returnType) {
 		Intent intent = new Intent();
 		String title = GET_PICTURE;
 		if (this.mediaType == PICTURE) {
@@ -197,7 +195,7 @@ public class CameraLauncher extends Plugin {
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
 		this.ctx.startActivityForResult((Plugin) this, Intent.createChooser(intent,
-				new String(title)), (srcType + 1) * 16 + returnType + 1);
+				title), (srcType + 1) * 16 + returnType + 1);
 	}
 
 	/**
@@ -206,7 +204,7 @@ public class CameraLauncher extends Plugin {
 	 * @param bitmap The bitmap to scale.
 	 * @return Bitmap	   A new Bitmap object of the same bitmap after scaling.
 	 */
-	public Bitmap scaleBitmap(Bitmap bitmap) {
+	private Bitmap scaleBitmap(Bitmap bitmap) {
 		int newWidth = this.targetWidth;
 		int newHeight = this.targetHeight;
 		int origWidth = bitmap.getWidth();
@@ -450,22 +448,24 @@ public class CameraLauncher extends Plugin {
 	 *
 	 * @param bitmap
 	 */
-	public void processPicture(Bitmap bitmap) {
-		ByteArrayOutputStream jpeg_data = new ByteArrayOutputStream();
+	private void processPicture(Bitmap bitmap) {
 		try {
-			if (bitmap.compress(CompressFormat.JPEG, mQuality, jpeg_data)) {
-				byte[] code = jpeg_data.toByteArray();
-				byte[] output = Base64.encodeBase64(code);
-				String js_out = new String(output);
-				this.success(new PluginResult(PluginResult.Status.OK, js_out), this.callbackId);
-				js_out = null;
-				output = null;
-				code = null;
+			ByteArrayOutputStream jpegData = new ByteArrayOutputStream();
+			if (bitmap.compress(CompressFormat.JPEG, mQuality, jpegData)) {
+				byte[] jpegDataBytes = jpegData.toByteArray();
+				byte[] jpegDataBase64 = Base64.encodeBase64(jpegDataBytes);
+				//noinspection UnusedAssignment
+				jpegDataBytes = null;
+				String jsOutput = new String(jpegDataBase64);
+				//noinspection UnusedAssignment
+				jpegDataBase64 = null;
+				this.success(new PluginResult(PluginResult.Status.OK, jsOutput), this.callbackId);
 			}
 		} catch (Exception e) {
-			this.failPicture("Error compressing image.");
+			String err = "Error compressing image.";
+			Log.e(TAG, err, e);
+			this.failPicture(err);
 		}
-		jpeg_data = null;
 	}
 
 	/**
@@ -473,7 +473,7 @@ public class CameraLauncher extends Plugin {
 	 *
 	 * @param err
 	 */
-	public void failPicture(String err) {
+	private void failPicture(String err) {
 		this.error(new PluginResult(PluginResult.Status.ERROR, err), this.callbackId);
 	}
 }

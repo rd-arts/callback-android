@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class WebViewReflect {
+class WebViewReflect {
 	private static final String TAG = "GAP_" + WebViewReflect.class.getSimpleName();
 
 	private static Method mWebSettings_setDatabaseEnabled;
@@ -48,7 +48,7 @@ public class WebViewReflect {
 	}
 
 
-	public static void checkCompatibility() {
+	private static void checkCompatibility() {
 		try {
 			mWebSettings_setDatabaseEnabled = WebSettings.class.getMethod(
 					"setDatabaseEnabled", new Class[]{boolean.class});
@@ -71,14 +71,11 @@ public class WebViewReflect {
 				mWebSettings_setDatabaseEnabled.invoke(setting, enable);
 				mWebSettings_setDatabasePath.invoke(setting, path);
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			}
 		} else {
 			/* feature not supported, do something else */
@@ -91,14 +88,11 @@ public class WebViewReflect {
 			try {
 				mWebSettings_setGeolocationEnabled.invoke(setting, enable);
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			}
 		} else {
 			/* feature not supported, do something else */
@@ -112,14 +106,11 @@ public class WebViewReflect {
 			try {
 				mWebSettings_setDomStorageEnabled.invoke(setting, true);
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, "Error", e);
 			}
 		} else {
 			/* feature not supported, do something else */
