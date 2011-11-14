@@ -13,6 +13,7 @@
  */
 
 if (!PhoneGap.hasResource("storage")) {
+/*document.write("STORAGE PLUGIN LOADED DIRECTLY");*/
 PhoneGap.addResource("storage");
 
 /**
@@ -426,5 +427,4 @@ PhoneGap.addConstructor(function() {
     }
 });
 
-	document.write("AHAHA");
 }

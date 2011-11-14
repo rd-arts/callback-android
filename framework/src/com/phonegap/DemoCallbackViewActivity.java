@@ -34,12 +34,9 @@ public class DemoCallbackViewActivity extends Activity {
 
 		setContentView(R.layout.screen_demo);
 		gapView = (GapView) findViewById(R.id.gapView);
+		activityEventsDispatcher = gapView.getActivityEventsDispatcher();
 
 		gapView.loadGapUrl("file:///android_asset/www/demo_index.html");
-//		gapView.loadGapUrl("file:///android_asset/www/demo_index2.html");
-//		gapView.loadGapUrl("file:///android_asset/js/demo_index3.html");
-
-		activityEventsDispatcher = gapView.getActivityEventsDispatcher();
 
 		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
 			@Override
