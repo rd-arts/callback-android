@@ -7,6 +7,11 @@
 */
 package com.phonegap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,14 +28,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
 import com.phonegap.api.IActivityEventsDispatcher;
 import com.phonegap.api.IPlugin;
 import com.phonegap.api.LOG;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GapView extends WebView {
 
@@ -458,18 +459,18 @@ public class GapView extends WebView {
 
 	@Override
 	protected void onDetachedFromWindow() {
-		// Make sure pause event is sent if onPause hasn't been called before onDestroy
-		this.appView.loadUrl("javascript:try{PhoneGap.onPause.fire();}catch(e){};");
-
-		// Send destroy event to JavaScript
-		this.appView.loadUrl("javascript:try{PhoneGap.onDestroy.fire();}catch(e){};");
-
-		// Load blank page so that JavaScript onunload is called
-		this.appView.loadUrl("about:blank");
-
-		// Forward to plugins
-		this.pluginManager.onDestroy();
-
+//		// Make sure pause event is sent if onPause hasn't been called before onDestroy
+//		this.appView.loadUrl("javascript:try{PhoneGap.onPause.fire();}catch(e){};");
+//
+//		// Send destroy event to JavaScript
+//		this.appView.loadUrl("javascript:try{PhoneGap.onDestroy.fire();}catch(e){};");
+//
+//		// Load blank page so that JavaScript onunload is called
+//		this.appView.loadUrl("about:blank");
+//
+//		// Forward to plugins
+//		this.pluginManager.onDestroy();
+//
 		super.onDetachedFromWindow();
 	}
 

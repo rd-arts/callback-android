@@ -18,7 +18,7 @@ import java.util.HashMap;
 /**
  * The webview client receives notifications about appView
  */
-class GapWebViewClient extends WebViewClient {
+public class GapWebViewClient extends WebViewClient {
 
 	private static final String TAG = "GAP_" + GapWebViewClient.class.getSimpleName();
 
